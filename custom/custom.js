@@ -4,6 +4,8 @@
 // Leaflet map
 let map;
 
+// Endpoint URL for LINDAS SPARQL queries
+const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
 
 
 /*******************************************************************************************************
@@ -40,4 +42,21 @@ function createLeafletMap() {
         [45.7769477403, 6.02260949059],
         [47.8308275417, 10.4427014502]
     ]);
+}
+
+/**
+ * Requests and adds all stations from Libero to map
+ * TODO: Make certain parts regarding D3 reusable (e.g. adding circles and lines etc.)
+ */
+function showAllStationsLibero() {
+    d3.sparql(LINDAS_ENDPOINT, query_allStationsLibero()).then((data) => {
+        console.log(data); // TODO: Remove
+
+        // TODO: Use D3 instead of Leaflet
+        data.forEach(station => {
+            const coords = station.Coord.replace("POINT(", "").replace(")", "").split(' ');
+
+            L.marker([coords[1], coords[0]]).addTo(map).bindPopup(station.Name);
+        });
+    });
 }
