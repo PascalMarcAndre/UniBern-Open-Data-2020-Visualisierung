@@ -60,3 +60,23 @@ function showAllStationsLibero() {
         });
     });
 }
+
+/**
+ * Requests and adds 100 longest short distances to map
+ * TODO: Make certain parts regarding D3 reusable (e.g. adding circles and lines etc.)
+ */
+function show100LongestShortDistances() {
+    d3.sparql(LINDAS_ENDPOINT, query_100longestShortDistances()).then((data) => {
+        console.log(data); // TODO: Remove
+
+        // TODO: Use D3 instead of Leaflet
+        data.forEach(route => {
+            const coords1 = route.loc1.replace("POINT(", "").replace(")", "").split(' ');
+            const coords2 = route.loc2.replace("POINT(", "").replace(")", "").split(' ');
+
+            L.marker([coords1[1], coords1[0]]).addTo(map).bindPopup(route.stNam1);
+            L.marker([coords2[1], coords2[0]]).addTo(map).bindPopup(route.stNam2);
+            L.polyline([[coords1[1], coords1[0]], [coords2[1], coords2[0]]], {color: 'blue'}).addTo(map);
+        });
+    });
+}
