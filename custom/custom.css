@@ -81,7 +81,7 @@ h2 {
 }
 
 h3 {
-    margin: 35px 0;
+    margin: 35px 0 15px 0;
     padding: 5px 10px;
     background-color: var(--sbb-dark);
     color: var(--sbb-light);
@@ -201,6 +201,27 @@ h3 {
     width: 45px !important;
     height: 45px !important;
     filter: invert(1);
+}
+
+/*
+ *  Sidebar / Options
+ */
+.options .tilePreview {
+    margin: 10px 0;
+    padding: 5px;
+    background-color: var(--sbb-dark);
+    color: var(--sbb-light);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Hovering over deselected tile layer has same style as selected tile layer */
+.options .tilePreview.selected, .options .tilePreview:hover {
+    background-color: var(--sbb-red);
+}
+
+.options .tilePreview img {
+    width: 100%;
 }
 
 /*
