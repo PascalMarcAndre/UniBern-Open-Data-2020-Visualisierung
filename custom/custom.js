@@ -34,7 +34,9 @@ function launch() {
  */
 function createLeafletMap() {
     // Create Leaflet map object
-    map = L.map('map');
+    map = L.map('map', {
+        zoomControl: false
+    });
 
     // Set initial map view to fit Switzerland
     map.fitBounds([
