@@ -119,6 +119,7 @@ h3 {
     background-color: var(--sbb-light);
     border-right: 5px solid var(--sbb-dark);
     color: var(--sbb-dark);
+    overflow-x: hidden;
     z-index: 10;
     transition: 0.3s;
 }
