@@ -120,6 +120,12 @@ h3 {
     border-right: 5px solid var(--sbb-dark);
     color: var(--sbb-dark);
     z-index: 10;
+    transition: 0.3s;
+}
+
+#sidebar.closed {
+    left: -350px;
+    border-right: 0 solid var(--sbb-dark);
 }
 
 /*

@@ -119,3 +119,23 @@ function show100LongestShortDistances() {
 
 
 }
+
+
+
+/*******************************************************************************************************
+ * USER INTERFACE
+ * Functions and variables that keep track of the user interface and modify it.
+ ******************************************************************************************************/
+
+// Boolean for whether the sidebar is opened or closed
+let sidebarOpen = true;
+
+/**
+ * Toggles the sidebar on and off.
+ */
+function toggleSidebar() {
+    let elCList = document.getElementById("sidebar").classList;
+    sidebarOpen ? elCList.add("closed") : elCList.remove("closed");
+
+    sidebarOpen = !sidebarOpen;
+}
