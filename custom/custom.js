@@ -4,8 +4,15 @@
 // Leaflet map
 let map;
 
+// List of available Leaflet tiles
+let tiles = [];
+
 // Endpoint URL for LINDAS SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
+
+// Range of zoom levels of tile layers
+const MIN_ZOOM = 7;
+const MAX_ZOOM = 17;
 
 
 /*******************************************************************************************************
@@ -18,31 +25,54 @@ const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
  */
 function launch() {
     createLeafletMap();
+    createLeafletTiles();
     setSidebarElement("Welcome");
 }
 
 /**
- * Creates the Leaflet map.
- * Adds tile layer and sets initial view to fit Switzerland.
+ * Creates Leaflet map. Sets initial view to fit Switzerland.
  */
 function createLeafletMap() {
     // Create Leaflet map object
     map = L.map('map');
-
-    // Add tile layer
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        minZoom: 7,
-        maxZoom: 18,
-        tileSize: 512,
-        zoomOffset: -1,
-        id: 'mapbox/streets-v11',
-    }).addTo(map);
 
     // Set initial map view to fit Switzerland
     map.fitBounds([
         [45.7769477403, 6.02260949059],
         [47.8308275417, 10.4427014502]
     ]);
+}
+
+/**
+ * Creates Leaflet tile layers. Adds default tile layer to Leaflet map.
+ */
+function createLeafletTiles() {
+    // Mapbox
+    tiles[0] = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+        tileSize: 512,
+        zoomOffset: -1,
+        id: 'mapbox/streets-v11',
+    }).addTo(map);
+
+    // OpenStreetMap Swiss Style
+    tiles[1] = L.tileLayer('http://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png', {
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+    });
+
+    // OpenTopoMap
+    tiles[2] = L.tileLayer('https://opentopomap.org/{z}/{x}/{y}.png', {
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+    });
+
+    // ArcGIS Satellite
+    tiles [3] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        minZoom: MIN_ZOOM,
+        maxZoom: MAX_ZOOM,
+    });
 }
 
 /**
