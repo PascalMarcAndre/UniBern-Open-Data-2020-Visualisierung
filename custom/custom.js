@@ -41,6 +41,17 @@ function createLeafletMap() {
         [45.7769477403, 6.02260949059],
         [47.8308275417, 10.4427014502]
     ]);
+
+    // Fix grid lines between tile images
+    let originalInitTile = L.GridLayer.prototype._initTile;
+    L.GridLayer.include({
+        _initTile: function(tile) {
+            originalInitTile.call(this, tile);
+            let tileSize = this.getTileSize();
+            tile.style.width = tileSize.x + 1 + 'px';
+            tile.style.height = tileSize.y + 1 + 'px';
+        }
+    });
 }
 
 /**
