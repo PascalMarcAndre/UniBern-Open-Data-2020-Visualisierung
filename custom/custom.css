@@ -62,7 +62,9 @@ html, body {
     -ms-user-select: none;
 }
 
-/* Headers */
+/*
+ *  Headers
+ */
 h1, h2 {
     color: var(--sbb-dark);
     text-align: center;
@@ -84,7 +86,9 @@ h2 {
     CLASSES
 #########################################################*/
 
-/* Leaflet Map */
+/*
+ *  Leaflet Map
+ */
 #map {
     position: fixed;
     top: 0;
@@ -93,7 +97,9 @@ h2 {
     height: 100%;
 }
 
-/* Sidebar */
+/*
+ *  Sidebar
+ */
 #sidebar {
     position: fixed;
     top: 0;
@@ -107,6 +113,9 @@ h2 {
     z-index: 10;
 }
 
+/*
+ *  Sidebar / Logo
+ */
 #sidebar .logo {
     width: 100%;
     cursor: pointer;
@@ -116,6 +125,66 @@ h2 {
     display: block;
     width: 60%;
     margin: 10px auto 20px auto;
+}
+
+/*
+ *  Sidebar / Menu Buttons
+ */
+#sidebar .buttons {
+    position: fixed;
+    top: 0;
+    left: 345px;
+    border-left: 5px solid rgba(0, 0, 0, 0);
+    transition: 0.3s;
+}
+
+#sidebar.closed .buttons {
+    left: 0;
+    border-left: 0 solid var(--sbb-dark);
+}
+
+#sidebar .buttons ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#sidebar .buttons li.deselected {
+    width: 45px;
+    height: 45px;
+    background-color: var(--sbb-dark);
+    margin: 10px 0;
+    transition: 0.07s;
+}
+
+/* Hovering over deselected button has same style as selected button */
+#sidebar .buttons li.deselected:hover, #sidebar .buttons li.selected {
+    width: 65px;
+    padding-left: 10px;
+    background-color: var(--sbb-red);
+    cursor: pointer;
+}
+
+/* Toggle sidebar button has different margins */
+#sidebar .buttons li:first-child {
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* Switch arrow direction when sidebar is closed */
+#sidebar.closed .buttons li:first-child img {
+    transform: rotate(180deg);
+}
+
+/* Last button requires no margin at bottom */
+#sidebar .buttons li:last-child {
+    margin-bottom: 0;
+}
+
+#sidebar .buttons li img {
+    width: 45px !important;
+    height: 45px !important;
+    filter: invert(1);
 }
 
 
