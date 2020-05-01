@@ -56,6 +56,10 @@ html, body {
     margin: 0;
     font-family: "SBB Web Roman", sans-serif;
     color: var(--sbb-dark);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 /* Headers */
