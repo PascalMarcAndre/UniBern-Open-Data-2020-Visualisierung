@@ -18,6 +18,7 @@ const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
  */
 function launch() {
     createLeafletMap();
+    setSidebarElement("Welcome");
 }
 
 /**
@@ -138,4 +139,30 @@ function toggleSidebar() {
     sidebarOpen ? elCList.add("closed") : elCList.remove("closed");
 
     sidebarOpen = !sidebarOpen;
+}
+
+/**
+ * Displays content of selected sidebar section according to given parameter and sets its menu button as selected.
+ * Opens the sidebar if it was previously closed.
+ *
+ * @param newSection              ID/Name of the newly selected sidebar section
+ */
+function setSidebarElement(newSection) {
+    // Opens the sidebar if currently closed
+    if(!sidebarOpen) {
+        toggleSidebar();
+    }
+
+    // List of sidebar section names
+    let sectionNames = ["Welcome", "Search", "Distance", "Options", "Help", "About"];
+
+    // Hides content of all sidebar elements and deselects all menu buttons
+    sectionNames.forEach(sectionName => {
+        document.getElementById("sbSec" + sectionName).classList.add("hidden");
+        document.getElementById("sbBtn" + sectionName).classList.remove("selected");
+    });
+
+    // Displays content of selected section according to given parameter and sets its menu button as selected
+    document.getElementById("sbSec" + newSection).classList.remove("hidden");
+    document.getElementById("sbBtn" + newSection).classList.add("selected");
 }
