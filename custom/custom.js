@@ -221,7 +221,7 @@ function showMatchingStations() {
             document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
 
             // Adds station as marker to search results layer and binds popup with station name
-            L.marker([coordLat, coordLng]).addTo(searchResultsLayer).bindPopup(station.Name);
+            L.marker([coordLat, coordLng]).addTo(searchResultsLayer).bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
         });
 
         // Adds layer containing all search result markers to map
