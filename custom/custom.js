@@ -167,6 +167,30 @@ function show100LongestShortDistances() {
 
 
 /*******************************************************************************************************
+ * OPTIONS
+ * Functions and variables related to the 'Options' section in the sidebar.
+ ******************************************************************************************************/
+
+/**
+ * Selects the tile layer with the given ID for the map and updates the tile preview section.
+ *
+ * @param tileID                  ID of the tile layer to be selected
+ */
+function setTileLayer(tileID) {
+    // Removes all tile layers form the map and resets the boxes in the tile layer selection
+    tiles.forEach((tile, index) => {
+        map.removeLayer(tile);
+        document.getElementById('tile' + index).classList.remove('selected');
+    });
+
+    // Adds chosen tile layer to map and marks its preview box as selected
+    map.addLayer(tiles[tileID]);
+    document.getElementById('tile' + tileID).classList.add('selected');
+}
+
+
+
+/*******************************************************************************************************
  * USER INTERFACE
  * Functions and variables that keep track of the user interface and modify it.
  ******************************************************************************************************/

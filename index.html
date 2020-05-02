@@ -45,7 +45,7 @@
 
     <!-- Longest Short Distances Section -->
     <div id="sbSecDistance" class="hidden">
-        <h3>100 längste Kurzstecken</h3>
+        <h3>100 längsten Kurzstecken</h3>
     </div>
 
     <!-- Options Section -->
@@ -53,19 +53,19 @@
 
         <!-- Tile Layer Selection -->
         <h3>Kachelauswahl</h3>
-        <div id="tile0" class="tilePreview">
+        <div id="tile0" class="tilePreview selected" onclick="setTileLayer(0)">
             Mapbox
             <img src="assets/tiles_preview/0.jpg" alt="">
         </div>
-        <div id="tile1" class="tilePreview">
+        <div id="tile1" class="tilePreview" onclick="setTileLayer(1)">
             OpenStreetMap Swiss Style
             <img src="assets/tiles_preview/1.jpg" alt="">
         </div>
-        <div id="tile2" class="tilePreview">
+        <div id="tile2" class="tilePreview" onclick="setTileLayer(2)">
             OpenTopoMap
             <img src="assets/tiles_preview/2.jpg" alt="">
         </div>
-        <div id="tile3" class="tilePreview">
+        <div id="tile3" class="tilePreview" onclick="setTileLayer(3)">
             ArcGIS Satellite
             <img src="assets/tiles_preview/3.jpg" alt="">
         </div>
