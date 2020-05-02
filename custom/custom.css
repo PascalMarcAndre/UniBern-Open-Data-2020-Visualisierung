@@ -243,6 +243,27 @@ button.red:hover {
 }
 
 /*
+ *  Sidebar / Search
+ */
+.searchResults .count {
+    margin: 5px 0;
+    font-family: "SBB Web Bold", sans-serif;
+    font-size: 19px;
+}
+
+.searchResults .searchItem {
+    width: 100%;
+    padding: 5px 0;
+    border-top: 1px solid var(--sbb-dark);
+    cursor: pointer;
+}
+
+.searchResults .searchItem:hover {
+    background-color: var(--sbb-light-hov);
+    font-family: "SBB Web Bold", sans-serif;
+}
+
+/*
  *  Sidebar / Options
  */
 .options .tilePreview {
