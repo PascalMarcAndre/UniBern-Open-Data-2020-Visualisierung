@@ -93,6 +93,41 @@ h3 {
     font-size: 23px;
 }
 
+/*
+ *  Forms
+ */
+input, button {
+    font-family: "SBB Web Roman", sans-serif;
+}
+
+/* Text input fields */
+input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 7px;
+    border: 2px solid var(--sbb-dark);
+}
+
+/* Buttons */
+button {
+    margin: 5px 10px 10px 0;
+    padding: 6px 10px;
+    border: 0 solid var(--sbb-dark);
+}
+
+button:hover {
+    background-color: var(--sbb-light-hov);
+}
+
+button.red {
+    background-color: var(--sbb-red);
+    color: var(--sbb-light);
+}
+
+button.red:hover {
+    background-color: var(--sbb-red-hov);
+}
+
 
 
 /*#########################################################
