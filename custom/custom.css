@@ -334,6 +334,21 @@ button.red:hover {
 
 
 /*#########################################################
+    LEAFLET
+#########################################################*/
+
+.tooltip {
+    padding: 2px 10px;
+    color: #FFF;
+    background-color: var(--sbb-red);
+    border: 0 solid var(--sbb-red);
+    font-family: 'SBB Web Bold', sans-serif;
+    font-size: 17px;
+}
+
+
+
+/*#########################################################
     MEDIA QUERIES
 #########################################################*/
 
