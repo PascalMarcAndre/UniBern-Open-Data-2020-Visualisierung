@@ -42,6 +42,10 @@
     --sbb-red: #EB0000;
     --sbb-dark: #222222;
     --sbb-light: #FFFFFF;
+
+    --sbb-red-hov: #AF0000;
+    --sbb-dark-hov: #474747;
+    --sbb-light-hov: #e4e4e4;
 }
 
 
@@ -81,7 +85,7 @@ h2 {
 }
 
 h3 {
-    margin: 35px 0 15px 0;
+    margin: 35px 0 5px 0;
     padding: 5px 10px;
     background-color: var(--sbb-dark);
     color: var(--sbb-light);
