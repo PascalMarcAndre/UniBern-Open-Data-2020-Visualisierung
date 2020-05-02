@@ -34,8 +34,55 @@
     </div>
 
     <!-- Welcome Section -->
-    <div id="sbSecWelcome" class="hidden">
+    <div id="sbSecWelcome" class="hidden welcome">
+
+        <!-- Introduction to visualisation -->
         <h3>Herzlich Willkommen!</h3>
+        <table>
+            <tbody>
+            <tr>
+                <td><img src="assets/glyphicons/home.png" alt=""></td>
+                <td>
+                    <p>Verschaffen Sie sich einen Überblick über die Inhalte dieser Anwendung.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="assets/glyphicons/search.png" alt=""></td>
+                <td>
+                    <h4 onclick="setSidebarElement('Search')">Suche</h4>
+                    <p>Filtern Sie die Namen aller Haltestellen nach beliebigen Suchbegriffen.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="assets/glyphicons/ruler.png" alt=""></td>
+                <td>
+                    <h4 onclick="setSidebarElement('Distance')">100 längste Kurzstrecken</h4>
+                    <p>Stöbern Sie durch eine Liste der 100 längsten Kurzstrecken in der Schweiz.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="assets/glyphicons/cog.png" alt=""></td>
+                <td>
+                    <h4 onclick="setSidebarElement('Options')">Optionen</h4>
+                    <p>Ändern Sie die Kartenkacheln sowie deren Farbsättigung und Transparenz.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="assets/glyphicons/question-sign.png" alt=""></td>
+                <td>
+                    <h4 onclick="setSidebarElement('Help')">Bedienungsanleitung</h4>
+                    <p>Informieren Sie sich, wie Sie sämtliche Features der Karte anwenden können.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img src="assets/glyphicons/info-sign.png" alt=""></td>
+                <td>
+                    <h4 onclick="setSidebarElement('About')">Projektinformationen</h4>
+                    <p>Hintergrundinformationen zum Projekt finden Sie in diesem Abschnitt.</p>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- Search Section -->
@@ -88,7 +135,7 @@
 
     <!-- About Section -->
     <div id="sbSecAbout" class="hidden">
-        <h3>Über uns</h3>
+        <h3>Projektinformationen</h3>
     </div>
 
 

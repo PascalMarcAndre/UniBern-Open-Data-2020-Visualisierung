@@ -93,6 +93,14 @@ h3 {
     font-size: 23px;
 }
 
+h4 {
+    margin: 7px 0;
+    color: var(--sbb-red);
+    font-family: "SBB Web Roman", sans-serif;
+    font-size: 19px;
+    cursor: pointer;
+}
+
 /*
  *  Forms
  */
@@ -240,6 +248,38 @@ button.red:hover {
     width: 45px !important;
     height: 45px !important;
     filter: invert(1);
+}
+
+/*
+ *  Sidebar / Welcome
+ */
+.welcome p {
+    padding-right: 5px;
+    font-size: 15px;
+    text-align: justify;
+}
+
+.welcome table {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.welcome img {
+    margin-top: -5px;
+    max-width: 95%;
+}
+
+.welcome td {
+    padding: 10px 0;
+    vertical-align: top;
+}
+
+.welcome td:nth-child(1) {
+    width: 15%;
+}
+
+.welcome td:nth-child(2) {
+    width: 85%;
 }
 
 /*
