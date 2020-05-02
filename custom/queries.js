@@ -17,6 +17,29 @@ function query_allStationsLibero() {
     `
 }
 
+function query_allStationsMatchingSearchTerms(searchTerms) {
+    let filters = "";
+    let searchTermList = searchTerms.split(" ");
+
+    searchTermList.forEach(term => {
+        filters += "FILTER(contains(lcase(?Name), lcase(\"" + term + "\"))) "
+    });
+
+    return `
+    PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT distinct ?Station ?Name ?Coord
+    WHERE {
+        ?Station rdfs:label ?Name ;
+        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
+    
+    ` + filters + "}"
+}
+
 function query_100longestShortDistances() {
     return `
     PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
