@@ -238,6 +238,16 @@ function showMatchingStations() {
     });
 }
 
+/**
+ * Resets the search option by emptying the input field and search results list.
+ * Removes the layer containing all matching markers from the map.
+ */
+function resetSearch() {
+    document.getElementById("searchTerms").value = "";
+    document.getElementById("searchResults").innerHTML = "";
+    map.removeLayer(searchResultsLayer);
+}
+
 
 
 /*******************************************************************************************************
