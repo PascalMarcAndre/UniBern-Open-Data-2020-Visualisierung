@@ -7,6 +7,9 @@ let map;
 // List of available Leaflet tiles
 let tiles = [];
 
+// Leaflet layer that contains all markers from elements that match the given search term
+let searchResultsLayer = new L.layerGroup();
+
 // Endpoint URL for LINDAS SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
 
@@ -162,6 +165,77 @@ function show100LongestShortDistances() {
     }
 
 
+}
+
+/**
+ * Displays all markers that match the user's search terms on the map. Updates search results in sidebar section.
+ * Plays fly animation that sets the view to the bounds containing all search result markers.
+ */
+function showMatchingStations() {
+    // Gets user's search terms from input field
+    let searchTerms = document.getElementById("searchTerms").value;
+
+    // Removes any previous search results from map and sidebar section
+    map.removeLayer(searchResultsLayer);
+    document.getElementById("searchResults").innerHTML = "";
+
+    // If the search terms are too short (below 3 characters), the search gets cancelled and message gets displayed
+    if (searchTerms.length < 3) {
+        document.getElementById("searchResults").innerHTML = "Bitte geben Sie mind. 3 Zeichen ein";
+        return;
+    }
+
+    // Request all stations matching user's search terms
+    d3.sparql(LINDAS_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((data) => {
+
+        // Display number of search results
+        document.getElementById("searchResults").innerHTML += "<div class='count'>" + data.length + " Resultate:</div>";
+
+        // Resets search results layer to remove any markers on it
+        searchResultsLayer = new L.layerGroup();
+
+        // Variables to calculate search result bounds
+        let latMin, latMax, lngMin, lngMax;
+
+        // For each station: Add marker to map; Add entry to sidebar list; Update search result bounds
+        data.forEach(station => {
+            // Get coordinate of station
+            const coords = station.Coord.replace("POINT(", "").replace(")", "").split(' ');
+            const coordLat = parseFloat(coords[1]);
+            const coordLng = parseFloat(coords[0]);
+
+            // If latMin is not set, it's the first marker (set all min and max). Otherwise only set if new min or max.
+            if (!latMin) {
+                latMin = coordLat;
+                latMax = coordLat;
+                lngMin = coordLng;
+                lngMax = coordLng;
+            } else {
+                if (coordLat < latMin) latMin = coordLat;
+                if (coordLat > latMax) latMax = coordLat;
+                if (coordLng < lngMin) lngMin = coordLng;
+                if (coordLng > lngMax) lngMax = coordLng;
+            }
+
+            // Adds station to search result list in sidebar section
+            document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
+
+            // Adds station as marker to search results layer and binds popup with station name
+            L.marker([coordLat, coordLng]).addTo(searchResultsLayer).bindPopup(station.Name);
+        });
+
+        // Adds layer containing all search result markers to map
+        searchResultsLayer.addTo(map);
+
+        // Plays fly animation to bounds containing all search result markers
+        // Only plays if search results contains at least one item (which sets bound variables)
+        try {
+            map.flyToBounds([
+                [latMin, lngMin],
+                [latMax, lngMax]
+            ]);
+        } catch {}
+    });
 }
 
 
