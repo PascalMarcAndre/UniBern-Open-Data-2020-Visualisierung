@@ -37,7 +37,7 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
         ?Station rdfs:label ?Name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
     
-    ` + filters + "}"
+    ` + filters + "} ORDER BY ?Name"
 }
 
 function query_100longestShortDistances() {
