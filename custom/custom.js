@@ -273,6 +273,15 @@ function setTileLayer(tileID) {
     document.getElementById('tile' + tileID).classList.add('selected');
 }
 
+/**
+ * Updates saturation CSS-variable according to new greyscale value. Gets updated whenever related slider moves.
+ *
+ * @param greyscale          New saturation value (gets calculated with 1-greyscale)
+ */
+function updateSaturation(greyscale) {
+    document.documentElement.style.setProperty('--gs', ((1-greyscale).toString()));
+}
+
 
 
 /*******************************************************************************************************
