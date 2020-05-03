@@ -38,7 +38,8 @@ function launch() {
 function createLeafletMap() {
     // Create Leaflet map object
     map = L.map('map', {
-        zoomControl: false
+        zoomControl: false,
+        renderer: L.svg({ padding: 100 }),
     });
 
     // Set initial map view to fit Switzerland
