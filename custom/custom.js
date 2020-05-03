@@ -276,10 +276,21 @@ function setTileLayer(tileID) {
 /**
  * Updates saturation CSS-variable according to new greyscale value. Gets updated whenever related slider moves.
  *
- * @param greyscale          New saturation value (gets calculated with 1-greyscale)
+ * @param greyscale               New saturation value (gets calculated with 1-greyscale)
  */
 function updateSaturation(greyscale) {
     document.documentElement.style.setProperty('--gs', ((1-greyscale).toString()));
+}
+
+/**
+ * Updates opacity for all tile layers with given opacity value. Updates whenever related slider moves.
+ *
+ * @param opacity                 New opacity value to be set for all tile layers
+ */
+function updateOpacity(opacity) {
+    tiles.forEach(tile => {
+        tile.setOpacity(opacity);
+    });
 }
 
 
