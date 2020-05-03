@@ -1,5 +1,6 @@
 # Query Overview
-This document contains all available SPARQL queries that we use in this project.
+This document contains all available SPARQL queries that we use in this project.  
+Queries can be run under the following URL: [https://lindas.admin.ch/sparql/](https://lindas.admin.ch/sparql/)
 
 
 
