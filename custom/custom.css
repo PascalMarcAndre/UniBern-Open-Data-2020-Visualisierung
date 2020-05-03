@@ -136,6 +136,31 @@ button.red:hover {
     background-color: var(--sbb-red-hov);
 }
 
+/* Range Sliders */
+.slider input {
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    background-color: var(--sbb-light-hov);
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.slider input::-webkit-slider-thumb {
+    width: 15px;
+    height: 26px;
+    background: var(--sbb-red);
+    -webkit-appearance: none;
+}
+
+.slider input::-moz-range-thumb {
+    width: 15px;
+    height: 26px;
+    background: var(--sbb-red);
+    border: 0 solid #000;
+    border-radius: 0;
+}
+
 
 
 /*#########################################################
