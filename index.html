@@ -197,5 +197,8 @@
 </body>
 <script>
     launch();
+
+    // Add event listener to input field of search section to trigger search if 'ENTER' was pressed
+    document.getElementById('searchTerms').addEventListener("keyup", startSearchIfEnterWasPressed);
 </script>
 </html>

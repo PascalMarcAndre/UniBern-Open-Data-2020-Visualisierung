@@ -221,6 +221,13 @@ function show100LongestShortDistances() {
 
 }
 
+
+
+/*******************************************************************************************************
+ * SEARCH
+ * Functions and variables related to the 'Search' section in the sidebar.
+ ******************************************************************************************************/
+
 /**
  * Displays all markers that match the user's search terms on the map. Updates search results in sidebar section.
  * Plays fly animation that sets the view to the bounds containing all search result markers.
@@ -300,6 +307,27 @@ function resetSearch() {
     document.getElementById("searchTerms").value = "";
     document.getElementById("searchResults").innerHTML = "";
     map.removeLayer(searchResultsLayer);
+}
+
+/**
+ * Gets called whenever the user pressed a key while typing in the input field for searching stations.
+ * If the pressed key was 'ENTER' the search gets triggered and any old search results are removed from the sidebar.
+ * This is an alternative for triggering the search instead of having to press the actual search button.
+ *
+ * @param event                   Object that triggered the event leading to calling this function
+ */
+function startSearchIfEnterWasPressed(event) {
+    // If 'ENTER' was pressed, start search
+    if (event.keyCode === 13) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+
+        // Start search
+        showMatchingStations();
+
+        // Empty div-element that displays search results
+        $("#stations").empty();
+    }
 }
 
 
