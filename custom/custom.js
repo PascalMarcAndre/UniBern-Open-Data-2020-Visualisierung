@@ -133,6 +133,17 @@ function updateZoomButtons() {
     map.getZoom() === MIN_ZOOM ? zoomOutCl.add('disabled') : zoomOutCl.remove('disabled');
 }
 
+/**
+ * Centers the map to its initial view and adjusts the zoom level such that the entire country of Switzerland fits on it.
+ */
+function centerMap() {
+    map.flyToBounds([
+        [45.7769477403, 6.02260949059],
+        [47.8308275417, 10.4427014502]
+    ]);
+}
+
+
 
 /**
  * Requests and adds all stations from Libero to map
