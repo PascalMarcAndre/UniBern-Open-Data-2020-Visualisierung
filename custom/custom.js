@@ -48,6 +48,8 @@ function createLeafletMap() {
         [47.8308275417, 10.4427014502]
     ]);
 
+    map.on('zoom', updateZoomButtons);
+
     // Fix grid lines between tile images
     let originalInitTile = L.GridLayer.prototype._initTile;
     L.GridLayer.include({
@@ -68,6 +70,7 @@ function createLeafletTiles() {
     tiles[0] = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
         minZoom: MIN_ZOOM,
         maxZoom: MAX_ZOOM,
+        className: 'saturation',
         tileSize: 512,
         zoomOffset: -1,
         id: 'mapbox/streets-v11',
@@ -77,20 +80,59 @@ function createLeafletTiles() {
     tiles[1] = L.tileLayer('http://tile.osm.ch/osm-swiss-style/{z}/{x}/{y}.png', {
         minZoom: MIN_ZOOM,
         maxZoom: MAX_ZOOM,
+        className: 'saturation',
     });
 
     // OpenTopoMap
     tiles[2] = L.tileLayer('https://opentopomap.org/{z}/{x}/{y}.png', {
         minZoom: MIN_ZOOM,
         maxZoom: MAX_ZOOM,
+        className: 'saturation',
     });
 
     // ArcGIS Satellite
     tiles [3] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         minZoom: MIN_ZOOM,
         maxZoom: MAX_ZOOM,
+        className: 'saturation',
     });
 }
+
+
+
+/*******************************************************************************************************
+ * MAP NAVIGATION
+ * Functions and variables responsible for map navigation (e.g. set view to certain zoom level or point).
+ ******************************************************************************************************/
+
+/**
+ * Zooms closer to the map by increasing the zoom level by one. If the maximum zoom level is reached, it stops there.
+ */
+function zoomIn() {
+    let newZoomLevel = map.getZoom() + 1;
+    newZoomLevel <= MAX_ZOOM ? map.setZoom(newZoomLevel) : map.setZoom(MAX_ZOOM);
+}
+
+/**
+ * Zooms further out the map by decreasing the zoom level by one. If the minimum zoom level is reached, it stops there.
+ */
+function zoomOut() {
+    let newZoomLevel = map.getZoom() - 1;
+    newZoomLevel < MIN_ZOOM ? map.setZoom(MIN_ZOOM) : map.setZoom(newZoomLevel);
+}
+
+/**
+ * Updates the zoomIn- and zoomOut-buttons of the control panel according to the current zoom level.
+ * Gets called whenever the zoom level of the map changes.
+ */
+function updateZoomButtons() {
+    let zoomInCl = document.getElementById("zoomIn").classList;
+    let zoomOutCl = document.getElementById("zoomOut").classList;
+
+    map.getZoom() === MAX_ZOOM ? zoomInCl.add('disabled') : zoomInCl.remove('disabled');
+    map.getZoom() === MIN_ZOOM ? zoomOutCl.add('disabled') : zoomOutCl.remove('disabled');
+}
+
 
 /**
  * Requests and adds all stations from Libero to map
