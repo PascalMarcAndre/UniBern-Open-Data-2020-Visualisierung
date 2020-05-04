@@ -106,6 +106,13 @@ h4 {
     cursor: pointer;
 }
 
+h5 {
+    margin: 15px 0 5px 0;
+    color: var(--sbb-dark);
+    font-family: "SBB Web Roman", sans-serif;
+    font-size: 20px;
+}
+
 /*
  *  Forms
  */
@@ -164,6 +171,16 @@ button.red:hover {
     background: var(--sbb-red);
     border: 0 solid #000;
     border-radius: 0;
+}
+
+a {
+    text-decoration: none;
+    color: var(--sbb-red);
+}
+
+a:hover {
+    text-decoration: none;
+    color: var(--sbb-red-hov);
 }
 
 
@@ -395,6 +412,36 @@ button.red:hover {
 
 .options .tilePreview img {
     width: 100%;
+}
+
+/*
+ *  Sidebar / About
+ */
+.about p {
+    font-size: 13px;
+}
+
+.about table {
+    width: 100%;
+    margin-top: 30px;
+}
+
+.about img {
+    margin-top: -5px;
+    max-width: 95%;
+}
+
+.about td {
+    padding: 10px 0;
+    vertical-align: top;
+}
+
+.about td:nth-child(1) {
+    width: 35%;
+}
+
+.about td:nth-child(2) {
+    width: 65%;
 }
 
 /*
