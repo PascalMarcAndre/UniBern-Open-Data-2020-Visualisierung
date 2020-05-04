@@ -20,6 +20,7 @@ function launch() {
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
+    createHeatmapLayer()
 }
 
 
@@ -42,8 +43,11 @@ const MAX_ZOOM = 17;
 // Leaflet layer that contains all stations and displays them in clusters
 let clusterLayer;
 
+// Leaflet layer that contains the heatmap of the short distance count of each station
+let heatmapLayer;
+
 // Leaflet layer that contains all markers that match the given search term
-let searchResultLayer;
+let searchResultsLayer;
 
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
@@ -136,6 +140,43 @@ function createClusterLayer() {
         // Add cluster layer to map since it is the default layer
         clusterLayer.addTo(map);
     })
+}
+
+/**
+ * Creates and sets up the 'Short Distance Count by Station' heatmap. Makes the layer ready to be added to the map.
+ * Requests and processes all the data. A heatmap requires a 'max' variable and a 'data' array where each data item
+ * requires a 'lat', 'lng' and 'count' variable. Finally, the data gets added to the heatmap layer.
+ */
+function createHeatmapLayer() {
+    d3.sparql(LINDAS_ENDPOINT, query_shortDistanceCountByStation()).then(data => {
+        // Set up heatmap layer with custom options
+        heatmapLayer = new HeatmapOverlay({
+            "radius": 0.012,
+            "maxOpacity": .8,
+            "scaleRadius": true,
+            "useLocalExtrema": true,
+            latField: 'lat',
+            lngField: 'lng',
+            valueField: 'count'
+        });
+
+        // Create data object for heatmap
+        // Requires 'max' variable and 'data' array where each data item requires 'lat', 'lng' and 'count' variable
+        let heatmapData = {
+            max: data[0].count,
+            data: []
+        };
+
+        data.forEach(station => {
+            // Add station as data item to data array
+            heatmapData.data.push({
+                lat: station.lat, lng: station.lng, count: station.count
+            });
+        });
+
+        // Add requested and processed data to heatmap layer
+        heatmapLayer.setData(heatmapData);
+    });
 }
 
 
