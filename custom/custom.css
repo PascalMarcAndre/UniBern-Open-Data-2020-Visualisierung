@@ -179,6 +179,43 @@ button.red:hover {
 }
 
 /*
+ *  Leaflet Map - Control Panel
+ */
+.controlPanel {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+}
+
+.controlPanel ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.controlPanel li {
+    width: 45px;
+    height: 45px;
+    margin-top: 5px;
+    background-color: var(--sbb-dark);
+    cursor: pointer;
+}
+
+.controlPanel li:hover {
+    background-color: var(--sbb-red);
+}
+
+.controlPanel li.disabled img {
+    opacity: 0.3;
+}
+
+.controlPanel li img {
+    width: 45px;
+    height: 45px;
+    filter: invert(1);
+}
+
+/*
  *  Sidebar
  */
 #sidebar {
