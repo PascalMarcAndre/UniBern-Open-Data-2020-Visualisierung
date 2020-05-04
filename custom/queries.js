@@ -118,3 +118,26 @@ function query_100longestShortDistances() {
     LIMIT 100
     `
 }
+
+function query_shortDistanceCountByStation() {
+    return `
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT DISTINCT ?departure ?lat ?lng (count(?departureID) as ?count)
+    WHERE {
+        ?Kante a otd:Relation;
+        schema:departureStation ?departurePoint.
+        ?departurePoint rdfs:label ?departure ;
+        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
+        dcterms:identifier ?departureID.
+        
+        BIND(REPLACE(STR(?departureCoord), "POINT\\\\(", "") AS ?tmpCoord)
+        BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
+      
+        BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
+        BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
+    } GROUP BY ?departure ?lat ?lng ORDER BY DESC(?count)
+    `;
+}
