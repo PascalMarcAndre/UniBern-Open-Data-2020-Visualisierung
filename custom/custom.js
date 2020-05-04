@@ -27,10 +27,21 @@ const MAX_ZOOM = 17;
  * Includes creation of Leaflet map, fetching data with SPARQL requests etc.
  */
 function launch() {
+    setSidebarElement("Welcome");
     createLeafletMap();
     createLeafletTiles();
-    setSidebarElement("Welcome");
+    createClusterLayer();
 }
+
+
+
+/*******************************************************************************************************
+ * LEAFLET
+ * Functions and variables responsible for creating the Leaflet map and its layers etc.
+ ******************************************************************************************************/
+
+// Leaflet layer that contains all stations and displays them in clusters
+let clusterLayer;
 
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
@@ -96,6 +107,33 @@ function createLeafletTiles() {
         maxZoom: MAX_ZOOM,
         className: 'saturation',
     });
+}
+
+/**
+ * Creates and sets up the cluster layer which includes all stations. Requests and processes all the data.
+ * Custom cluster layer options are set during creation incl. cluster radius and disabling clustering for highest levels.
+ * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
+ */
+function createClusterLayer() {
+    d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
+        // Set up cluster layer with custom options
+        clusterLayer = L.markerClusterGroup({
+            maxClusterRadius: 150,
+            disableClusteringAtZoom: 15,
+            spiderfyOnMaxZoom: false
+        });
+
+        data.forEach(station => {
+            // Create marker (incl. tooltip) and adds it to cluster layer
+            L.marker([station.lat, station.lng])
+                .addTo(clusterLayer)
+                .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
+            // TODO: Add click-event to display its short distances
+        });
+
+        // Add cluster layer to map since it is the default layer
+        clusterLayer.addTo(map);
+    })
 }
 
 
@@ -233,10 +271,10 @@ function show100LongestShortDistances() {
  * Plays fly animation that sets the view to the bounds containing all search result markers.
  */
 function showMatchingStations() {
-    // Gets user's search terms from input field
+    // Get user's search terms from input field
     let searchTerms = document.getElementById("searchTerms").value;
 
-    // Removes any previous search results from map and sidebar section
+    // Remove any previous search results from map and sidebar section
     map.removeLayer(searchResultsLayer);
     document.getElementById("searchResults").innerHTML = "";
 
@@ -252,7 +290,7 @@ function showMatchingStations() {
         // Display number of search results
         document.getElementById("searchResults").innerHTML += "<div class='count'>" + data.length + " Resultate:</div>";
 
-        // Resets search results layer to remove any markers on it
+        // Reset search results layer to remove any markers on it
         searchResultsLayer = new L.layerGroup();
 
         // Variables to calculate search result bounds
@@ -278,14 +316,14 @@ function showMatchingStations() {
                 if (coordLng > lngMax) lngMax = coordLng;
             }
 
-            // Adds station to search result list in sidebar section
+            // Add station to search result list in sidebar section
             document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
 
             // Adds station as marker to search results layer and binds popup with station name
             L.marker([coordLat, coordLng]).addTo(searchResultsLayer).bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
         });
 
-        // Adds layer containing all search result markers to map
+        // Add layer containing all search result markers to map
         searchResultsLayer.addTo(map);
 
         // Plays fly animation to bounds containing all search result markers
