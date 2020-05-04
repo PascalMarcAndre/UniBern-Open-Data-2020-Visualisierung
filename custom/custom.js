@@ -341,29 +341,26 @@ function showMatchingStations() {
 
         // For each station: Add marker to map; Add entry to sidebar list; Update search result bounds
         data.forEach(station => {
-            // Get coordinate of station
-            const coords = station.Coord.replace("POINT(", "").replace(")", "").split(' ');
-            const coordLat = parseFloat(coords[1]);
-            const coordLng = parseFloat(coords[0]);
-
             // If latMin is not set, it's the first marker (set all min and max). Otherwise only set if new min or max.
             if (!latMin) {
-                latMin = coordLat;
-                latMax = coordLat;
-                lngMin = coordLng;
-                lngMax = coordLng;
+                latMin = station.lat;
+                latMax = station.lat;
+                lngMin = station.lng;
+                lngMax = station.lng;
             } else {
-                if (coordLat < latMin) latMin = coordLat;
-                if (coordLat > latMax) latMax = coordLat;
-                if (coordLng < lngMin) lngMin = coordLng;
-                if (coordLng > lngMax) lngMax = coordLng;
+                if (station.lat < latMin) latMin = station.lat;
+                if (station.lat > latMax) latMax = station.lat;
+                if (station.lng < lngMin) lngMin = station.lng;
+                if (station.lng > lngMax) lngMax = station.lng;
             }
 
             // Add station to search result list in sidebar section
             document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
 
-            // Adds station as marker to search results layer and binds popup with station name
-            L.marker([coordLat, coordLng]).addTo(searchResultsLayer).bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
+            // Add station as marker to search results layer and bind popup with station name
+            L.marker([station.lat, station.lng])
+                .addTo(searchResultsLayer)
+                .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
         });
 
         // Add layer containing all search result markers to map

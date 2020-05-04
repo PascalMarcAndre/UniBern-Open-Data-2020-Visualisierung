@@ -56,11 +56,16 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
     PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT distinct ?Station ?Name ?Coord
+    SELECT distinct ?ID ?Name ?lat ?lng
     WHERE {
-        ?Station rdfs:label ?Name ;
+        ?ID rdfs:label ?Name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
-    
+        
+        BIND(REPLACE(STR(?Coord), "POINT\\\\(", "") AS ?tmpCoord)
+        BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
+      
+        BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
+        BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
     ` + filters + "} ORDER BY ?Name"
 }
 
