@@ -1,25 +1,14 @@
 /*******************************************************************************************************
  * GLOBAL VARIABLES
+ * Variables used throughout the application.
  ******************************************************************************************************/
-// Leaflet map
-let map;
-
-// List of available Leaflet tiles
-let tiles = [];
-
-// Leaflet layer that contains all markers from elements that match the given search term
-let searchResultsLayer = new L.layerGroup();
-
 // Endpoint URL for LINDAS SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
 
-// Range of zoom levels of tile layers
-const MIN_ZOOM = 7;
-const MAX_ZOOM = 17;
 
 
 /*******************************************************************************************************
- * FUNCTIONS
+ * LAUNCH PROCESS
  ******************************************************************************************************/
 
 /**
@@ -40,8 +29,21 @@ function launch() {
  * Functions and variables responsible for creating the Leaflet map and its layers etc.
  ******************************************************************************************************/
 
+// Leaflet map
+let map;
+
+// List of available Leaflet tile layers
+let tiles = [];
+
+// Range of zoom levels of tile layers
+const MIN_ZOOM = 7;
+const MAX_ZOOM = 17;
+
 // Leaflet layer that contains all stations and displays them in clusters
 let clusterLayer;
+
+// Leaflet layer that contains all markers that match the given search term
+let searchResultLayer;
 
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
