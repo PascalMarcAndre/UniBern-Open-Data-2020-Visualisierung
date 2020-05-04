@@ -39,13 +39,18 @@
 #########################################################*/
 
 :root {
+    /* SBB Colors */
     --sbb-red: #EB0000;
     --sbb-dark: #222222;
     --sbb-light: #FFFFFF;
 
+    /* SBB Colors on hover */
     --sbb-red-hov: #AF0000;
     --sbb-dark-hov: #474747;
     --sbb-light-hov: #e4e4e4;
+
+    /* Greyscale */
+    --gs: 0;
 }
 
 
@@ -176,6 +181,12 @@ button.red:hover {
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+/* Saturation */
+.saturation {
+    -webkit-filter: grayscale(var(--gs));
+    filter: grayscale(var(--gs));
 }
 
 /*
