@@ -318,7 +318,7 @@ function showMatchingStations() {
     let searchTerms = document.getElementById("searchTerms").value;
 
     // Remove any previous search results from map and sidebar section
-    map.removeLayer(searchResultsLayer);
+    try {map.removeLayer(searchResultsLayer);} catch {}
     document.getElementById("searchResults").innerHTML = "";
 
     // If the search terms are too short (below 3 characters), the search gets cancelled and message gets displayed
