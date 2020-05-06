@@ -16,11 +16,11 @@ const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
  * Includes creation of Leaflet map, fetching data with SPARQL requests etc.
  */
 function launch() {
-    setSidebarElement("Welcome");
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-    createHeatmapLayer()
+
+    createHeatmapLayer();
 }
 
 
