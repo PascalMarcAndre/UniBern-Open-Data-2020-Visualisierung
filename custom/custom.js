@@ -225,6 +225,30 @@ function centerMap() {
 }
 
 
+/**
+ * Displays all short distance lines that match the user's clicked marker.
+ */
+function showShortDistance(stationID) {
+
+    // Add svg to map
+    L.svg().addTo(map);
+    
+
+    d3.sparql(LINDAS_ENDPOINT, query_allShortDistancesForStation(stationID)).then((data) => {
+
+         // For each short distance: Add lines to map; 
+        data.forEach(station => {
+           
+            d3.select("svg")
+           .append('line')
+          .style("stroke", "darkblue")
+          .style("stroke-width", 5)
+          .attr("x1", station.arrivalStation.lat).attr("y1", station.arrivalStation.lng).attr("x2", station.departureStation.lat).attr("y2", station.departureStation.lng); 
+           });
+    });
+
+}
+
 
 /*******************************************************************************************************
  * SEARCH

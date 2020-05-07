@@ -146,3 +146,25 @@ function query_shortDistanceCountByStation() {
     } GROUP BY ?departure ?lat ?lng ORDER BY DESC(?count)
     `;
 }
+
+function query_allShortDistancesForStation(stationID) {
+    return `
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT ?arrival ?arrivalCoord ?arrivalID
+    WHERE {
+        ?Kante a otd:Relation;
+        schema:departureStation ?departurePoint;
+        schema:arrivalStation ?arrivalPoint.
+        ?departurePoint rdfs:label ?departure ;
+        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
+        dcterms:identifier ?departureID .
+        ?arrivalPoint rdfs:label ?arrival ;
+        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?arrivalCoord;
+        dcterms:identifier ?arrivalID.
+        FILTER(?departurePoint IN (<http://lod.opentransportdata.swiss/didok/` + stationID + `>))
+    }
+    `
+}
