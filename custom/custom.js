@@ -41,13 +41,14 @@ const MIN_ZOOM = 7;
 const MAX_ZOOM = 17;
 
 // Leaflet layer that contains all stations and displays them in clusters
-let clusterLayer;
-
-// Leaflet layer that contains the heatmap of the short distance count of each station
-let heatmapLayer;
+let clusterLayer = new L.layerGroup();
 
 // Leaflet layer that contains all markers that match the given search term
-let searchResultsLayer;
+let searchResultsLayer = new L.layerGroup();
+
+
+// Leaflet layer that contains the heatmap of the short distance count of each station
+let heatmapLayer = new L.layerGroup();
 
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
@@ -121,14 +122,14 @@ function createLeafletTiles() {
  * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
  */
 function createClusterLayer() {
-    d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
-        // Set up cluster layer with custom options
-        clusterLayer = L.markerClusterGroup({
-            maxClusterRadius: 150,
-            disableClusteringAtZoom: 15,
-            spiderfyOnMaxZoom: false
-        });
+    // Add default cluster layer containing all stations to map since it is default layer
+    clusterLayer = L.markerClusterGroup({
+        maxClusterRadius: 150,
+        disableClusteringAtZoom: 15,
+        spiderfyOnMaxZoom: false
+    }).addTo(map);
 
+    d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and adds it to cluster layer
             L.marker([station.lat, station.lng])
@@ -136,9 +137,6 @@ function createClusterLayer() {
                 .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
             // TODO: Add click-event to display its short distances
         });
-
-        // Add cluster layer to map since it is the default layer
-        clusterLayer.addTo(map);
     })
 }
 
