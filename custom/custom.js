@@ -52,6 +52,9 @@ let currentAnalyseLayer = new L.layerGroup();
 // Leaflet layer that contains the heatmap of the short distance count of each station
 let heatmapLayer = new L.layerGroup();
 
+// Leaflet layer for longest short distance stations
+let longestShortDistance = new L.layerGroup();
+
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
  */
@@ -68,6 +71,7 @@ function createLeafletMap() {
         [47.8308275417, 10.4427014502]
     ]);
 
+    // Events
     map.on('zoom', updateZoomButtons);
 
     // Fix grid lines between tile images
@@ -124,12 +128,12 @@ function createLeafletTiles() {
  * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
  */
 function createClusterLayer() {
-    // Add default cluster layer containing all stations to map since it is default layer
+    // Add default cluster layer containing all stations
     clusterLayer = L.markerClusterGroup({
         maxClusterRadius: 150,
         disableClusteringAtZoom: 15,
         spiderfyOnMaxZoom: false
-    }).addTo(map);
+    });
 
     d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
@@ -139,7 +143,10 @@ function createClusterLayer() {
                 .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
             // TODO: Add click-event to display its short distances
         });
-    })
+    });
+
+    // Add layer to map since it is default view
+    clusterLayer.addTo(map);
 }
 
 /**
