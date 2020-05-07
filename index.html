@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="leaflet-cluster/MarkerCluster.Default.css">
     <link rel="stylesheet" href="custom/custom.css">
 
+    <!-- Fix touch screen issue with Leaflet -->
+    <script>window.ontouchstart=true</script>
+
     <script src="jquery/jquery-3.4.1.min.js"></script>
     <script src="bootstrap/popper.min.js"></script>
     <script src="bootstrap/bootstrap.min.js"></script>
@@ -56,7 +59,7 @@
     </div>
 
     <!-- Welcome Section -->
-    <div id="sbSecWelcome" class="hidden welcome">
+    <div id="sbSecWelcome" class="welcome">
 
         <!-- Introduction to visualisation -->
         <h3>Herzlich Willkommen!</h3>
@@ -84,9 +87,10 @@
             <tr>
                 <td><img src="assets/glyphicons/ruler.png" alt=""></td>
                 <td>
-                    <h4 onclick="setSidebarElement('Distance')">100 längste Kurzstrecken</h4>
+                    <h4 onclick="setSidebarElement('Distance')">Analyse</h4>
                     <p>
-                        Stöbern Sie durch eine Liste der 100 längste Kurzstrecken in der Schweiz.
+                        Stöbern Sie durch die Auswertungen der Kurzstrecken und finden Sie die längsten Kurzstrecken,
+                        die Anzahl Kurzstrecken pro Haltestelle etc.
                     </p>
                 </td>
             </tr>
@@ -136,9 +140,15 @@
         </div>
     </div>
 
-    <!-- Longest Short Distances Section -->
-    <div id="sbSecDistance" class="hidden">
-        <h3>100 längsten Kurzstecken</h3>
+    <!-- Analyze Section -->
+    <div id="sbSecDistance" class="hidden analyze">
+
+        <!-- Analyze Dropdown Selection -->
+        <h3>Analyse</h3>
+        <select name="analyzeSelection" id="analyzeSelection" onchange="updateAnalyseLayer(event)">
+            <option value="longestShortDistance">Längste Kurzstrecken</option>
+            <option value="shortDistanceDistribution">Kurzstreckenverteilung</option>
+        </select>
     </div>
 
     <!-- Options Section -->
@@ -216,7 +226,7 @@
             <li id="sbBtnToggle" class="deselected" onclick="toggleSidebar()">
                 <img src="assets/glyphicons/triangle-left.png" alt="Toggle">
             </li>
-            <li id="sbBtnWelcome" class="deselected" onclick="setSidebarElement('Welcome')">
+            <li id="sbBtnWelcome" class="deselected selected" onclick="setSidebarElement('Welcome')">
                 <img src="assets/glyphicons/home.png" alt="Welcome">
             </li>
             <li id="sbBtnSearch" class="deselected" onclick="setSidebarElement('Search')">

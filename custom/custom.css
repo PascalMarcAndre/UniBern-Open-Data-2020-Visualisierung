@@ -116,7 +116,7 @@ h5 {
 /*
  *  Forms
  */
-input, button {
+input, button, select {
     font-family: "SBB Web Roman", sans-serif;
 }
 
@@ -126,6 +126,26 @@ input {
     margin: 10px 0;
     padding: 7px;
     border: 2px solid var(--sbb-dark);
+}
+
+/* Dropdown menu */
+select {
+    width: 100%;
+    margin: 10px 0;
+    padding: 9px 2px;
+    border: 2px solid var(--sbb-dark);
+}
+
+.analyze span {
+    display: inline-block;
+    text-transform: uppercase;
+    margin-top: -2px;
+    padding: 2px;
+    font-family: "SBB Web Bold", sans-serif;
+    font-size: 8px;
+    color: var(--sbb-light);
+    width: 28px !important;
+    background-color: var(--sbb-red);
 }
 
 /* Buttons */
@@ -392,6 +412,7 @@ a:hover {
 .searchResults .searchItem:hover {
     background-color: var(--sbb-light-hov);
     font-family: "SBB Web Bold", sans-serif;
+    color: var(--sbb-red);
 }
 
 /*

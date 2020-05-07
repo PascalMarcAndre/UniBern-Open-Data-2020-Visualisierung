@@ -16,11 +16,11 @@ const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
  * Includes creation of Leaflet map, fetching data with SPARQL requests etc.
  */
 function launch() {
-    setSidebarElement("Welcome");
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-    createHeatmapLayer()
+
+    createHeatmapLayer();
 }
 
 
@@ -41,13 +41,19 @@ const MIN_ZOOM = 7;
 const MAX_ZOOM = 17;
 
 // Leaflet layer that contains all stations and displays them in clusters
-let clusterLayer;
-
-// Leaflet layer that contains the heatmap of the short distance count of each station
-let heatmapLayer;
+let clusterLayer = new L.layerGroup();
 
 // Leaflet layer that contains all markers that match the given search term
-let searchResultsLayer;
+let searchResultsLayer = new L.layerGroup();
+
+// Leaflet layer that contains the current analysis layer
+let currentAnalyseLayer = new L.layerGroup();
+
+// Leaflet layer that contains the heatmap of the short distance count of each station
+let heatmapLayer = new L.layerGroup();
+
+// Leaflet layer for longest short distance stations
+let longestShortDistance = new L.layerGroup();
 
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
@@ -65,6 +71,7 @@ function createLeafletMap() {
         [47.8308275417, 10.4427014502]
     ]);
 
+    // Events
     map.on('zoom', updateZoomButtons);
 
     // Fix grid lines between tile images
@@ -121,14 +128,14 @@ function createLeafletTiles() {
  * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
  */
 function createClusterLayer() {
-    d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
-        // Set up cluster layer with custom options
-        clusterLayer = L.markerClusterGroup({
-            maxClusterRadius: 150,
-            disableClusteringAtZoom: 15,
-            spiderfyOnMaxZoom: false
-        });
+    // Add default cluster layer containing all stations
+    clusterLayer = L.markerClusterGroup({
+        maxClusterRadius: 150,
+        disableClusteringAtZoom: 15,
+        spiderfyOnMaxZoom: false
+    });
 
+    d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and adds it to cluster layer
             L.marker([station.lat, station.lng])
@@ -136,10 +143,10 @@ function createClusterLayer() {
                 .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
             // TODO: Add click-event to display its short distances
         });
+    });
 
-        // Add cluster layer to map since it is the default layer
-        clusterLayer.addTo(map);
-    })
+    // Add layer to map since it is default view
+    clusterLayer.addTo(map);
 }
 
 /**
@@ -325,12 +332,13 @@ function showMatchingStations() {
 
 /**
  * Resets the search option by emptying the input field and search results list.
- * Removes the layer containing all matching markers from the map.
+ * Removes the layer containing all matching markers from the map and also removes all items from the layer itself.
  */
 function resetSearch() {
     document.getElementById("searchTerms").value = "";
     document.getElementById("searchResults").innerHTML = "";
     map.removeLayer(searchResultsLayer);
+    searchResultsLayer.clearLayers();
 }
 
 /**
@@ -351,6 +359,38 @@ function startSearchIfEnterWasPressed(event) {
 
         // Empty div-element that displays search results
         $("#stations").empty();
+    }
+}
+
+
+
+/*******************************************************************************************************
+ * ANALYSE
+ * Functions and variables related to the 'Analyse' section in the sidebar.
+ ******************************************************************************************************/
+
+/**
+ * Displays the selected analyse layer by the user to the map. Removes all layers from map and only adds needed ones.
+ *
+ * @param event                   Object responsible for calling this function
+ */
+function updateAnalyseLayer(event) {
+    // List of layers to be removed
+    const layers = [heatmapLayer];
+
+    // Remove each layer from the map
+    layers.forEach(layer => {
+        layer.removeFrom(map);
+    });
+
+    // Add selected layer back to map
+    switch(event.target.value) {
+        case ("longestShortDistance"):
+            longestShortDistance.addTo(map);
+            break;
+        case ("shortDistanceDistribution"):
+            heatmapLayer.addTo(map);
+            break;
     }
 }
 
@@ -433,13 +473,42 @@ function setSidebarElement(newSection) {
     // List of sidebar section names
     let sectionNames = ["Welcome", "Search", "Distance", "Options", "Help", "About"];
 
-    // Hides content of all sidebar elements and deselects all menu buttons
+    // Hide content of all sidebar elements and deselect all menu buttons
     sectionNames.forEach(sectionName => {
         document.getElementById("sbSec" + sectionName).classList.add("hidden");
         document.getElementById("sbBtn" + sectionName).classList.remove("selected");
     });
 
-    // Displays content of selected section according to given parameter and sets its menu button as selected
+    // Display content of selected section according to given parameter and set its menu button as selected
     document.getElementById("sbSec" + newSection).classList.remove("hidden");
     document.getElementById("sbBtn" + newSection).classList.add("selected");
+
+    // Display the appropriate Leaflet layer that matches the chosen sidebar element
+    switch(newSection) {
+        case("Welcome"):
+            removeAllLayers();
+            clusterLayer.addTo(map);
+            break;
+        case("Search"):
+            removeAllLayers();
+            searchResultsLayer.addTo(map);
+            break;
+        case("Distance"):
+            removeAllLayers();
+            currentAnalyseLayer.addTo(map);
+            break;
+    }
+}
+
+/**
+ * Removes all layers from the map. Called when the user selects a different layer to be shown.
+ */
+function removeAllLayers() {
+    // List of layers to be removed
+    const layers = [clusterLayer, searchResultsLayer, currentAnalyseLayer];
+
+    // Remove each layer from the map
+    layers.forEach(layer => {
+        layer.removeFrom(map);
+    });
 }
