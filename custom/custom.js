@@ -410,15 +410,31 @@ function setSidebarElement(newSection) {
     // List of sidebar section names
     let sectionNames = ["Welcome", "Search", "Distance", "Options", "Help", "About"];
 
-    // Hides content of all sidebar elements and deselects all menu buttons
+    // Hide content of all sidebar elements and deselect all menu buttons
     sectionNames.forEach(sectionName => {
         document.getElementById("sbSec" + sectionName).classList.add("hidden");
         document.getElementById("sbBtn" + sectionName).classList.remove("selected");
     });
 
-    // Displays content of selected section according to given parameter and sets its menu button as selected
+    // Display content of selected section according to given parameter and set its menu button as selected
     document.getElementById("sbSec" + newSection).classList.remove("hidden");
     document.getElementById("sbBtn" + newSection).classList.add("selected");
+
+    // Display the appropriate Leaflet layer that matches the chosen sidebar element
+    switch(newSection) {
+        case("Welcome"):
+            removeAllLayers();
+            clusterLayer.addTo(map);
+            break;
+        case("Search"):
+            removeAllLayers();
+            searchResultsLayer.addTo(map);
+            break;
+        case("Distance"):
+            removeAllLayers();
+            currentAnalyseLayer.addTo(map);
+            break;
+    }
 }
 
 /**
