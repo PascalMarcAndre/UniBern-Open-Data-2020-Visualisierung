@@ -19,7 +19,7 @@ function launch() {
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-
+    showZoningplan();
     createHeatmapLayer();
 }
 
@@ -77,7 +77,7 @@ function createLeafletMap() {
     // Fix grid lines between tile images
     let originalInitTile = L.GridLayer.prototype._initTile;
     L.GridLayer.include({
-        _initTile: function(tile) {
+        _initTile: function (tile) {
             originalInitTile.call(this, tile);
             let tileSize = this.getTileSize();
             tile.style.width = tileSize.x + 1 + 'px';
@@ -115,7 +115,7 @@ function createLeafletTiles() {
     });
 
     // ArcGIS Satellite
-    tiles [3] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    tiles[3] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         minZoom: MIN_ZOOM,
         maxZoom: MAX_ZOOM,
         className: 'saturation',
@@ -140,7 +140,7 @@ function createClusterLayer() {
             // Create marker (incl. tooltip) and adds it to cluster layer
             L.marker([station.lat, station.lng])
                 .addTo(clusterLayer)
-                .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
+                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
             // TODO: Add click-event to display its short distances
         });
     });
@@ -231,6 +231,50 @@ function centerMap() {
     ]);
 }
 
+/**
+ * Displays Zoning plan 
+ */
+function showZoningplan() {
+
+
+
+    d3.sparql(LINDAS_ENDPOINT, query_allZoningplans()).then((data) => {
+
+
+        data.forEach(station => {
+
+            console.log(station)
+        }
+        );
+    });
+
+}
+
+/**
+ * Displays Zoning plan station
+ */
+function showZoningplanStation(zoningplan) {
+
+
+
+    d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(zoningplan)).then((data) => {
+
+        // Reset search results layer to remove any markers on it
+        zoningResultsLayer = new L.layerGroup();
+
+        // For each short distance: Add lines to map; 
+        data.forEach(station => {
+
+            L.marker([station.lat, station.lng])
+                .addTo(zoningResultsLayer)
+                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
+        }
+        );
+        // Add layer containing all search result markers to map
+        zoningResultsLayer.addTo(map);
+    });
+
+}
 
 /**
  * Displays all short distance lines that match the user's clicked marker.
@@ -239,19 +283,19 @@ function showShortDistance(stationID) {
 
     // Add svg to map
     L.svg().addTo(map);
-    
+
 
     d3.sparql(LINDAS_ENDPOINT, query_allShortDistancesForStation(stationID)).then((data) => {
 
-         // For each short distance: Add lines to map; 
+        // For each short distance: Add lines to map; 
         data.forEach(station => {
-           
+
             d3.select("svg")
-           .append('line')
-          .style("stroke", "darkblue")
-          .style("stroke-width", 5)
-          .attr("x1", station.arrivalStation.lat).attr("y1", station.arrivalStation.lng).attr("x2", station.departureStation.lat).attr("y2", station.departureStation.lng); 
-           });
+                .append('line')
+                .style("stroke", "darkblue")
+                .style("stroke-width", 5)
+                .attr("x1", station.arrivalStation.lat).attr("y1", station.arrivalStation.lng).attr("x2", station.departureStation.lat).attr("y2", station.departureStation.lng);
+        });
     });
 
 }
@@ -271,7 +315,7 @@ function showMatchingStations() {
     let searchTerms = document.getElementById("searchTerms").value;
 
     // Remove any previous search results from map and sidebar section
-    try {map.removeLayer(searchResultsLayer);} catch {}
+    try { map.removeLayer(searchResultsLayer); } catch { }
     document.getElementById("searchResults").innerHTML = "";
 
     // If the search terms are too short (below 3 characters), the search gets cancelled and message gets displayed
@@ -313,7 +357,7 @@ function showMatchingStations() {
             // Add station as marker to search results layer and bind popup with station name
             L.marker([station.lat, station.lng])
                 .addTo(searchResultsLayer)
-                .bindTooltip(station.Name, {opacity: 1, direction: 'top', className: 'tooltip'});
+                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
         });
 
         // Add layer containing all search result markers to map
@@ -326,7 +370,7 @@ function showMatchingStations() {
                 [latMin, lngMin],
                 [latMax, lngMax]
             ]);
-        } catch {}
+        } catch { }
     });
 }
 
@@ -384,7 +428,7 @@ function updateAnalyseLayer(event) {
     });
 
     // Add selected layer back to map
-    switch(event.target.value) {
+    switch (event.target.value) {
         case ("longestShortDistance"):
             longestShortDistance.addTo(map);
             break;
@@ -424,7 +468,7 @@ function setTileLayer(tileID) {
  * @param greyscale               New saturation value (gets calculated with 1-greyscale)
  */
 function updateSaturation(greyscale) {
-    document.documentElement.style.setProperty('--gs', ((1-greyscale).toString()));
+    document.documentElement.style.setProperty('--gs', ((1 - greyscale).toString()));
 }
 
 /**
@@ -466,7 +510,7 @@ function toggleSidebar() {
  */
 function setSidebarElement(newSection) {
     // Opens the sidebar if currently closed
-    if(!sidebarOpen) {
+    if (!sidebarOpen) {
         toggleSidebar();
     }
 
@@ -484,16 +528,16 @@ function setSidebarElement(newSection) {
     document.getElementById("sbBtn" + newSection).classList.add("selected");
 
     // Display the appropriate Leaflet layer that matches the chosen sidebar element
-    switch(newSection) {
-        case("Welcome"):
+    switch (newSection) {
+        case ("Welcome"):
             removeAllLayers();
             clusterLayer.addTo(map);
             break;
-        case("Search"):
+        case ("Search"):
             removeAllLayers();
             searchResultsLayer.addTo(map);
             break;
-        case("Distance"):
+        case ("Distance"):
             removeAllLayers();
             currentAnalyseLayer.addTo(map);
             break;
