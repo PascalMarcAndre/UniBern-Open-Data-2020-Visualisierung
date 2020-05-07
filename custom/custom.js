@@ -420,3 +420,16 @@ function setSidebarElement(newSection) {
     document.getElementById("sbSec" + newSection).classList.remove("hidden");
     document.getElementById("sbBtn" + newSection).classList.add("selected");
 }
+
+/**
+ * Removes all layers from the map. Called when the user selects a different layer to be shown.
+ */
+function removeAllLayers() {
+    // List of layers to be removed
+    const layers = [clusterLayer, searchResultsLayer, currentAnalyseLayer];
+
+    // Remove each layer from the map
+    layers.forEach(layer => {
+        layer.removeFrom(map);
+    });
+}
