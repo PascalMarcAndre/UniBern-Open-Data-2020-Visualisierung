@@ -46,6 +46,8 @@ let clusterLayer = new L.layerGroup();
 // Leaflet layer that contains all markers that match the given search term
 let searchResultsLayer = new L.layerGroup();
 
+// Leaflet layer that contains the current analysis layer
+let currentAnalyseLayer = new L.layerGroup();
 
 // Leaflet layer that contains the heatmap of the short distance count of each station
 let heatmapLayer = new L.layerGroup();
