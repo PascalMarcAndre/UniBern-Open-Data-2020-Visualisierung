@@ -334,6 +334,38 @@ function startSearchIfEnterWasPressed(event) {
 
 
 /*******************************************************************************************************
+ * ANALYSE
+ * Functions and variables related to the 'Analyse' section in the sidebar.
+ ******************************************************************************************************/
+
+/**
+ * Displays the selected analyse layer by the user to the map. Removes all layers from map and only adds needed ones.
+ *
+ * @param event                   Object responsible for calling this function
+ */
+function updateAnalyseLayer(event) {
+    // List of layers to be removed
+    const layers = [heatmapLayer];
+
+    // Remove each layer from the map
+    layers.forEach(layer => {
+        layer.removeFrom(map);
+    });
+
+    // Add selected layer back to map
+    switch(event.target.value) {
+        case ("longestShortDistance"):
+            longestShortDistance.addTo(map);
+            break;
+        case ("shortDistanceDistribution"):
+            heatmapLayer.addTo(map);
+            break;
+    }
+}
+
+
+
+/*******************************************************************************************************
  * OPTIONS
  * Functions and variables related to the 'Options' section in the sidebar.
  ******************************************************************************************************/
