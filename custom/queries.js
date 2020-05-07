@@ -176,24 +176,59 @@ function query_shortDistanceCountByStation() {
     `;
 }
 
-function query_allShortDistancesForStation(stationID) {
+function query_allZoningplans() {
     return `
     PREFIX schema: <http://schema.org/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-    PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT ?arrival ?arrivalCoord ?arrivalID
+    prefix otd: <http://lod.opentransportdata.swiss/vocab/>
+
+
+    SELECT ?Zonenplan ?namen 
+    FROM <https://linked.opendata.swiss/graph/sbb/nova>
     WHERE {
-        ?Kante a otd:Relation;
-        schema:departureStation ?departurePoint;
-        schema:arrivalStation ?arrivalPoint.
-        ?departurePoint rdfs:label ?departure ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
-        dcterms:identifier ?departureID .
-        ?arrivalPoint rdfs:label ?arrival ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?arrivalCoord;
-        dcterms:identifier ?arrivalID.
-        FILTER(?departurePoint IN (<http://lod.opentransportdata.swiss/didok/` + stationID + `>))
+    ?Zonenplan a otd:ZoningPlan; 
+                rdfs:label     ?namen.
+
     }
     `
 }
+
+//TODO, manipulate query
+function query_allMonoDirectionalShortDistancesForStation() {
+    return `
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+    PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+
+    SELECT * WHERE {
+
+    { SELECT ?startingPoint (COUNT(?Kante) AS ?kurzstreckeDeparture) WHERE {
+        ?Kante a otd:Relation;
+            otd:zoningPlan <http://lod.opentransportdata.swiss/zoningPlan/Libero/Libero%20Billett%20Libero>;
+            schema:departureStation ?startingPoint ;
+            schema:arrivalStation ?arrivalStation .
+    } GROUP BY ?startingPoint
+    }
+    #  ?arrivalStation rdfs:label ?arrivalStationLabel .
+
+    { SELECT (COUNT(?kante2) AS ?kurzstrecke2Departure) WHERE {
+        ?kante2 a otd:Relation;
+            otd:zoningPlan <http://lod.opentransportdata.swiss/zoningPlan/Libero/Libero%20Billett%20Libero>;
+            schema:departureStation ?arrivalStation;
+            schema:arrivalStation ?startingPoint .
+    } GROUP BY ?startingPoint
+    }
+    #?kante2Kantenende rdfs:label ?kante2KantenendeLabel .
+
+    FILTER( ?kurzstreckeDeparture != ?kurzstrecke2Departure)
+
+    } 
+    `
+}
+
