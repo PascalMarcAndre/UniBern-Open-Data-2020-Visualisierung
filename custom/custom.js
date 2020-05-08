@@ -164,8 +164,8 @@ function createClusterLayer() {
             // Create marker (incl. tooltip) and adds it to cluster layer
             L.marker([station.lat, station.lng], {icon: defaultIcon})
                 .addTo(clusterLayer)
-                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
-            // TODO: Add click-event to display its short distances
+                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
+                .on("click", () => {showCurrentShortDistances(station)});
         });
 
         // Add layer to map since it is default view
@@ -236,6 +236,32 @@ function createHeatmapLayer() {
     });
 }
 
+/**
+ * Shows all short distances of the given station. Adds end point and connecting lines to 'currentShortDistancesLayer'.
+ * Clears any markers and lines on this layer from any previous station before adding new ones from current station.
+ * Requests and processes all the data. Clicking on end point displays short distances of this station.
+ * End points are styled differently with alternative icon and lines change style on hover.
+ *
+ * @param station                 Station of which the short distances get displayed
+ */
+function showCurrentShortDistances(station) {
+    d3.sparql(LINDAS_ENDPOINT, query_allShortDistancesForStation(station.ID)).then((data) => {
+        console.log(station.Name + " " + data.length);
+        resetCurrentShortDistancesLayer();
+
+        data.forEach(shortDistance => {
+            L.marker([shortDistance.lat, shortDistance.lng], {icon: alternativeIcon, forceZIndex: 1000})
+                .addTo(currentShortDistancesLayer)
+                .bindTooltip(shortDistance.name, {opacity: 1, direction: 'top', className: 'tooltip'})
+                .on("click", () => {console.log(station); showCurrentShortDistances(shortDistance)});
+
+            let polyline = L.polyline([[station.lat, station.lng],[shortDistance.lat, shortDistance.lng]], {color: 'black', weight: 2})
+                .addTo(currentShortDistancesLayer)
+                .on('mouseover', () => {polyline.setStyle({color: 'red', weight: 5})})
+                .on('mouseout', () => {polyline.setStyle({color: 'black', weight: 2})});
+        });
+    });
+}
 
 /**
  * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
