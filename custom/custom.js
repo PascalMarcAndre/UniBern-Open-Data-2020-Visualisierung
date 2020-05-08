@@ -56,7 +56,8 @@ let currentAnalyseLayer = new L.layerGroup();
 let heatmapLayer = new L.layerGroup();
 
 // Leaflet layer for longest short distance stations
-let longestShortDistance = new L.layerGroup();
+let longestShortDistanceLayer = new L.layerGroup();
+
 
 // Leaflet icon of default black/red marker icon
 const defaultIcon = L.icon({
@@ -180,18 +181,18 @@ function createLongestShortDistancesLayer() {
 
             // Adds start point of short distance to layer
             L.marker([shortDistance.startLat, shortDistance.startLng], {icon: defaultIcon})
-                .addTo(longestShortDistance)
+                .addTo(longestShortDistanceLayer)
                 .bindTooltip(shortDistance.startName, {opacity: 1, direction: 'top', className: 'tooltip'});
 
             // Adds end point of short distance to layer
             L.marker([shortDistance.endLat, shortDistance.endLng], {icon: defaultIcon})
-                .addTo(longestShortDistance)
+                .addTo(longestShortDistanceLayer)
                 .bindTooltip(shortDistance.endName, {opacity: 1, direction: 'top', className: 'tooltip'});
 
             // Adds line from start to end point of short distance to layer
             // TODO: Use D3
             L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], {color: 'black', weight: 2})
-                .addTo(longestShortDistance);
+                .addTo(longestShortDistanceLayer);
         });
     });
 }
@@ -477,7 +478,7 @@ function updateAnalyseLayer(event) {
     // Add selected layer back to map
     switch (event.target.value) {
         case ("longestShortDistance"):
-            longestShortDistance.addTo(map);
+            longestShortDistanceLayer.addTo(map);
             break;
         case ("shortDistanceDistribution"):
             heatmapLayer.addTo(map);
