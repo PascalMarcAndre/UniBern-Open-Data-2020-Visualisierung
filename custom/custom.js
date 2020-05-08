@@ -150,7 +150,7 @@ function createClusterLayer() {
     d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and adds it to cluster layer
-            L.marker([station.lat, station.lng])
+            L.marker([station.lat, station.lng], {icon: defaultIcon})
                 .addTo(clusterLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
             // TODO: Add click-event to display its short distances
@@ -170,12 +170,12 @@ function createLongestShortDistancesLayer() {
         data.forEach(shortDistance => {
 
             // Adds start point of short distance to layer
-            L.marker([shortDistance.startLat, shortDistance.startLng])
+            L.marker([shortDistance.startLat, shortDistance.startLng], {icon: defaultIcon})
                 .addTo(longestShortDistance)
                 .bindTooltip(shortDistance.startName, {opacity: 1, direction: 'top', className: 'tooltip'});
 
             // Adds end point of short distance to layer
-            L.marker([shortDistance.endLat, shortDistance.endLng])
+            L.marker([shortDistance.endLat, shortDistance.endLng], {icon: defaultIcon})
                 .addTo(longestShortDistance)
                 .bindTooltip(shortDistance.endName, {opacity: 1, direction: 'top', className: 'tooltip'});
 
@@ -303,7 +303,7 @@ function showZoningplanStation(zoningplan) {
         // For each short distance: Add lines to map; 
         data.forEach(station => {
 
-            L.marker([station.lat, station.lng])
+            L.marker([station.lat, station.lng], {icon: defaultIcon})
                 .addTo(zoningResultsLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
         }
@@ -393,7 +393,7 @@ function showMatchingStations() {
             document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
 
             // Add station as marker to search results layer and bind popup with station name
-            L.marker([station.lat, station.lng])
+            L.marker([station.lat, station.lng], {icon: defaultIcon})
                 .addTo(searchResultsLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
         });
