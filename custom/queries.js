@@ -76,7 +76,7 @@ function query_allShortDistancesForStation(stationID) {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
     PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT ?arrival ?lat ?lng ?arrivalID
+    SELECT ?name ?lat ?lng ?ID
     WHERE {
         ?Kante a otd:Relation;
         schema:departureStation ?departurePoint;
@@ -84,13 +84,13 @@ function query_allShortDistancesForStation(stationID) {
         ?departurePoint rdfs:label ?departure ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
         dcterms:identifier ?departureID .
-        ?arrivalPoint rdfs:label ?arrival ;
+        ?arrivalPoint rdfs:label ?name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?arrivalCoord;
         dcterms:identifier ?arrivalID.
         FILTER(?departurePoint IN (<http://lod.opentransportdata.swiss/didok/` + stationID + `>))
   
-  		BIND(REPLACE(STR(?arrivalCoord), "POINT\\(", "") AS ?tmpCoord)
-        BIND(REPLACE(?tmpCoord, "\\)", "") AS ?tmpCoord2)
+  		BIND(REPLACE(STR(?arrivalCoord), "POINT\\\\(", "") AS ?tmpCoord)
+        BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
       
         BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
         BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
