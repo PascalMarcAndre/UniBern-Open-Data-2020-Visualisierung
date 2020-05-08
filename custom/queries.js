@@ -58,12 +58,13 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     PREFIX dcterms: <http://purl.org/dc/terms/>
     SELECT distinct ?ID ?Name ?lat ?lng
     WHERE {
-        ?ID rdfs:label ?Name ;
+        ?Identifier rdfs:label ?Name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
+        
+        BIND(STRAFTER(STR(?Identifier), "didok/") AS ?ID)
         
         BIND(REPLACE(STR(?Coord), "POINT\\\\(", "") AS ?tmpCoord)
         BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
-      
         BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
         BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
     ` + filters + "} ORDER BY ?Name"
