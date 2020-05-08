@@ -513,7 +513,7 @@ function startSearchIfEnterWasPressed(event) {
  */
 function updateAnalyseLayer(event) {
     // List of layers to be removed
-    const layers = [heatmapLayer];
+    const layers = [heatmapLayer, longestShortDistanceLayer];
 
     // Remove each layer from the map
     layers.forEach(layer => {
@@ -524,9 +524,11 @@ function updateAnalyseLayer(event) {
     switch (event.target.value) {
         case ("longestShortDistance"):
             longestShortDistanceLayer.addTo(map);
+            currentAnalyseLayer = longestShortDistanceLayer;
             break;
         case ("shortDistanceDistribution"):
             heatmapLayer.addTo(map);
+            currentAnalyseLayer = heatmapLayer;
             break;
     }
 }
@@ -642,7 +644,7 @@ function setSidebarElement(newSection) {
  */
 function removeAllLayers() {
     // List of layers to be removed
-    const layers = [clusterLayer, searchResultsLayer, currentAnalyseLayer];
+    const layers = [clusterLayer, searchResultsLayer, currentAnalyseLayer, currentShortDistancesLayer];
 
     // Remove each layer from the map
     layers.forEach(layer => {
