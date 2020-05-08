@@ -67,6 +67,15 @@ const defaultIcon = L.icon({
     tooltipAnchor: [12, -30]
 });
 
+// Leaflet icon of default black/red marker icon
+const alternativeIcon = L.icon({
+    iconUrl: 'assets/icons/marker-icon-alt.png',
+    shadowUrl: 'assets/icons/marker-shadow.png',
+    iconAnchor: [12, 41],
+    shadowAnchor: [12, 41],
+    tooltipAnchor: [12, -30]
+});
+
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
  */
