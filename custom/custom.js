@@ -58,6 +58,15 @@ let heatmapLayer = new L.layerGroup();
 // Leaflet layer for longest short distance stations
 let longestShortDistance = new L.layerGroup();
 
+// Leaflet icon of default black/red marker icon
+const defaultIcon = L.icon({
+    iconUrl: 'assets/icons/marker-icon.png',
+    shadowUrl: 'assets/icons/marker-shadow.png',
+    iconAnchor: [12, 41],
+    shadowAnchor: [12, 41],
+    tooltipAnchor: [12, -30]
+});
+
 /**
  * Creates Leaflet map. Sets initial view to fit Switzerland.
  */
