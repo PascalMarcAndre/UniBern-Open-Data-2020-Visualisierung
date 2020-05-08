@@ -20,7 +20,10 @@ function launch() {
     createLeafletTiles();
     createClusterLayer();
     showZoningplan();
+
+    // Setup analyse layers
     createHeatmapLayer();
+    createLongestShortDistancesLayer();
 }
 
 
@@ -146,6 +149,32 @@ function createClusterLayer() {
 
         // Add layer to map since it is default view
         clusterLayer.addTo(map);
+    });
+}
+
+/**
+ * Creates and sets up the 'Longest Short Distances' layer. Makes the layer ready to be added to the map.
+ * Requests and processes all the data. Each short distance has a start and end point and a connecting line in between.
+ */
+function createLongestShortDistancesLayer() {
+    d3.sparql(LINDAS_ENDPOINT, query_50longestShortDistances()).then(data => {
+        data.forEach(shortDistance => {
+
+            // Adds start point of short distance to layer
+            L.marker([shortDistance.startLat, shortDistance.startLng])
+                .addTo(longestShortDistance)
+                .bindTooltip(shortDistance.startName, {opacity: 1, direction: 'top', className: 'tooltip'});
+
+            // Adds end point of short distance to layer
+            L.marker([shortDistance.endLat, shortDistance.endLng])
+                .addTo(longestShortDistance)
+                .bindTooltip(shortDistance.endName, {opacity: 1, direction: 'top', className: 'tooltip'});
+
+            // Adds line from start to end point of short distance to layer
+            // TODO: Use D3
+            L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], {color: 'black', weight: 2})
+                .addTo(longestShortDistance);
+        });
     });
 }
 
