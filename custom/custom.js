@@ -58,6 +58,8 @@ let heatmapLayer = new L.layerGroup();
 // Leaflet layer for longest short distance stations
 let longestShortDistanceLayer = new L.layerGroup();
 
+// Leaflet layer containing markers and polylines displaying short distances of currently selected station
+let currentShortDistancesLayer = new L.layerGroup();
 
 // Leaflet icon of default black/red marker icon
 const defaultIcon = L.icon({
@@ -232,6 +234,21 @@ function createHeatmapLayer() {
         // Add requested and processed data to heatmap layer
         heatmapLayer.setData(heatmapData);
     });
+}
+
+
+/**
+ * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
+ */
+function resetCurrentShortDistancesLayer() {
+    // Remove layer displaying current short distance from map
+    map.removeLayer(currentShortDistancesLayer);
+
+    // Reset layer by clearing all markers and lines from previous stations
+    currentShortDistancesLayer.clearLayers();
+
+    // Re-add layer to make it ready for short distances of new station to be added
+    map.addLayer(currentShortDistancesLayer);
 }
 
 
