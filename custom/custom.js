@@ -143,10 +143,10 @@ function createClusterLayer() {
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
             // TODO: Add click-event to display its short distances
         });
-    });
 
-    // Add layer to map since it is default view
-    clusterLayer.addTo(map);
+        // Add layer to map since it is default view
+        clusterLayer.addTo(map);
+    });
 }
 
 /**
