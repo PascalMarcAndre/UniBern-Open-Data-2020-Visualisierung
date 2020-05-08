@@ -448,7 +448,8 @@ function showMatchingStations() {
             // Add station as marker to search results layer and bind popup with station name
             L.marker([station.lat, station.lng], {icon: defaultIcon})
                 .addTo(searchResultsLayer)
-                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
+                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
+                .on("click", () => {showCurrentShortDistances(station)});
         });
 
         // Add layer containing all search result markers to map
