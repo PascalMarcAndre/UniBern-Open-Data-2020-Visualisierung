@@ -97,6 +97,7 @@ function createLeafletMap() {
 
     // Events
     map.on('zoom', updateZoomButtons);
+    map.on('click', resetCurrentShortDistancesLayer);
 
     // Fix grid lines between tile images
     let originalInitTile = L.GridLayer.prototype._initTile;
