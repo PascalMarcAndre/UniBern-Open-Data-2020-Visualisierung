@@ -98,7 +98,7 @@ function query_allShortDistancesForStation(stationID) {
     `
 }
 
-function query_100longestShortDistances() {
+function query_50longestShortDistances() {
     return `
     PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
     PREFIX dcterm: <http://purl.org/dc/terms/>
@@ -115,41 +115,40 @@ function query_100longestShortDistances() {
     prefix geof: <http://www.opengis.net/def/function/geosparql/>
     prefix unit: <http://qudt.org/vocab/unit#>
      
-    SELECT *
-    #?Relation ?Zonenplan ?stNam1 ?stNam2 ?distance
+    SELECT ?startName ?startID ?startLat ?startLng ?endName ?endID ?endLat ?endLng ?distance
     WHERE {
      
       ?Relation a otd:Relation;
            otd:zoningPlan ?Zonenplan;
            otd:routeType ?RouteType;
            schema:arrivalStation ?stop1 ;
-          schema:departureStation ?stop2.
+           schema:departureStation ?stop2.
      
       ?stop1 geo:hasGeometry ?geom1 ;
-             rdfs:label ?stNam1;
-             dcterms:identifier ?didok1 .
+           rdfs:label ?startName;
+           dcterms:identifier ?startID .
      
       ?stop2 geo:hasGeometry ?geom2 ;
-              rdfs:label ?stNam2;
-             dcterms:identifier ?didok2 .
+           rdfs:label ?endName;
+           dcterms:identifier ?endID .
      
       BIND(geof:distance(?geom1, ?geom2, unit:Meter) as ?distance)
      
-      
       ?geom1 geo:asWKT ?loc1 .   
       ?geom2 geo:asWKT ?loc2 .
-     
-      BIND(CONCAT("Connection ", ?stNam1, " - ", ?stNam2, "/", STR(?distance),"m") AS ?loc1Label)
-      BIND( ?loc1Label AS ?loc2Label)
-     
-      BIND(STRDT(concat("LINESTRING ",strafter(strbefore(str(?loc1),")"),"POINT"), ",", strafter(str(?loc2),"POINT(")), <http://www.opengis.net/ont/geosparql#wktLiteral> )  as ?line)
-     
-     
-     FILTER (?RouteType="KURZ"^^xsd:string)
-     
+      
+      BIND(REPLACE(STR(?loc1), "POINT\\\\(", "") AS ?tmpCoordStart1)
+      BIND(REPLACE(?tmpCoordStart1, "\\\\)", "") AS ?tmpCoordStart2)   
+      BIND(STRAFTER(?tmpCoordStart2, " ") AS ?startLat)
+      BIND(STRBEFORE(?tmpCoordStart2, " ") AS ?startLng)
+      
+      BIND(REPLACE(STR(?loc2), "POINT\\\\(", "") AS ?tmpCoordEnd1)
+      BIND(REPLACE(?tmpCoordEnd1, "\\\\)", "") AS ?tmpCoordEnd2)   
+      BIND(STRAFTER(?tmpCoordEnd2, " ") AS ?endLat)
+      BIND(STRBEFORE(?tmpCoordEnd2, " ") AS ?endLng)
     }
     ORDER BY DESC (?distance)
-    LIMIT 100
+    LIMIT 50
     `
 }
 
