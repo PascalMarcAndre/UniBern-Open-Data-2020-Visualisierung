@@ -203,3 +203,36 @@ SELECT * WHERE {
 
   } 
 ````
+
+### List with Distance of all Short Distances
+Returns a list that only includes the distance of all short distances.
+
+````
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+prefix geo: <http://www.opengis.net/ont/geosparql#>
+prefix geof: <http://www.opengis.net/def/function/geosparql/>
+prefix unit: <http://qudt.org/vocab/unit#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+ 
+SELECT ?distance
+WHERE {
+  ?Relation a otd:Relation;
+       otd:zoningPlan ?Zonenplan;
+       otd:routeType ?RouteType;
+       schema:arrivalStation ?stop1 ;
+       schema:departureStation ?stop2.
+ 
+  ?stop1 geo:hasGeometry ?geom1 ;
+       rdfs:label ?startName;
+       dcterms:identifier ?startID .
+ 
+  ?stop2 geo:hasGeometry ?geom2 ;
+       rdfs:label ?endName;
+       dcterms:identifier ?endID .
+  
+  BIND(xsd:integer(geof:distance(?geom1, ?geom2, unit:Meter)) as ?distance)
+}
+````
