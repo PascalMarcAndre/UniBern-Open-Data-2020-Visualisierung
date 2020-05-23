@@ -1,0 +1,16 @@
+{
+  "title": "TITEL DER APP",
+  "description": "EINE BESCHREIBUNG WAS DIE APP MACHT.",
+  "authors": [
+    {
+      "name": "APP ENTWICKLERIN",
+      "email": "APP.ENTWICKLERIN@students.unibe.ch"
+    }, {
+      "name": "APP ENTWICKLER",
+      "email": "APP.ENTWICKLER@students.unibe.ch"
+    }
+  ],
+  "date": "2020-05-28",
+  "category": "EURE KATEGORIE",
+  "software_license": "EINE OPEN SOURCE LIZENZ"
+}
