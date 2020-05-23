@@ -1,23 +1,25 @@
 # Query Overview
 This document contains all available SPARQL queries that we use in this project.  
-Queries can be run under the following URL: [https://lindas.admin.ch/sparql/](https://lindas.admin.ch/sparql/)
+Queries can be run under the following URL (unless otherwise stated) : [https://lindas.admin.ch/sparql/](https://lindas.admin.ch/sparql/)
 
 
 
 ### All Stations
-Returns a list of all stations.
+Returns a list of all stations.  
+**Required endpoint:** [https://ld.geo.admin.ch/query](https://ld.geo.admin.ch/query)
 
 ````
-PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
-PREFIX gtfs: <http://vocab.gtfs.org/terms#>
-PREFIX schema: <http://schema.org/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-SELECT distinct ?Station ?Name ?Coord
-WHERE {
-    ?Station rdfs:label ?Name ;
-    <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
+PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX swiss:  <https://ld.geo.admin.ch/>
+ 
+SELECT ?ID ?Name ?lat ?lng {
+    ?a a <http://vocab.gtfs.org/terms#Stop>.
+    ?a <http://schema.org/name> ?Name .
+    ?a geo:lat ?lat .
+    ?a geo:long ?lng .
+    ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
+    
+    BIND(STRAFTER(STR(?a), "stop/") AS ?ID)
 }
 ````
 
