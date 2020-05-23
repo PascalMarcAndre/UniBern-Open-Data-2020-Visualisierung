@@ -419,15 +419,15 @@ function showMatchingStations() {
         data.forEach(station => {
             // If latMin is not set, it's the first marker (set all min and max). Otherwise only set if new min or max.
             if (!latMin) {
-                latMin = station.lat;
-                latMax = station.lat;
-                lngMin = station.lng;
-                lngMax = station.lng;
+                latMin = parseFloat(station.lat);
+                latMax = parseFloat(station.lat);
+                lngMin = parseFloat(station.lng);
+                lngMax = parseFloat(station.lng);
             } else {
-                if (station.lat < latMin) latMin = station.lat;
-                if (station.lat > latMax) latMax = station.lat;
-                if (station.lng < lngMin) lngMin = station.lng;
-                if (station.lng > lngMax) lngMax = station.lng;
+                if (parseFloat(station.lat) < latMin) latMin = parseFloat(station.lat);
+                if (parseFloat(station.lat) > latMax) latMax = parseFloat(station.lat);
+                if (parseFloat(station.lng) < lngMin) lngMin = parseFloat(station.lng);
+                if (parseFloat(station.lng) > lngMax) lngMax = parseFloat(station.lng);
             }
 
             // Add station to search result list in sidebar section
