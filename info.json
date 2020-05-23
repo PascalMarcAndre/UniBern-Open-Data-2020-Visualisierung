@@ -1,16 +1,16 @@
 {
-  "title": "TITEL DER APP",
-  "description": "EINE BESCHREIBUNG WAS DIE APP MACHT.",
+  "title": "Analyse zu Kurzstrecken der Schweizer Tarifverbünde",
+  "description": "Die App beinhaltet eine interaktive Karte zu den Kurzstrecken der Schweizer Tarifverbünde. Die visualisierten Daten, welche unter anderem sämtliche Haltestellen und Kurzstrecken in der Schweiz umfassen, werden live vom Linked Data Service (LINDAS) abgefragt und so dem User auf benutzerfreundliche Art zugänglich gemacht. Im Abschnitt Analyse werden diese Daten in Bezug auf bestimmte Leitfragen genauer untersucht und visualisiert.",
   "authors": [
     {
-      "name": "APP ENTWICKLERIN",
-      "email": "APP.ENTWICKLERIN@students.unibe.ch"
+      "name": "Said Ali",
+      "email": "said.ali@students.unibe.ch"
     }, {
-      "name": "APP ENTWICKLER",
-      "email": "APP.ENTWICKLER@students.unibe.ch"
+      "name": "Pascal André",
+      "email": "pascal.andre@students.unibe.ch"
     }
   ],
   "date": "2020-05-28",
-  "category": "EURE KATEGORIE",
-  "software_license": "EINE OPEN SOURCE LIZENZ"
+  "category": "traffic",
+  "software_license": "GNU General Public License v3"
 }
