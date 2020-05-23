@@ -163,10 +163,10 @@ function createClusterLayer() {
     d3.sparql(LINDAS_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and adds it to cluster layer
-            L.marker([station.lat, station.lng], {icon: defaultIcon})
+            L.marker([station.lat, station.lng], { icon: defaultIcon })
                 .addTo(clusterLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
-                .on("click", () => {showCurrentShortDistances(station)});
+                .on("click", () => { showCurrentShortDistances(station) });
         });
 
         // Add layer to map since it is default view
@@ -183,18 +183,18 @@ function createLongestShortDistancesLayer() {
         data.forEach(shortDistance => {
 
             // Adds start point of short distance to layer
-            L.marker([shortDistance.startLat, shortDistance.startLng], {icon: defaultIcon})
+            L.marker([shortDistance.startLat, shortDistance.startLng], { icon: defaultIcon })
                 .addTo(longestShortDistanceLayer)
-                .bindTooltip(shortDistance.startName, {opacity: 1, direction: 'top', className: 'tooltip'});
+                .bindTooltip(shortDistance.startName, { opacity: 1, direction: 'top', className: 'tooltip' });
 
             // Adds end point of short distance to layer
-            L.marker([shortDistance.endLat, shortDistance.endLng], {icon: defaultIcon})
+            L.marker([shortDistance.endLat, shortDistance.endLng], { icon: defaultIcon })
                 .addTo(longestShortDistanceLayer)
-                .bindTooltip(shortDistance.endName, {opacity: 1, direction: 'top', className: 'tooltip'});
+                .bindTooltip(shortDistance.endName, { opacity: 1, direction: 'top', className: 'tooltip' });
 
             // Adds line from start to end point of short distance to layer
             // TODO: Use D3
-            L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], {color: 'black', weight: 2})
+            L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], { color: 'black', weight: 2 })
                 .addTo(longestShortDistanceLayer);
         });
     });
@@ -251,15 +251,15 @@ function showCurrentShortDistances(station) {
         resetCurrentShortDistancesLayer();
 
         data.forEach(shortDistance => {
-            L.marker([shortDistance.lat, shortDistance.lng], {icon: alternativeIcon, forceZIndex: 1000})
+            L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
-                .bindTooltip(shortDistance.name, {opacity: 1, direction: 'top', className: 'tooltip'})
-                .on("click", () => {console.log(station); showCurrentShortDistances(shortDistance)});
+                .bindTooltip(shortDistance.name, { opacity: 1, direction: 'top', className: 'tooltip' })
+                .on("click", () => { console.log(station); showCurrentShortDistances(shortDistance) });
 
-            let polyline = L.polyline([[station.lat, station.lng],[shortDistance.lat, shortDistance.lng]], {color: 'black', weight: 2})
+            let polyline = L.polyline([[station.lat, station.lng], [shortDistance.lat, shortDistance.lng]], { color: 'black', weight: 2 })
                 .addTo(currentShortDistancesLayer)
-                .on('mouseover', () => {polyline.setStyle({color: 'red', weight: 5})})
-                .on('mouseout', () => {polyline.setStyle({color: 'black', weight: 2})});
+                .on('mouseover', () => { polyline.setStyle({ color: 'red', weight: 5 }) })
+                .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
         });
     });
 }
@@ -324,49 +324,35 @@ function centerMap() {
 }
 
 /**
- * Displays Zoning plan 
+ * Display Numbre of Stations per zoningplan
  */
-function showZoningplan() {
 
+zoningplanArray = []
+
+function showZoningplan() {
 
 
     d3.sparql(LINDAS_ENDPOINT, query_allZoningplans()).then((data) => {
 
-
         data.forEach(station => {
 
-            console.log(station)
-        }
-        );
-    });
+            d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
+                zoningplanArray.push([station.namen, d.length]);
+
+                if (data[data.length-1] === station){
+                    //Array with all Zoningplans and their number of Stations
+                    console.log(zoningplanArray)
+                }
+            });
+        },
+        );
+    })
 }
 
-/**
- * Displays Zoning plan station
- */
-function showZoningplanStation(zoningplan) {
 
 
 
-    d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(zoningplan)).then((data) => {
-
-        // Reset search results layer to remove any markers on it
-        zoningResultsLayer = new L.layerGroup();
-
-        // For each short distance: Add lines to map; 
-        data.forEach(station => {
-
-            L.marker([station.lat, station.lng], {icon: defaultIcon})
-                .addTo(zoningResultsLayer)
-                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' });
-        }
-        );
-        // Add layer containing all search result markers to map
-        zoningResultsLayer.addTo(map);
-    });
-
-}
 
 /**
  * Displays all short distance lines that match the user's clicked marker.
@@ -447,10 +433,10 @@ function showMatchingStations() {
             document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
 
             // Add station as marker to search results layer and bind popup with station name
-            L.marker([station.lat, station.lng], {icon: defaultIcon})
+            L.marker([station.lat, station.lng], { icon: defaultIcon })
                 .addTo(searchResultsLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
-                .on("click", () => {showCurrentShortDistances(station)});
+                .on("click", () => { showCurrentShortDistances(station) });
         });
 
         // Add layer containing all search result markers to map
