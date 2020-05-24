@@ -40,6 +40,10 @@ function launch() {
 // Leaflet map
 let map;
 
+// List of all markers which are included in the cluster layer.
+// Each marker represents a station that can be accessed with `marker[station.ID]`
+let markers = [];
+
 // List of available Leaflet tile layers
 let tiles = [];
 
@@ -166,8 +170,8 @@ function createClusterLayer() {
 
     d3.sparql(SWISSTOPO_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
-            // Create marker (incl. tooltip) and adds it to cluster layer
-            L.marker([station.lat, station.lng], { icon: defaultIcon })
+            // Create marker (incl. tooltip) and add it to cluster layer
+            markers[station.ID] = L.marker([station.lat, station.lng], { icon: defaultIcon })
                 .addTo(clusterLayer)
                 .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
