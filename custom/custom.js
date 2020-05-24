@@ -410,6 +410,17 @@ function centerMap() {
 }
 
 /**
+ * Plays a smooth fly animation to the given destination on the Leaflet map. Sets zoom level to 'MAX_ZOOM' level.
+ * Requires latitude and longitude of the destination in order to play the fly animation.
+ *
+ * @param lat                     Latitude-value of destination coordinate
+ * @param lng                     Longitude-value of destination coordinate
+ */
+function flyToCoordinate(lat, lng) {
+    map.flyTo([lat, lng], MAX_ZOOM);
+}
+
+/**
  * Display Numbre of Stations per zoningplan
  */
 
