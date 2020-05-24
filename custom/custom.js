@@ -173,8 +173,10 @@ function createClusterLayer() {
                 .on("click", () => { showCurrentShortDistances(station) });
         });
 
-        // Add layer to map since it is default view
-        clusterLayer.addTo(map);
+        // Add cluster layer to map only if its sidebar section is still selected
+        if(currentSidebarElement === "Welcome") {
+            clusterLayer.addTo(map);
+        }
     });
 }
 
