@@ -2,9 +2,12 @@
  * GLOBAL VARIABLES
  * Variables used throughout the application.
  ******************************************************************************************************/
-// Endpoint URL for LINDAS SPARQL queries
+// Endpoint URLs for SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
 const SWISSTOPO_ENDPOINT = "https://ld.geo.admin.ch/query";
+
+// Name of currently selected sidebar element
+let currentSidebarElement = "Welcome";
 
 
 
@@ -666,12 +669,15 @@ function toggleSidebar() {
 
 /**
  * Displays content of selected sidebar section according to given parameter and sets its menu button as selected.
- * Opens the sidebar if it was previously closed.
+ * Stores currently selected sidebar element in global variable. Opens the sidebar if it was previously closed.
  *
  * @param newSection              ID/Name of the newly selected sidebar section
  */
 function setSidebarElement(newSection) {
-    // Opens the sidebar if currently closed
+    // Store name of newly selected section
+    currentSidebarElement = newSection;
+
+    // Open the sidebar if currently closed
     if (!sidebarOpen) {
         toggleSidebar();
     }
