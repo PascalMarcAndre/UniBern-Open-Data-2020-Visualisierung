@@ -105,6 +105,7 @@ function createLeafletMap() {
 
     // Events
     map.on('zoom', updateZoomButtons);
+    map.on('zoom', updateSVGElements);
     map.on('click', resetCurrentShortDistancesLayer);
 
     // Fix grid lines between tile images
@@ -428,6 +429,31 @@ function latLngToX(lat, lng) {
  */
 function latLngToY(lat, lng) {
     return map.latLngToLayerPoint([lat, lng]).y;
+}
+
+/**
+ * Updates all SVG circles and lines after the map has been moved or the zoom level has been changed.
+ * Uses helper functions to recalculate the new layer points from the given LatLng-coordinates.
+ */
+function updateSVGElements() {
+    // Update all SVG circles
+    d3.selectAll("circle")
+        .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
+        .attr("cy", (d) => { return latLngToY(d.lat, d.lng) });
+
+    // Update all SVG lines
+    d3.selectAll("line")
+        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
+        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
+        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
+        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) });
+
+    // Update all highlighted SVG lines
+    d3.selectAll("line-highlight")
+        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
+        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
+        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
+        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) });
 }
 
 
