@@ -350,6 +350,15 @@ function showCurrentShortDistances(station) {
                 .addTo(currentShortDistancesLayer)
                 .on('mouseover', () => { polyline.setStyle({ color: 'red', weight: 5 }) })
                 .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
+
+            // Create div-element for each short distance and add ID, CSS class and HTML content
+            const shortDistanceDiv = document.createElement("div");
+            shortDistanceDiv.id = "shortDistance-" + shortDistance.ID;
+            shortDistanceDiv.classList.add("shortDistanceItem");
+            shortDistanceDiv.innerHTML = shortDistance.name;
+
+            // Append created div-element to DOM to make it visible
+            document.getElementById("stationOverview-shortDistances").appendChild(shortDistanceDiv);
         });
 
         // Display station name in station overview box
@@ -366,6 +375,9 @@ function showCurrentShortDistances(station) {
 function resetCurrentShortDistancesLayer() {
     // Hide station overview box
     document.getElementById("stationOverview").classList.add("hidden");
+
+    // Remove all short distances from station overview box
+    document.getElementById("stationOverview-shortDistances").innerHTML = "";
 
     // Remove layer displaying current short distance from map
     map.removeLayer(currentShortDistancesLayer);

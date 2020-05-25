@@ -303,6 +303,18 @@ a:hover {
     overflow-x: hidden;
 }
 
+.stationOverview .shortDistanceItem {
+    width: 100%;
+    padding: 2px 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.stationOverview .shortDistanceItem:hover {
+    background-color: var(--sbb-light-hov);
+    color: var(--sbb-red);
+}
+
 /*
  *  Sidebar
  */
