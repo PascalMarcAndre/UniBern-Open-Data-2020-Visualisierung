@@ -265,6 +265,45 @@ a:hover {
 }
 
 /*
+ *  Leaflet Map - Station Overview
+ */
+
+.stationOverview {
+    position: fixed;
+    bottom: 20px;
+    right: 5px;
+    width: 320px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--sbb-dark);
+}
+
+.stationOverview h5, .stationOverview h6 {
+    margin: 0 0 5px;
+    font-family: "SBB Web Bold", sans-serif;
+}
+
+.stationOverview h5 {
+    font-size: 20px;
+    border-bottom: 1px solid black;
+}
+
+.stationOverview h6 {
+    font-size: 17px;
+}
+
+.stationOverview #stationOverview-name {
+    margin: 0 0 20px;
+    font-size: 17px;
+    color: var(--sbb-red);
+}
+
+.stationOverview #stationOverview-shortDistances {
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+/*
  *  Sidebar
  */
 #sidebar {
