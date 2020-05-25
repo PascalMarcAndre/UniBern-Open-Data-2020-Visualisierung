@@ -340,6 +340,10 @@ function showCurrentShortDistances(station) {
     d3.sparql(LINDAS_ENDPOINT, query_allShortDistancesForStation(station.ID)).then((data) => {
         resetCurrentShortDistancesLayer();
 
+        // Display number of short distances in station overview box
+        document.getElementById("shortDistance-count").innerHTML =
+            (data.length === 0) ? "Keine Kurzstrecken verfügbar" : (data.length + " Kurzstrecken verfügbar nach:");
+
         data.forEach(shortDistance => {
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
