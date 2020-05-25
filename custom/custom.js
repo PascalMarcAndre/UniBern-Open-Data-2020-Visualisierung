@@ -382,6 +382,14 @@ function showCurrentShortDistances(station) {
             shortDistanceSpan.innerHTML = (shortDistance.distance / 1000).toFixed(1) + " km"; // Rounded to .1
             // Append created span-element to its related shortDistanceDiv
             shortDistanceDiv.appendChild(shortDistanceSpan);
+            // Add mouseover event to display circle around search result marker on map
+            shortDistanceDiv.addEventListener("mouseover", () => {
+                highlightSpot(shortDistance);
+            });
+            // Add mouseout event to remove circle from map
+            shortDistanceDiv.addEventListener("mouseout", () => {
+                resetSVG("circle");
+            });
 
             // Append created div-element to DOM to make it visible
             document.getElementById("stationOverview-shortDistances").appendChild(shortDistanceDiv);
@@ -455,7 +463,7 @@ function highlightSpot(spotData) {
     d3.select("#map")
         .select("svg")
         .selectAll("circles")
-        .data(spotData)
+        .data([spotData])
         .enter()
         .append("circle")
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
@@ -700,6 +708,14 @@ function showMatchingStations() {
             // Add click event to play fly animation
             searchResultDiv.addEventListener("click", () => {
                 flyToCoordinate(station.lat, station.lng)
+            });
+            // Add mouseover event to display circle around search result marker on map
+            searchResultDiv.addEventListener("mouseover", () => {
+                highlightSpot(station);
+            });
+            // Add mouseout event to remove circle from map
+            searchResultDiv.addEventListener("mouseout", () => {
+                resetSVG("circle");
             });
 
             // Append created div-element to DOM to make it visible
