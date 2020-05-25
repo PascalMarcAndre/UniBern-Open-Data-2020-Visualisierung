@@ -476,16 +476,31 @@ function showMatchingStations() {
     }
 
     // Request all stations matching user's search terms
-    d3.sparql(LINDAS_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((data) => {
+    d3.sparql(LINDAS_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((rawData) => {
 
         // Display number of search results
-        document.getElementById("searchResults").innerHTML += "<div class='count'>" + data.length + " Resultate:</div>";
+        document.getElementById("searchResults").innerHTML += "<div class='count'>" + rawData.length + " Resultate:</div>";
 
         // Reset search results layer to remove any markers on it
         searchResultsLayer = new L.layerGroup();
 
         // Variables to calculate search result bounds
         let latMin, latMax, lngMin, lngMax;
+
+        // Set up two empty array: 'data' contains stations whose name starts with search terms, those in 'tmpData' don't
+        let data = [];
+        let tmpData = [];
+
+        // Add each station to appropriate array depending on its name
+        rawData.forEach(item => {
+            const src = item.name.toLowerCase();
+            const dst = searchTerms.toLowerCase();
+
+            src.startsWith(dst) ? data.push(item) : tmpData.push(item);
+        });
+
+        // Append items from 'tmpData' to final 'data' array
+        data = data.concat(tmpData);
 
         // For each station: Add marker to map; Add entry to sidebar list; Update search result bounds
         data.forEach(station => {
