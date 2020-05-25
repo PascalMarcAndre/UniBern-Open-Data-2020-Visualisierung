@@ -435,6 +435,39 @@ let svgLines = L.svg();
 let svgCircles = L.svg();
 
 /**
+ * Highlights the given spots by drawing a circle at its coordinates. The provided data is an array of elements which
+ * all must include a 'lat' and 'lng' property in order to calculate its layer point to draw the circle onto the map.
+ *
+ * @param spotData                Data including coordinates of spot to be highlighted
+ */
+function highlightSpot(spotData) {
+    // Remove any previous circles from the map
+    resetSVG("circle");
+
+    // Set up the SVG layer
+    if (map.hasLayer(svgCircles)){
+        svgCircles.removeFrom(map);
+    }
+    svgCircles = L.svg();
+    svgCircles.addTo(map);
+
+    // Draw circle at given coordinate
+    d3.select("#map")
+        .select("svg")
+        .selectAll("circles")
+        .data(spotData)
+        .enter()
+        .append("circle")
+        .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
+        .attr("cy", (d) => { return latLngToY(d.lat, d.lng) })
+        .attr("r", 14)
+        .attr("fill", "#398CF7")
+        .attr("fill-opacity", 0.95)
+        .attr("stroke", "#FFFFFF")
+        .attr("stroke-width", 5);
+}
+
+/**
  * Resets the SVG layers to a predefined case according to the specified string 'resetCase'.
  *
  * @param resetCase               String describing which reset case that should be used. Possible values are:
