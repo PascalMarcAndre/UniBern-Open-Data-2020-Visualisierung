@@ -105,7 +105,7 @@ function createLeafletMap() {
 
     // Events
     map.on('zoom', updateZoomButtons);
-    map.on('zoom', updateSVGElements);
+    map.on('moveend', updateSVGElements);
     map.on('click', resetCurrentShortDistancesLayer);
 
     // Fix grid lines between tile images
