@@ -351,6 +351,9 @@ function showCurrentShortDistances(station) {
                 .on('mouseover', () => { polyline.setStyle({ color: 'red', weight: 5 }) })
                 .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
         });
+
+        // Display station overview box
+        document.getElementById("stationOverview").classList.remove("hidden");
     });
 }
 
@@ -358,6 +361,9 @@ function showCurrentShortDistances(station) {
  * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
  */
 function resetCurrentShortDistancesLayer() {
+    // Hide station overview box
+    document.getElementById("stationOverview").classList.add("hidden");
+
     // Remove layer displaying current short distance from map
     map.removeLayer(currentShortDistancesLayer);
 
@@ -792,14 +798,17 @@ function setSidebarElement(newSection) {
     switch (newSection) {
         case ("Welcome"):
             removeAllLayers();
+            resetCurrentShortDistancesLayer();
             clusterLayer.addTo(map);
             break;
         case ("Search"):
             removeAllLayers();
+            resetCurrentShortDistancesLayer();
             searchResultsLayer.addTo(map);
             break;
         case ("Distance"):
             removeAllLayers();
+            resetCurrentShortDistancesLayer();
             currentAnalyseLayer.addTo(map);
             break;
     }
