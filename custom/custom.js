@@ -352,6 +352,9 @@ function showCurrentShortDistances(station) {
                 .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
         });
 
+        // Display station name in station overview box
+        document.getElementById("stationOverview-name").innerHTML = station.name;
+
         // Display station overview box
         document.getElementById("stationOverview").classList.remove("hidden");
     });
