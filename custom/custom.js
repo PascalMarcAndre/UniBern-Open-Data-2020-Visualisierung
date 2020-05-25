@@ -408,6 +408,28 @@ function resetSVG(resetCase) {
     }
 }
 
+/**
+ * Converts LatLng-coordinate into layer point and returns its x-value. Requires 'lat' and 'lng' values for conversion.
+ *
+ * @param lat                     lat-value of coordinate to be converted into layer point
+ * @param lng                     lng-value of coordinate to be converted into layer point
+ * @returns {*}                   x-value of layer point from converted LatLng-coordinate
+ */
+function latLngToX(lat, lng) {
+    return map.latLngToLayerPoint([lat, lng]).x;
+}
+
+/**
+ * Converts LatLng-coordinate into layer point and returns its y-value. Requires 'lat' and 'lng' values for conversion.
+ *
+ * @param lat                     lat-value of coordinate to be converted into layer point
+ * @param lng                     lng-value of coordinate to be converted into layer point
+ * @returns {*}                   y-value of layer point from converted LatLng-coordinate
+ */
+function latLngToY(lat, lng) {
+    return map.latLngToLayerPoint([lat, lng]).y;
+}
+
 
 
 /*******************************************************************************************************
