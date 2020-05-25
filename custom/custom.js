@@ -370,6 +370,19 @@ function resetCurrentShortDistancesLayer() {
 
 
 /*******************************************************************************************************
+ * D3
+ * Some of the functions and variables specifically related to D3.
+ ******************************************************************************************************/
+
+// SVG Layer for the Leaflet map containing only lines
+let svgLines = L.svg();
+
+// SVG Layer for the Leaflet map containing only circles
+let svgCircles = L.svg();
+
+
+
+/*******************************************************************************************************
  * MAP NAVIGATION
  * Functions and variables responsible for map navigation (e.g. set view to certain zoom level or point).
  ******************************************************************************************************/
