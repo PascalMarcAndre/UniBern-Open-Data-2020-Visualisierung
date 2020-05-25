@@ -268,7 +268,7 @@ function createDistanceOfShortDistancesVisualization() {
             const distance = shortDistance.distance;
 
             // Increase count of length interval based on length of current short distance
-            if(distance < 500) {
+            if (distance < 500) {
                 lengthIntervals["0.0 < x < 0.5 km"]++;
                 return null;
             } else if (500 <= distance && distance < 1000) {
@@ -312,7 +312,7 @@ function createDistanceOfShortDistancesVisualization() {
             lengthIntervals["4.5 < x"];
 
         // Lower bound percentage of how many short distances are technically too long
-        const tooLongShortDistancesRatio = tooLongShortDistancesCount/data.length;
+        const tooLongShortDistancesRatio = tooLongShortDistancesCount / data.length;
 
         // TODO: Create visualization based on above data
     })
@@ -419,11 +419,17 @@ function showZoningplan() {
 
             d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
-                zoningplanArray.push([station.namen, d.length]);
+                if (d.length > 0) {
+                    zoningplanArray.push(station.namen, d.length);
+                }
 
-                if (data[data.length-1] === station){
+                if (data[data.length - 1] === station) {
                     //Array with all Zoningplans and their number of Stations
                     console.log(zoningplanArray)
+                    piechart(zoningplanArray)
+
+
+                    //Number of colors needed zoningplanArray/2
                 }
             });
         },
@@ -459,6 +465,77 @@ function showShortDistance(stationID) {
 
 }
 
+
+function piechart(data) {
+    // set the dimensions and margins of the graph
+    var width = 350
+    height = 350
+    margin = 30
+
+    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+    var radius = Math.min(width, height) / 2 - margin
+
+    
+    // append the svg object to the div called 'my_dataviz'
+    var svg = d3.select("#my_dataviz")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    // create 2 data_set
+    var data1 = data
+    var data2 = {a: 6, b: 16, c:20, d:14, e:19, f:12}
+
+    // set the color scale
+    var color = d3.scaleOrdinal()
+        .domain(["a", "b", "c", "d", "e", "f","g", "h", "i", "j","k"])
+        .range(d3.schemeCategory10);
+
+    // A function that create / update the plot for a given variable:
+    function update(data) {
+
+        // Compute the position of each group on the pie:
+        var pie = d3.pie()
+            .value(function (d) { return d.value; })
+            .sort(function (a, b) { console.log(a); return d3.ascending(a.key, b.key); }) // This make sure that group order remains the same in the pie chart
+        var data_ready = pie(d3.entries(data))
+
+        // map to data
+        var u = svg.selectAll("path")
+            .data(data_ready)
+
+        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+        u
+            .enter()
+            .append('path')
+            .merge(u)
+            .transition()
+            .duration(1000)
+            .attr('d', d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius)
+            )
+            .attr('fill', function (d) { return (color(d.data.key)) })
+            .attr("stroke", "white")
+            .style("stroke-width", "2px")
+            .style("opacity", 1)
+
+        // remove the group that is not present anymore
+        u
+            .exit()
+            .remove()
+
+    }
+
+    // Initialize the plot with the first dataset
+    update(data1)
+
+    document.getElementById("my_dataviztext").innerHTML = data;
+
+
+}
 
 /*******************************************************************************************************
  * SEARCH
@@ -677,7 +754,7 @@ function setSidebarElement(newSection) {
     }
 
     // List of sidebar section names
-    let sectionNames = ["Welcome", "Search", "Distance", "Options", "Help", "About"];
+    let sectionNames = ["Welcome", "Search", "Distance", "Diagram", "Options", "Help", "About"];
 
     // Hide content of all sidebar elements and deselect all menu buttons
     sectionNames.forEach(sectionName => {
@@ -743,7 +820,7 @@ let svgLayer = L.svg();
 // Draws some simple circles onto the map
 function testD3Circles() {
     // Reset SVG layer if necessary
-    if(map.hasLayer(svgLayer)) {
+    if (map.hasLayer(svgLayer)) {
         resetSVGLayer();
     }
 
@@ -753,12 +830,12 @@ function testD3Circles() {
 
     // Create data for circles:
     var markers = [
-        {long: 9.083, lat: 42.149}, // corsica
-        {long: 7.26, lat: 43.71}, // nice
-        {long: 2.349, lat: 48.864}, // Paris
-        {long: -1.397, lat: 43.664}, // Hossegor
-        {long: 3.075, lat: 50.640}, // Lille
-        {long: -3.83, lat: 48}, // Morlaix
+        { long: 9.083, lat: 42.149 }, // corsica
+        { long: 7.26, lat: 43.71 }, // nice
+        { long: 2.349, lat: 48.864 }, // Paris
+        { long: -1.397, lat: 43.664 }, // Hossegor
+        { long: 3.075, lat: 50.640 }, // Lille
+        { long: -3.83, lat: 48 }, // Morlaix
     ];
 
     // Select the svg area and add circles:
@@ -768,8 +845,8 @@ function testD3Circles() {
         .data(markers)
         .enter()
         .append("circle")
-        .attr("cx", function(d){ return map.latLngToLayerPoint([d.lat, d.long]).x })
-        .attr("cy", function(d){ return map.latLngToLayerPoint([d.lat, d.long]).y })
+        .attr("cx", function (d) { return map.latLngToLayerPoint([d.lat, d.long]).x })
+        .attr("cy", function (d) { return map.latLngToLayerPoint([d.lat, d.long]).y })
         .attr("r", 14)
         .style("fill", "red")
         .attr("stroke", "red")
@@ -783,7 +860,7 @@ function testD3Circles() {
 // Draws some simple lines onto the map
 function testD3Lines() {
     // Reset SVG layer if necessary
-    if(map.hasLayer(svgLayer)) {
+    if (map.hasLayer(svgLayer)) {
         resetSVGLayer();
     }
 
@@ -806,7 +883,7 @@ function testD3Lines() {
         end: {
             long: -1.397, lat: 43.664
         }
-    },{
+    }, {
         start: {
             long: 3.075, lat: 50.640
         },
@@ -822,10 +899,10 @@ function testD3Lines() {
         .data(lines)
         .enter()
         .append("line")
-        .attr("x1", function(d){ return map.latLngToLayerPoint([d.start.lat, d.start.long]).x })
-        .attr("y1", function(d){ return map.latLngToLayerPoint([d.start.lat, d.start.long]).y })
-        .attr("x2", function(d){ return map.latLngToLayerPoint([d.end.lat, d.end.long]).x })
-        .attr("y2", function(d){ return map.latLngToLayerPoint([d.end.lat, d.end.long]).y })
+        .attr("x1", function (d) { return map.latLngToLayerPoint([d.start.lat, d.start.long]).x })
+        .attr("y1", function (d) { return map.latLngToLayerPoint([d.start.lat, d.start.long]).y })
+        .attr("x2", function (d) { return map.latLngToLayerPoint([d.end.lat, d.end.long]).x })
+        .attr("y2", function (d) { return map.latLngToLayerPoint([d.end.lat, d.end.long]).y })
         .attr("stroke", "red")
         .attr("stroke-width", 3);
 
@@ -842,14 +919,14 @@ function resetSVGLayer() {
 function update() {
     // Update circles
     d3.selectAll("circle")
-        .attr("cx", function(d){ return map.latLngToLayerPoint([d.lat, d.long]).x })
-        .attr("cy", function(d){ return map.latLngToLayerPoint([d.lat, d.long]).y });
+        .attr("cx", function (d) { return map.latLngToLayerPoint([d.lat, d.long]).x })
+        .attr("cy", function (d) { return map.latLngToLayerPoint([d.lat, d.long]).y });
 
     // Update lines
     d3.selectAll("line")
-        .attr("x1", function(d){ return map.latLngToLayerPoint([d.start.lat, d.start.long]).x })
-        .attr("y1", function(d){ return map.latLngToLayerPoint([d.start.lat, d.start.long]).y })
-        .attr("x2", function(d){ return map.latLngToLayerPoint([d.end.lat, d.end.long]).x })
-        .attr("y2", function(d){ return map.latLngToLayerPoint([d.end.lat, d.end.long]).y })
+        .attr("x1", function (d) { return map.latLngToLayerPoint([d.start.lat, d.start.long]).x })
+        .attr("y1", function (d) { return map.latLngToLayerPoint([d.start.lat, d.start.long]).y })
+        .attr("x2", function (d) { return map.latLngToLayerPoint([d.end.lat, d.end.long]).x })
+        .attr("y2", function (d) { return map.latLngToLayerPoint([d.end.lat, d.end.long]).y })
 
 }

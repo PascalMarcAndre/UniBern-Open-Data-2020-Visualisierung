@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
-	<title>Tarifverbünde in der Schweiz - Analyse zu Kurzstrecken</title>
+    <title>Tarifverbünde in der Schweiz - Analyse zu Kurzstrecken</title>
 
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="assets/logo/favicon.ico" />
 
@@ -15,7 +16,7 @@
     <link rel="stylesheet" href="custom/custom.css">
 
     <!-- Fix touch screen issue with Leaflet -->
-    <script>window.ontouchstart=true</script>
+    <script>window.ontouchstart = true</script>
 
     <script src="jquery/jquery-3.4.1.min.js"></script>
     <script src="bootstrap/popper.min.js"></script>
@@ -29,230 +30,279 @@
     <script src="custom/queries.js"></script>
     <script src="custom/custom.js"></script>
 </head>
+
 <body>
-<!-- Leaflet Map -->
-<div id="map"></div>
+    <!-- Leaflet Map -->
+    <div id="map"></div>
 
-<!-- Leaflet Map - Control Panel -->
-<div id="controlPanel" class="controlPanel">
-    <ul>
-        <li id="zoomIn" onclick="zoomIn()">
-            <img src="assets/glyphicons/plus.png" alt="Zoom In">
-        </li>
-        <li id="zoomOut" onclick="zoomOut()">
-            <img src="assets/glyphicons/minus.png" alt="Zoom Out">
-        </li>
-        <li onclick="centerMap()">
-            <img src="assets/glyphicons/home.png" alt="Fly Home">
-        </li>
-    </ul>
-</div>
-
-<!-- Sidebar -->
-<div id="sidebar">
-
-    <!-- Logo -->
-    <div class="logo" onclick="location.reload();">
-        <img src="assets/logo/sbb_logo.png" alt="SBB Logo">
-        <h1>Schweizer Tarifverbünde</h1>
-        <h2>Analyse zu Kurzstrecken</h2>
-    </div>
-
-    <!-- Welcome Section -->
-    <div id="sbSecWelcome" class="welcome">
-
-        <!-- Introduction to visualisation -->
-        <h3>Herzlich Willkommen!</h3>
-        <table>
-            <tbody>
-            <tr>
-                <td><img src="assets/glyphicons/home.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('Welcome')">Freie Erkundung</h4>
-                    <p>
-                        Erkunden Sie auf der Karte alle Haltestellen inkl. deren Kurzstrecken und verschaffen Sie sich
-                        in der Sidebar einen Überblick über sämtliche Inhalte dieser Anwendung.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/search.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('Search')">Suche</h4>
-                    <p>
-                        Filtern Sie die Namen aller Haltestellen nach beliebigen Suchbegriffen.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/graph.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('Distance')">Analyse</h4>
-                    <p>
-                        Stöbern Sie durch die Auswertungen der Kurzstrecken und finden Sie die längsten Kurzstrecken,
-                        die Anzahl Kurzstrecken pro Haltestelle etc.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/cog.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('Options')">Optionen</h4>
-                    <p>
-                        Ändern Sie die Kartenkacheln sowie deren Farbsättigung und Transparenz.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/question-sign.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('Help')">Bedienungsanleitung</h4>
-                    <p>
-                        Informieren Sie sich über die Features dieser Applikation und wie sie diese anwenden können.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/info-sign.png" alt=""></td>
-                <td>
-                    <h4 onclick="setSidebarElement('About')">Projektinformationen</h4>
-                    <p>
-                        Weitere Informationen über das Projekt finden Sie in diesem Abschnitt.
-                    </p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Search Section -->
-    <div id="sbSecSearch" class="hidden">
-
-        <!-- Search Form -->
-        <h3>Suchen</h3>
-        <input type="text" id="searchTerms" placeholder="Suchbegriffe (mind. 3 Zeichen)">
-        <button class="red" onclick="showMatchingStations()">Suchen</button>
-        <button onclick="resetSearch()">Abbrechen</button>
-
-        <!-- Search Results -->
-        <div class="searchResults">
-            <div id="searchResults"></div>
-        </div>
-    </div>
-
-    <!-- Analyze Section -->
-    <div id="sbSecDistance" class="hidden analyze">
-
-        <!-- Analyze Dropdown Selection -->
-        <h3>Analyse</h3>
-        <select name="analyzeSelection" id="analyzeSelection" onchange="updateAnalyseLayer(event)">
-            <option disabled selected>--Auswählen--</option>
-            <option value="longestShortDistance">Längste Kurzstrecken</option>
-            <option value="shortDistanceDistribution">Kurzstreckenverteilung</option>
-        </select>
-    </div>
-
-    <!-- Options Section -->
-    <div id="sbSecOptions" class="hidden options">
-
-        <!-- Tile Layer Selection -->
-        <h3>Kachelauswahl</h3>
-        <div id="tile0" class="tilePreview selected" onclick="setTileLayer(0)">
-            Mapbox
-            <img src="assets/tiles_preview/0.jpg" alt="">
-        </div>
-        <div id="tile1" class="tilePreview" onclick="setTileLayer(1)">
-            OpenStreetMap Swiss Style
-            <img src="assets/tiles_preview/1.jpg" alt="">
-        </div>
-        <div id="tile2" class="tilePreview" onclick="setTileLayer(2)">
-            OpenTopoMap
-            <img src="assets/tiles_preview/2.jpg" alt="">
-        </div>
-        <div id="tile3" class="tilePreview" onclick="setTileLayer(3)">
-            ArcGIS Satellite
-            <img src="assets/tiles_preview/3.jpg" alt="">
-        </div>
-
-        <!-- Tile Layer Options -->
-        <h3>Kacheleinstellungen</h3>
-        <h5>Farbsättigung</h5>
-        <div class="slider">
-            <input type="range" min="0" max="1" value="1" step="0.01" oninput="updateSaturation(this.value)">
-        </div>
-        <h5>Deckkraft</h5>
-        <div class="slider">
-            <input type="range" min="0.1" max="1" value="1" step="0.01" oninput="updateOpacity(this.value)">
-        </div>
-    </div>
-
-    <!-- Help Section -->
-    <div id="sbSecHelp" class="hidden">
-        <h3>Bedienungsanleitung</h3>
-    </div>
-
-    <!-- About Section -->
-    <div id="sbSecAbout" class="hidden about">
-        <h3>Projektinformationen</h3>
-        <table>
-            <tbody>
-            <tr>
-                <td><img src="assets/glyphicons/user.png" alt=""></td>
-                <td>
-                    <h5>Said Ali</h5>
-                    <p>
-                        BSc Computer Science<br>
-                        <a href="mailto:said.ali@students.unibe.ch">E-Mail</a> | <a href="https://github.com/saidalidev">GitHub</a>
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td><img src="assets/glyphicons/user.png" alt=""></td>
-                <td>
-                    <h5>Pascal André</h5>
-                    <p>
-                        BSc Computer Science<br>
-                        <a href="mailto:pascal.andre@students.unibe.ch">E-Mail</a> | <a href="https://github.com/PascalMarcAndre">GitHub</a>
-                    </p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-
-    <!-- Menu Buttons -->
-    <div class="buttons">
+    <!-- Leaflet Map - Control Panel -->
+    <div id="controlPanel" class="controlPanel">
         <ul>
-            <li id="sbBtnToggle" class="deselected" onclick="toggleSidebar()">
-                <img src="assets/glyphicons/triangle-left.png" alt="Toggle">
+            <li id="zoomIn" onclick="zoomIn()">
+                <img src="assets/glyphicons/plus.png" alt="Zoom In">
             </li>
-            <li id="sbBtnWelcome" class="deselected selected" onclick="setSidebarElement('Welcome')">
-                <img src="assets/glyphicons/home.png" alt="Welcome">
+            <li id="zoomOut" onclick="zoomOut()">
+                <img src="assets/glyphicons/minus.png" alt="Zoom Out">
             </li>
-            <li id="sbBtnSearch" class="deselected" onclick="setSidebarElement('Search')">
-                <img src="assets/glyphicons/search.png" alt="Search">
-            </li>
-            <li id="sbBtnDistance" class="deselected" onclick="setSidebarElement('Distance')">
-                <img src="assets/glyphicons/graph.png" alt="Longest Short Distances">
-            </li>
-            <li id="sbBtnOptions" class="deselected" onclick="setSidebarElement('Options')">
-                <img src="assets/glyphicons/cog.png" alt="Options">
-            </li>
-            <li id="sbBtnHelp" class="deselected" onclick="setSidebarElement('Help')">
-                <img src="assets/glyphicons/question-sign.png" alt="Help">
-            </li>
-            <li id="sbBtnAbout" class="deselected" onclick="setSidebarElement('About')">
-                <img src="assets/glyphicons/info-sign.png" alt="About">
+            <li onclick="centerMap()">
+                <img src="assets/glyphicons/home.png" alt="Fly Home">
             </li>
         </ul>
     </div>
-</div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+
+        <!-- Logo -->
+        <div class="logo" onclick="location.reload();">
+            <img src="assets/logo/sbb_logo.png" alt="SBB Logo">
+            <h1>Schweizer Tarifverbünde</h1>
+            <h2>Analyse zu Kurzstrecken</h2>
+        </div>
+
+        <!-- Welcome Section -->
+        <div id="sbSecWelcome" class="welcome">
+
+            <!-- Introduction to visualisation -->
+            <h3>Herzlich Willkommen!</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><img src="assets/glyphicons/home.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Welcome')">Freie Erkundung</h4>
+                            <p>
+                                Erkunden Sie auf der Karte alle Haltestellen inkl. deren Kurzstrecken und verschaffen
+                                Sie sich
+                                in der Sidebar einen Überblick über sämtliche Inhalte dieser Anwendung.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/search.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Search')">Suche</h4>
+                            <p>
+                                Filtern Sie die Namen aller Haltestellen nach beliebigen Suchbegriffen.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/graph.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Distance')">Analyse</h4>
+                            <p>
+                                Stöbern Sie durch die Auswertungen der Kurzstrecken und finden Sie die längsten
+                                Kurzstrecken,
+                                die Anzahl Kurzstrecken pro Haltestelle etc.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/globe.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Diagram')">Diagramme</h4>
+                            <p>
+                                Stöbern Sie durch die Visualisierungen der Zonenpläne und der Kurzstrecken und entdecken
+                                sie die
+                                lukrativsten Zonen Kurzstrecken etc.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/cog.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Options')">Optionen</h4>
+                            <p>
+                                Ändern Sie die Kartenkacheln sowie deren Farbsättigung und Transparenz.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/question-sign.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('Help')">Bedienungsanleitung</h4>
+                            <p>
+                                Informieren Sie sich über die Features dieser Applikation und wie sie diese anwenden
+                                können.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/info-sign.png" alt=""></td>
+                        <td>
+                            <h4 onclick="setSidebarElement('About')">Projektinformationen</h4>
+                            <p>
+                                Weitere Informationen über das Projekt finden Sie in diesem Abschnitt.
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Search Section -->
+        <div id="sbSecSearch" class="hidden">
+
+            <!-- Search Form -->
+            <h3>Suchen</h3>
+            <input type="text" id="searchTerms" placeholder="Suchbegriffe (mind. 3 Zeichen)">
+            <button class="red" onclick="showMatchingStations()">Suchen</button>
+            <button onclick="resetSearch()">Abbrechen</button>
+
+            <!-- Search Results -->
+            <div class="searchResults">
+                <div id="searchResults"></div>
+            </div>
+        </div>
+
+        <!-- Analyze Section -->
+        <div id="sbSecDistance" class="hidden analyze">
+
+            <!-- Analyze Dropdown Selection -->
+            <h3>Analyse</h3>
+            <select name="analyzeSelection" id="analyzeSelection" onchange="updateAnalyseLayer(event)">
+                <option disabled selected>--Auswählen--</option>
+                <option value="longestShortDistance">Längste Kurzstrecken</option>
+                <option value="shortDistanceDistribution">Kurzstreckenverteilung</option>
+            </select>
+        </div>
+
+        <!-- Diagram Section -->
+        <div id="sbSecDiagram" class="hidden analyze">
+
+            <!-- Analyze Dropdown Selection -->
+            <h3>Diagram</h3>
+
+            <!-- Add 2 buttons -->
+            <button onclick="update(data1)">Zonenplan</button>
+            <button onclick="update(data2)">Kurzstrecken</button>
+
+            <!-- Create a div where the graph will take place -->
+            <div id="my_dataviz"></div>
+            <div id="my_dataviztext"></div>
+
+            <!-- TODO  -->
+        </div>
+
+        <!-- Options Section -->
+        <div id="sbSecOptions" class="hidden options">
+
+            <!-- Tile Layer Selection -->
+            <h3>Kachelauswahl</h3>
+            <div id="tile0" class="tilePreview selected" onclick="setTileLayer(0)">
+                Mapbox
+                <img src="assets/tiles_preview/0.jpg" alt="">
+            </div>
+            <div id="tile1" class="tilePreview" onclick="setTileLayer(1)">
+                OpenStreetMap Swiss Style
+                <img src="assets/tiles_preview/1.jpg" alt="">
+            </div>
+            <div id="tile2" class="tilePreview" onclick="setTileLayer(2)">
+                OpenTopoMap
+                <img src="assets/tiles_preview/2.jpg" alt="">
+            </div>
+            <div id="tile3" class="tilePreview" onclick="setTileLayer(3)">
+                ArcGIS Satellite
+                <img src="assets/tiles_preview/3.jpg" alt="">
+            </div>
+
+            <!-- Tile Layer Options -->
+            <h3>Kacheleinstellungen</h3>
+            <h5>Farbsättigung</h5>
+            <div class="slider">
+                <input type="range" min="0" max="1" value="1" step="0.01" oninput="updateSaturation(this.value)">
+            </div>
+            <h5>Deckkraft</h5>
+            <div class="slider">
+                <input type="range" min="0.1" max="1" value="1" step="0.01" oninput="updateOpacity(this.value)">
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div id="sbSecHelp" class="hidden">
+            <h3>Bedienungsanleitung</h3>
+        </div>
+
+        <!-- About Section -->
+        <div id="sbSecAbout" class="hidden about">
+            <h3>Projektinformationen</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><img src="assets/glyphicons/user.png" alt=""></td>
+                        <td>
+                            <h5>Said Ali</h5>
+                            <p>
+                                BSc Computer Science<br>
+                                <a href="mailto:said.ali@students.unibe.ch">E-Mail</a> | <a
+                                    href="https://github.com/saidalidev">GitHub</a>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/glyphicons/user.png" alt=""></td>
+                        <td>
+                            <h5>Pascal André</h5>
+                            <p>
+                                BSc Computer Science<br>
+                                <a href="mailto:pascal.andre@students.unibe.ch">E-Mail</a> | <a
+                                    href="https://github.com/PascalMarcAndre">GitHub</a>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Menu Buttons -->
+        <div class="buttons">
+            <ul>
+                <li id="sbBtnToggle" class="deselected" onclick="toggleSidebar()">
+                    <img src="assets/glyphicons/triangle-left.png" alt="Toggle">
+                </li>
+                <li id="sbBtnWelcome" class="deselected selected" onclick="setSidebarElement('Welcome')">
+                    <img src="assets/glyphicons/home.png" alt="Welcome">
+                </li>
+                <li id="sbBtnSearch" class="deselected" onclick="setSidebarElement('Search')">
+                    <img src="assets/glyphicons/search.png" alt="Search">
+                </li>
+                <li id="sbBtnDistance" class="deselected" onclick="setSidebarElement('Distance')">
+                    <img src="assets/glyphicons/graph.png" alt="Longest Short Distances">
+                </li>
+                <li id="sbBtnDiagram" class="deselected" onclick="setSidebarElement('Diagram')">
+                    <img src="assets/glyphicons/globe.png" alt="Zoningplan">
+                </li>
+                <li id="sbBtnOptions" class="deselected" onclick="setSidebarElement('Options')">
+                    <img src="assets/glyphicons/cog.png" alt="Options">
+                </li>
+                <li id="sbBtnHelp" class="deselected" onclick="setSidebarElement('Help')">
+                    <img src="assets/glyphicons/question-sign.png" alt="Help">
+                </li>
+                <li id="sbBtnAbout" class="deselected" onclick="setSidebarElement('About')">
+                    <img src="assets/glyphicons/info-sign.png" alt="About">
+                </li>
+            </ul>
+        </div>
+    </div>
 </body>
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Color scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
 <script>
     launch();
 
     // Add event listener to input field of search section to trigger search if 'ENTER' was pressed
     document.getElementById('searchTerms').addEventListener("keyup", startSearchIfEnterWasPressed);
+
+
+    // Initialize the plot with the first dataset
+    update(data1)
+
 </script>
+
 </html>
