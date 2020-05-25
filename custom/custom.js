@@ -410,6 +410,11 @@ function centerMap() {
 
 zoningplanArray = []
 
+function zoningChart(){
+    piechart(zoningplanArray)
+
+}
+
 function showZoningplan() {
 
 
@@ -420,14 +425,14 @@ function showZoningplan() {
             d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
                 if (d.length > 0) {
-                    zoningplanArray.push(station.namen, d.length);
+                    zoningplanArray.push({ "name": station.namen, "length": d.length });
                 }
 
                 if (data[data.length - 1] === station) {
                     //Array with all Zoningplans and their number of Stations
                     console.log(zoningplanArray)
-                    piechart(zoningplanArray)
 
+                            piechart(zoningplanArray)
 
                     //Number of colors needed zoningplanArray/2
                 }
@@ -465,19 +470,19 @@ function showShortDistance(stationID) {
 
 }
 
+zoningplans = []
+
 
 function piechart(data) {
-    // set the dimensions and margins of the graph
+
     var width = 350
     height = 350
     margin = 30
 
-    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
     var radius = Math.min(width, height) / 2 - margin
 
-    
-    // append the svg object to the div called 'my_dataviz'
-    var svg = d3.select("#my_dataviz")
+    // append the svg  to div 'my_data'
+    var svg = d3.select("#my_data")
         .append("svg")
         .attr("width", width)
         .attr("height", height)
@@ -485,20 +490,18 @@ function piechart(data) {
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
     // create 2 data_set
-    var data1 = data
-    var data2 = {a: 6, b: 16, c:20, d:14, e:19, f:12}
+    for (var i = 0; i < data.length; i += 2) {  // take every second element witch is a zoningplan
+        zoningplans.push(data[i]);
+    }
 
-    // set the color scale
+    // set color scale
     var color = d3.scaleOrdinal()
-        .domain(["a", "b", "c", "d", "e", "f","g", "h", "i", "j","k"])
-        .range(d3.schemeCategory10);
+        .range(d3.schemeCategory20c);
 
-    // A function that create / update the plot for a given variable:
-    function update(data) {
 
         // Compute the position of each group on the pie:
         var pie = d3.pie()
-            .value(function (d) { return d.value; })
+            .value(function (d) { console.log(d.value.length); return d.value.length; })
             .sort(function (a, b) { console.log(a); return d3.ascending(a.key, b.key); }) // This make sure that group order remains the same in the pie chart
         var data_ready = pie(d3.entries(data))
 
@@ -522,18 +525,33 @@ function piechart(data) {
             .style("stroke-width", "2px")
             .style("opacity", 1)
 
+        // Display text inside the chart
+        d3.select("#my_data")
+            .data(data)
+            .enter()
+            .append('p') // appends paragraph for each data element
+            .text("a");
+        //.text(function(d) { return d; });
+
+
+
         // remove the group that is not present anymore
         u
             .exit()
             .remove()
 
-    }
+    
+
+    
 
     // Initialize the plot with the first dataset
-    update(data1)
 
-    document.getElementById("my_dataviztext").innerHTML = data;
 
+    zoningplan.forEach(myFunction);
+
+    function myFunction(item, index) {
+        document.getElementById("my_dataviztext").innerHTML += index + ":" + item + "<br>";
+    }
 
 }
 

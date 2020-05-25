@@ -113,6 +113,11 @@ h5 {
     font-size: 20px;
 }
 
+.legend {
+    font-size: 12px;
+    font-family: "SBB Web Roman", sans-serif;
+
+  }
 /*
  *  Forms
  */
