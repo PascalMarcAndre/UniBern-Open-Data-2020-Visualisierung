@@ -212,6 +212,8 @@ a:hover {
 /*
  *  Leaflet Map
  */
+
+ 
 #map {
     position: fixed;
     top: 0;
@@ -523,6 +525,45 @@ a:hover {
     width: 65%;
 }
 
+/*
+ *  bar chart Zoningplan
+ */
+ .chart {
+     height: auto ;
+     width: auto;
+     margin: 10px 0;
+    padding: 5px;
+
+    }
+.chart .legend {
+    fill: black;
+    font: 14px sans-serif;
+    text-anchor: start;
+    font-size: 12px;
+  }
+
+  .chart text {
+    fill: white;
+    font: 10px sans-serif;
+    text-anchor: end;
+  }
+
+  .chart .label {
+    fill: black;
+    font: 14px sans-serif;
+    text-anchor: end;
+  }
+
+  .bar:hover {
+    fill: brown;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
 /*
  *  Global
  */

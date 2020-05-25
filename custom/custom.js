@@ -23,7 +23,7 @@ function launch() {
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-    showZoningplan();
+    //showZoningplan();
 
     // Setup analyse layers
     createHeatmapLayer();
@@ -181,7 +181,7 @@ function createClusterLayer() {
         });
 
         // Add cluster layer to map only if its sidebar section is still selected
-        if(currentSidebarElement === "Welcome") {
+        if (currentSidebarElement === "Welcome") {
             clusterLayer.addTo(map);
         }
     });
@@ -280,7 +280,7 @@ function createDistanceOfShortDistancesVisualization() {
             const distance = shortDistance.distance;
 
             // Increase count of length interval based on length of current short distance
-            if(distance < 500) {
+            if (distance < 500) {
                 lengthIntervals["0.0 < x < 0.5 km"]++;
                 return null;
             } else if (500 <= distance && distance < 1000) {
@@ -324,7 +324,7 @@ function createDistanceOfShortDistancesVisualization() {
             lengthIntervals["4.5 < x"];
 
         // Lower bound percentage of how many short distances are technically too long
-        const tooLongShortDistancesRatio = tooLongShortDistancesCount/data.length;
+        const tooLongShortDistancesRatio = tooLongShortDistancesCount / data.length;
 
         // TODO: Create visualization based on above data
     })
@@ -455,7 +455,7 @@ function highlightSpot(spotData) {
     resetSVG("circle");
 
     // Set up the SVG layer
-    if (map.hasLayer(svgCircles)){
+    if (map.hasLayer(svgCircles)) {
         svgCircles.removeFrom(map);
     }
     svgCircles = L.svg();
@@ -487,7 +487,7 @@ function highlightSpot(spotData) {
  *                                'line-highlight'  - Remove only highlighted lines
  */
 function resetSVG(resetCase) {
-    switch(resetCase) {
+    switch (resetCase) {
         case "all":
             d3.selectAll("line").remove();
             d3.selectAll("line-highlight").remove();
@@ -612,22 +612,29 @@ function flyToCoordinate(lat, lng) {
  * Display Numbre of Stations per zoningplan
  */
 
-zoningplanArray = []
 
 function showZoningplan() {
 
 
     d3.sparql(LINDAS_ENDPOINT, query_allZoningplans()).then((data) => {
 
+        zoningplanArray = []
+
         data.forEach(station => {
 
             d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
-                zoningplanArray.push([station.namen, d.length]);
+                if (d.length>0){
+                //zoningplanArray.push({"name":station.namen, "length": d.length});
+                zoningplanArray.push(station.namen, d.length);
+                }
 
-                if (data[data.length-1] === station){
+                if (data[data.length - 1] === station) {
                     //Array with all Zoningplans and their number of Stations
-                    console.log(zoningplanArray)
+                    barchart(zoningplanArray)
+
+
+                    
                 }
             });
         },
@@ -807,8 +814,151 @@ function updateAnalyseLayer(event) {
             heatmapLayer.addTo(map);
             currentAnalyseLayer = heatmapLayer;
             break;
+        case ("diagramZoningplan"):
+            showZoningplan()
+
+            break;
     }
 }
+
+
+  function barchart(zoningplanArray) {
+
+
+    console.log(zoningplanArray)
+
+    
+
+    document.getElementsByClassName("chart").innerHTML = zoningplanArray;
+
+    var data = zoningplanArray
+
+    var data = {
+      labels: [
+        'resilience', 'maintainability', 'accessibility',
+        'uptime', 'functionality', 'impact'
+      ],
+      series: [
+        {
+          label: '2012',
+          values: [4, 8, 15, 16, 23, 42]
+        },
+        {
+          label: '2013',
+          values: [12, 43, 22, 11, 73, 25]
+        },
+        {
+          label: '2014',
+          values: [31, 28, 14, 8, 15, 21]
+        },]
+    };
+
+    var chartWidth = 300,
+      barHeight = 20,
+      groupHeight = barHeight * data.series.length,
+      gapBetweenGroups = 10,
+      spaceForLabels = 150,
+      spaceForLegend = 150;
+
+    // Zip the series data together (first values, second values, etc.)
+    var zippedData = [];
+    for (var i = 0; i < data.labels.length; i++) {
+      for (var j = 0; j < data.series.length; j++) {
+        zippedData.push(data.series[j].values[i]);
+      }
+    }
+    console.log(zippedData)
+
+    // Color scale
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+    var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
+
+    var x = d3.scaleLinear()
+      .domain([0, d3.max(zippedData)])
+      .range([0, chartWidth]);
+
+    var y = d3.scaleLinear()
+      .range([chartHeight + gapBetweenGroups, 0]);
+
+      var yAxis = d3.axisLeft(y)
+      .tickFormat('')
+      .tickSize(0);
+
+    // Specify the chart area and dimensions
+    var chart = d3.select(".chart")
+      .attr("width", spaceForLabels + chartWidth + spaceForLegend)
+      .attr("height", chartHeight);
+
+    // Create bars
+    var bar = chart.selectAll("g")
+      .data(zippedData)
+      .enter().append("g")
+      .attr("transform", function (d, i) {
+        return "translate(" + spaceForLabels + "," + (i * barHeight + gapBetweenGroups * (0.5 + Math.floor(i / data.series.length))) + ")";
+      });
+
+    // Create rectangles of the correct width
+    bar.append("rect")
+      .attr("fill", function (d, i) { return color(i % data.series.length); })
+      .attr("class", "bar")
+      .attr("width", x)
+      .attr("height", barHeight - 1);
+
+    // Add text label in bar
+    bar.append("text")
+      .attr("x", function (d) { return x(d) - 3; })
+      .attr("y", barHeight / 2)
+      .attr("fill", "red")
+      .attr("dy", ".35em")
+      .text(function (d) { return d; });
+
+    // Draw labels
+    bar.append("text")
+      .attr("class", "label")
+      .attr("x", function (d) { return - 10; })
+      .attr("y", groupHeight / 2)
+      .attr("dy", ".35em")
+      .text(function (d, i) {
+        if (i % data.series.length === 0)
+          return data.labels[Math.floor(i / data.series.length)];
+        else
+          return ""
+      });
+
+    chart.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + spaceForLabels + ", " + -gapBetweenGroups / 2 + ")")
+      .call(yAxis);
+
+    // Draw legend
+    var legendRectSize = 18,
+      legendSpacing = 4;
+
+    var legend = chart.selectAll('.legend')
+      .data(data.series)
+      .enter()
+      .append('g')
+      .attr('transform', function (d, i) {
+        var height = legendRectSize + legendSpacing;
+        var offset = -gapBetweenGroups / 2;
+        var horz = spaceForLabels + chartWidth + 40 - legendRectSize;
+        var vert = i * height - offset;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
+
+    legend.append('rect')
+      .attr('width', legendRectSize)
+      .attr('height', legendRectSize)
+      .style('fill', function (d, i) { return color(i); })
+      .style('stroke', function (d, i) { return color(i); });
+
+    legend.append('text')
+      .attr('class', 'legend')
+      .attr('x', legendRectSize + legendSpacing)
+      .attr('y', legendRectSize - legendSpacing)
+      .text(function (d) { return d.label; });
+  }
+
 
 
 
