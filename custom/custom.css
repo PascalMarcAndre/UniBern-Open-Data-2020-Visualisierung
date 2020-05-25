@@ -315,6 +315,12 @@ a:hover {
     color: var(--sbb-red);
 }
 
+.stationOverview .shortDistanceItem .distance {
+    display: block;
+    float: right;
+    text-align: right;
+}
+
 /*
  *  Sidebar
  */

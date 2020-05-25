@@ -372,6 +372,13 @@ function showCurrentShortDistances(station) {
             shortDistanceDiv.classList.add("shortDistanceItem");
             shortDistanceDiv.innerHTML = shortDistance.name;
 
+            // Create span-element for each short distance with its length and add CSS class and HTML content
+            const shortDistanceSpan = document.createElement("span");
+            shortDistanceSpan.classList.add("distance");
+            shortDistanceSpan.innerHTML = (shortDistance.distance / 1000).toFixed(1) + " km"; // Rounded to .1
+            // Append created span-element to its related shortDistanceDiv
+            shortDistanceDiv.appendChild(shortDistanceSpan);
+
             // Append created div-element to DOM to make it visible
             document.getElementById("stationOverview-shortDistances").appendChild(shortDistanceDiv);
         });
