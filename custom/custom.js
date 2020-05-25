@@ -106,7 +106,9 @@ function createLeafletMap() {
     // Events
     map.on('zoom', updateZoomButtons);
     map.on('moveend', updateSVGElements);
+    map.on('zoomend', updateSVGElements);
     map.on('click', resetCurrentShortDistancesLayer);
+    map.on('mouseover', () => { resetSVG("circle") });
 
     // Fix grid lines between tile images
     let originalInitTile = L.GridLayer.prototype._initTile;
