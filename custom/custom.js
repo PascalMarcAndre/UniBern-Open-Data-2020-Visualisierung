@@ -333,6 +333,7 @@ function createDistanceOfShortDistancesVisualization() {
  * Clears any markers and lines on this layer from any previous station before adding new ones from current station.
  * Requests and processes all the data. Clicking on end point displays short distances of this station.
  * End points are styled differently with alternative icon and lines change style on hover.
+ * Displays short distance data in station overview box. Plays fly animation to bounds of all short distances.
  *
  * @param station                 Station of which the short distances get displayed
  */
@@ -344,7 +345,17 @@ function showCurrentShortDistances(station) {
         document.getElementById("shortDistance-count").innerHTML =
             (data.length === 0) ? "Keine Kurzstrecken verfügbar" : (data.length + " Kurzstrecken verfügbar nach:");
 
+        // Variables to calculate bounds of short distance stations for flyTo-animation
+        // Uses departure station coordinates as starting values
+        let latMin = station.lat, latMax = station.lat, lngMin = station.lng, lngMax = station.lng;
+
         data.forEach(shortDistance => {
+            // Set lat/lng of arrival station coordinate of current short distance as new min/max if it is
+            if (parseFloat(shortDistance.lat) < latMin) latMin = parseFloat(shortDistance.lat);
+            if (parseFloat(shortDistance.lat) > latMax) latMax = parseFloat(shortDistance.lat);
+            if (parseFloat(shortDistance.lng) < lngMin) lngMin = parseFloat(shortDistance.lng);
+            if (parseFloat(shortDistance.lng) > lngMax) lngMax = parseFloat(shortDistance.lng);
+
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
                 .bindTooltip(shortDistance.name, { opacity: 1, direction: 'top', className: 'tooltip' })
@@ -370,6 +381,12 @@ function showCurrentShortDistances(station) {
 
         // Display station overview box
         document.getElementById("stationOverview").classList.remove("hidden");
+
+        // Play fly animation to bounds containing departure station and arrival station of all short distances
+        map.flyToBounds([
+            [latMin, lngMin],
+            [latMax, lngMax]
+        ]);
     });
 }
 
@@ -644,7 +661,7 @@ function showMatchingStations() {
         // Add layer containing all search result markers to map
         searchResultsLayer.addTo(map);
 
-        // Plays fly animation to bounds containing all search result markers
+        // Play fly animation to bounds containing all search result markers
         // Only plays if search results contains at least one item (which sets bound variables)
         try {
             map.flyToBounds([
