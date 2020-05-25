@@ -659,8 +659,18 @@ function showMatchingStations() {
                 if (parseFloat(station.lng) > lngMax) lngMax = parseFloat(station.lng);
             }
 
-            // Add station to search result list in sidebar section
-            document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.name + "</div>";
+            // Create div-element for each search result and add ID, CSS class and HTML content
+            const searchResultDiv = document.createElement("div");
+            searchResultDiv.id = "searchResult-" + station.ID;
+            searchResultDiv.classList.add("searchItem");
+            searchResultDiv.innerHTML = station.name;
+            // Add click event to play fly animation
+            searchResultDiv.addEventListener("click", () => {
+                flyToCoordinate(station.lat, station.lng)
+            });
+
+            // Append created div-element to DOM to make it visible
+            document.getElementById("searchResults").appendChild(searchResultDiv);
 
             // Add station as marker to search results layer and bind popup with station name
             L.marker([station.lat, station.lng], { icon: defaultIcon })
