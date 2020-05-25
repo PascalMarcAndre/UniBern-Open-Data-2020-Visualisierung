@@ -371,6 +371,10 @@ function showCurrentShortDistances(station) {
             shortDistanceDiv.id = "shortDistance-" + shortDistance.ID;
             shortDistanceDiv.classList.add("shortDistanceItem");
             shortDistanceDiv.innerHTML = shortDistance.name;
+            // Add click event to show short distances of clicked station
+            shortDistanceDiv.addEventListener("click", () => {
+                showCurrentShortDistances(shortDistance);
+            });
 
             // Create span-element for each short distance with its length and add CSS class and HTML content
             const shortDistanceSpan = document.createElement("span");
