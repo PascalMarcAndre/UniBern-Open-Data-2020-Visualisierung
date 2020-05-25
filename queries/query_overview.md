@@ -105,28 +105,53 @@ LIMIT 50
 
 
 ### Short Distances from a stationID
-Returns a list of short distances from a stationID
+Returns all short distances from the station with the given ID.  
+Includes `name`, `lat`, `lng` and `ID` of arrival station as well as the `distance` of the short distance.
 
 ````
-    PREFIX schema: <http://schema.org/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-    PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT ?arrival ?arrivalCoord ?arrivalID
-    WHERE {
-        ?Kante a otd:Relation;
-        schema:departureStation ?departurePoint;
-        schema:arrivalStation ?arrivalPoint.
-        ?departurePoint rdfs:label ?departure ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
-        dcterms:identifier ?departureID .
-        ?arrivalPoint rdfs:label ?arrival ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?arrivalCoord;
-        dcterms:identifier ?arrivalID.
-        FILTER(?departurePoint IN (<http://lod.opentransportdata.swiss/didok/` + stationID + `>))
-    }
-}
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX unit: <http://qudt.org/vocab/unit#>
+SELECT ?name ?lat ?lng ?ID ?distance
+WHERE {
+    ?Kante a otd:Relation;
+           schema:departureStation ?departurePoint;
+           schema:arrivalStation ?arrivalPoint.
+    
+    ?departurePoint rdfs:label ?departure;
+                    <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?departureCoord;
+                    dcterms:identifier ?departureID .
+    
+    ?arrivalPoint rdfs:label ?name ;
+                  <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?arrivalCoord;
+                  dcterms:identifier ?arrivalID.
+        
+    FILTER(?departurePoint IN (<http://lod.opentransportdata.swiss/didok/8571628>))
+
+    ?arrivalPoint geo:hasGeometry ?geom1;
+                  rdfs:label ?startName;
+                  dcterms:identifier ?startID .
+  
+    ?departurePoint geo:hasGeometry ?geom2 ;
+                    rdfs:label ?endName;
+                    dcterms:identifier ?endID .
+  
+    BIND(xsd:integer(geof:distance(?geom1, ?geom2, unit:Meter)) as ?distance) 
+  
+    BIND(REPLACE(STR(?arrivalCoord), "POINT\\(", "") AS ?tmpCoord)
+    BIND(REPLACE(?tmpCoord, "\\)", "") AS ?tmpCoord2)
+
+    BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
+    BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
+  
+    BIND(?arrivalID AS ?ID)
+} ORDER BY ?name
 ````
+
 
 ### All Zoning Plan
 Returns all zoning plans
