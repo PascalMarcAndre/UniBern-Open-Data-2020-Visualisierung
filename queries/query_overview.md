@@ -12,9 +12,9 @@ Returns a list of all stations.
 PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX swiss:  <https://ld.geo.admin.ch/>
  
-SELECT ?ID ?Name ?lat ?lng {
+SELECT ?ID ?name ?lat ?lng {
     ?a a <http://vocab.gtfs.org/terms#Stop>.
-    ?a <http://schema.org/name> ?Name .
+    ?a <http://schema.org/name> ?name .
     ?a geo:lat ?lat .
     ?a geo:long ?lng .
     ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
@@ -36,13 +36,13 @@ PREFIX schema: <http://schema.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
-SELECT distinct ?Station ?Name ?Coord
+SELECT distinct ?Station ?name ?Coord
 WHERE {
-    ?Station rdfs:label ?Name ;
+    ?Station rdfs:label ?name ;
     <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
 
-    FILTER(contains(lcase(?Name), lcase("Thun")))
-    FILTER(contains(lcase(?Name), lcase("Bahnhof")))
+    FILTER(contains(lcase(?name), lcase("Thun")))
+    FILTER(contains(lcase(?name), lcase("Bahnhof")))
 }
 ````
 

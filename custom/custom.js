@@ -173,7 +173,7 @@ function createClusterLayer() {
             // Create marker (incl. tooltip) and add it to cluster layer
             markers[station.ID] = L.marker([station.lat, station.lng], { icon: defaultIcon })
                 .addTo(clusterLayer)
-                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
+                .bindTooltip(station.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
         });
 
@@ -337,7 +337,6 @@ function createDistanceOfShortDistancesVisualization() {
  */
 function showCurrentShortDistances(station) {
     d3.sparql(LINDAS_ENDPOINT, query_allShortDistancesForStation(station.ID)).then((data) => {
-        console.log(station.Name + " " + data.length);
         resetCurrentShortDistancesLayer();
 
         data.forEach(shortDistance => {
@@ -504,12 +503,12 @@ function showMatchingStations() {
             }
 
             // Add station to search result list in sidebar section
-            document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.Name + "</div>";
+            document.getElementById("searchResults").innerHTML += "<div class='searchItem'>" + station.name + "</div>";
 
             // Add station as marker to search results layer and bind popup with station name
             L.marker([station.lat, station.lng], { icon: defaultIcon })
                 .addTo(searchResultsLayer)
-                .bindTooltip(station.Name, { opacity: 1, direction: 'top', className: 'tooltip' })
+                .bindTooltip(station.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
         });
 

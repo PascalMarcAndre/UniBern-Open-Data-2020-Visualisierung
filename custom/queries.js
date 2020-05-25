@@ -3,9 +3,9 @@ function query_allStations() {
     PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
     PREFIX swiss:  <https://ld.geo.admin.ch/>
      
-    SELECT ?ID ?Name ?lat ?lng {
+    SELECT ?ID ?name ?lat ?lng {
         ?a a <http://vocab.gtfs.org/terms#Stop>.
-        ?a <http://schema.org/name> ?Name .
+        ?a <http://schema.org/name> ?name .
         ?a geo:lat ?lat .
         ?a geo:long ?lng .
         ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
@@ -21,12 +21,12 @@ function query_allStationsLibero() {
     PREFIX schema: <http://schema.org/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX otd: <http://lod.opentransportdata.swiss/vocab/> PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT distinct ?Station ?Name ?Coord ?departureID
+    SELECT distinct ?Station ?name ?Coord ?departureID
     WHERE {
         ?Kante a otd:Relation; 
         otd:zoningPlan<http://lod.opentransportdata.swiss/zoningplan/libero/libero-billett-libero>;
         schema:departureStation ?Station .
-        ?Station rdfs:label ?Name ;
+        ?Station rdfs:label ?name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;              dcterms:identifier ?departureID .
     }
     limit 10000
@@ -38,7 +38,7 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     let searchTermList = searchTerms.split(" ");
 
     searchTermList.forEach(term => {
-        filters += "FILTER(contains(lcase(?Name), lcase(\"" + term + "\"))) "
+        filters += "FILTER(contains(lcase(?name), lcase(\"" + term + "\"))) "
     });
 
     return `
@@ -48,9 +48,9 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
     PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT distinct ?ID ?Name ?lat ?lng
+    SELECT distinct ?ID ?name ?lat ?lng
     WHERE {
-        ?Identifier rdfs:label ?Name ;
+        ?Identifier rdfs:label ?name ;
         <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
         
         BIND(STRAFTER(STR(?Identifier), "didok/") AS ?ID)
@@ -59,7 +59,7 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
         BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
         BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
         BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
-    ` + filters + "} ORDER BY ?Name"
+    ` + filters + "} ORDER BY ?name"
 }
 
 
