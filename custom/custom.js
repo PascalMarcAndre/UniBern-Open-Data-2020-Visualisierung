@@ -380,6 +380,34 @@ let svgLines = L.svg();
 // SVG Layer for the Leaflet map containing only circles
 let svgCircles = L.svg();
 
+/**
+ * Resets the SVG layers to a predefined case according to the specified string 'resetCase'.
+ *
+ * @param resetCase               String describing which reset case that should be used. Possible values are:
+ *                                'all'             - Remove all circles and lines
+ *                                'circle'          - Remove only circles
+ *                                'line'            - Remove only lines
+ *                                'line-highlight'  - Remove only highlighted lines
+ */
+function resetSVG(resetCase) {
+    switch(resetCase) {
+        case "all":
+            d3.selectAll("line").remove();
+            d3.selectAll("line-highlight").remove();
+            d3.selectAll("circle").remove();
+            break;
+        case "circle":
+            d3.selectAll("circle").remove();
+            break;
+        case "line":
+            d3.selectAll("line").remove();
+            break;
+        case "line-highlight":
+            d3.selectAll("line-highlight").remove();
+            break;
+    }
+}
+
 
 
 /*******************************************************************************************************
