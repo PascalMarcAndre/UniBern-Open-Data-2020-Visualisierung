@@ -528,6 +528,17 @@ a:hover {
     width: 65%;
 }
 
+.about .description {
+    margin: 15px 0;
+    padding: 1px;
+    font-size: 15px;
+    text-align: justify;
+}
+
+.about .description strong {
+    font-size: 16px;
+}
+
 /*
  *  bar chart Zoningplan
  */
