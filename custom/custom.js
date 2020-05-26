@@ -1200,10 +1200,23 @@ let sidebarOpen = true;
  * Toggles the sidebar on and off.
  */
 function toggleSidebar() {
-    let elCList = document.getElementById("sidebar").classList;
-    sidebarOpen ? elCList.add("closed") : elCList.remove("closed");
+    let sidebarCList = document.getElementById("sidebar").classList;
+    sidebarOpen ? sidebarCList.add("closed") : sidebarCList.remove("closed");
+
+    let mapCList = document.getElementById("map").classList;
+    sidebarOpen ? mapCList.add("closed") : mapCList.remove("closed");
 
     sidebarOpen = !sidebarOpen;
+
+    // Add interval to repeatedly adjust map view while sidebar is toggled
+    const readjustMap = setInterval(()=>{
+        map.invalidateSize()
+    },5);
+
+    // Remove interval of readjusting map once transition is over
+    setTimeout(()=>{
+        clearInterval(readjustMap)
+    },500);
 }
 
 /**

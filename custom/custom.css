@@ -212,15 +212,19 @@ a:hover {
 /*
  *  Leaflet Map
  */
-
- 
 #map {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: 350px;
+    width: calc(100% - 350px);
     height: 100%;
     background-color: #000;
+    transition: 0.3s;
+}
+
+#map.closed {
+    left: 0;
+    width: 100%;
 }
 
 /* Saturation */
