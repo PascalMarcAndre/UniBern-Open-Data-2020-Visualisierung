@@ -796,9 +796,9 @@ function showMatchingStations() {
             searchResultDiv.id = "searchResult-" + station.ID;
             searchResultDiv.classList.add("searchItem");
             searchResultDiv.innerHTML = station.name;
-            // Add click event to play fly animation
+            // Add click event to show short distances of search result
             searchResultDiv.addEventListener("click", () => {
-                flyToCoordinate(station.lat, station.lng)
+                showCurrentShortDistances(station);
             });
             // Add mouseover event to display circle around search result marker on map
             searchResultDiv.addEventListener("mouseover", () => {
