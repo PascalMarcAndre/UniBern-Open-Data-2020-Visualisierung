@@ -507,16 +507,16 @@ a:hover {
 
 .about table {
     width: 100%;
-    margin-top: 30px;
 }
 
 .about img {
-    margin-top: -5px;
-    max-width: 95%;
+    display: block;
+    width: 80%;
+    margin: 7px auto;
+    border-radius: 10px;
 }
 
 .about td {
-    padding: 10px 0;
     vertical-align: top;
 }
 
