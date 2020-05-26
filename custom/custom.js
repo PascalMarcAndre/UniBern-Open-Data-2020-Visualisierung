@@ -23,9 +23,8 @@ function launch() {
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-    //createZoningplanVisualization
+    createZoningplanVisualization()
     createDistanceOfShortDistancesVisualization()
-
     // Setup analyse layers
     createHeatmapLayer();
     createLongestShortDistancesLayer();
@@ -269,12 +268,14 @@ function createDistanceOfShortDistancesVisualization() {
             "0.0 < x < 0.5 km": 0,
             "0.5 < x < 1.0 km": 0,
             "1.0 < x < 1.5 km": 0,
+            "1.5 < x": 0
+
+            /**,
             "1.5 < x < 2.0 km": 0,
             "2.0 < x < 2.5 km": 0,
             "2.5 < x < 3.0 km": 0,
             "3.0 < x < 3.5 km": 0,
-            "3.5 < x": 0
-            /**,
+            
             "3.5 < x < 4.0 km": 0,
             "4.0 < x < 4.5 km": 0,
             "4.5 < x": 0
@@ -296,10 +297,10 @@ function createDistanceOfShortDistancesVisualization() {
             } else if (1000 <= distance && distance < 1500) {
                 lengthIntervals["1.0 < x < 1.5 km"]++;
                 return null;
-            } else if (1500 <= distance && distance < 2000) {
-                lengthIntervals["1.5 < x < 2.0 km"]++;
+            } else if (1500 <= distance) {
+                lengthIntervals["1.5 < x"]++;
                 return null;
-            } else if (2000 <= distance && distance < 2500) {
+            } /**     else if (2000 <= distance && distance < 2500) {
                 lengthIntervals["2.0 < x < 2.5 km"]++;
                 return null;
             } else if (2500 <= distance && distance < 3000) {
@@ -310,33 +311,34 @@ function createDistanceOfShortDistancesVisualization() {
                 return null;
             } else if (3500 <= distance
 
-                /**                && distance < 4000) {
+                           && distance < 4000) {
                                 lengthIntervals["3.5 < x < 4.0 km"]++;
                                 return null;
                             } else if (4000 <= distance && distance < 4500) {
                                 lengthIntervals["4.0 < x < 4.5 km"]++;
                                 return null;
-                            } else if (4500 <= distance*/
+                            } else if (4500 <= distance
             ) {
                 //Changed Interval set
                 lengthIntervals["3.5 < x"]++;
                 return null;
-            }
+            }*/
         });
 
         // Lower bound number of short distances which technically are too long (over 1.5 km)
-        const tooLongShortDistancesCount =
+        const tooLongShortDistancesCount = lengthIntervals["1.5 < x"]
+
+        /*
             lengthIntervals["1.5 < x < 2.0 km"] +
             lengthIntervals["2.0 < x < 2.5 km"] +
             lengthIntervals["2.5 < x < 3.0 km"] +
             lengthIntervals["3.0 < x < 3.5 km"] +
-            lengthIntervals["3.5 < x"]
-        /*< 4.0 km"] +
+            lengthIntervals["3.5 < x< 4.0 km"] +
         lengthIntervals["4.0 < x < 4.5 km"] +
         lengthIntervals["4.5 < x"];
-        */      
+        */
         // Lower bound percentage of how many short distances are technically too long
-        percentageTooLong = (tooLongShortDistancesCount*100 / data.length).toFixed(1);
+        percentageTooLong = (tooLongShortDistancesCount * 100 / data.length).toFixed(1);
 
 
         // TODO: Create visualization based on above data
@@ -347,6 +349,64 @@ function createDistanceOfShortDistancesVisualization() {
         lengthIntervalShortDistance = lengthIntervals;
     })
 }
+
+/**
+ * Creates and sets up the 'Distance of Short Distances' visualization for each zoningplan.
+ * Requests and processes all the data. Counts number of short distances between specific length intervals.
+ * compared to overall number of short distances. Creates visualization based on given data and adds it to sidebar.
+ */
+let zoningPlanwithShortDistance = [];
+function createZoningplanDistanceOfShortDistancesVisualization(station) {
+
+    // Request list with length of each available short distance
+    d3.sparql(LINDAS_ENDPOINT, query_distanceOfZoningplanShortDistances(station.Zonenplan)).then(data => {
+
+        // Set up array with specific length intervals to count its number of short distance
+        let lengthIntervals = {
+            "Zoningplan": station.namen,
+            "0.0 < x < 0.5 km": 0,
+            "0.5 < x < 1.0 km": 0,
+            "1.0 < x < 1.5 km": 0,
+            "1.5 < x": 0
+        };
+
+        // Assign each short distance to a group according to its length
+        data.forEach(shortDistance => {
+            // Distance of currently evaluated short distance
+            const distance = shortDistance.distance;
+
+            // Increase count of length interval based on length of current short distance
+            if (distance < 500) {
+                lengthIntervals["0.0 < x < 0.5 km"]++;
+                return null;
+            } else if (500 <= distance && distance < 1000) {
+                lengthIntervals["0.5 < x < 1.0 km"]++;
+                return null;
+            } else if (1000 <= distance && distance < 1500) {
+                lengthIntervals["1.0 < x < 1.5 km"]++;
+                return null;
+            } else if (1500 <= distance) {
+                lengthIntervals["1.5 < x"]++;
+                return null;
+            }
+        });
+
+        const zoningPlanwithShortDistanceLength = lengthIntervals["0.0 < x < 0.5 km"] +
+            lengthIntervals["0.5 < x < 1.0 km"] +
+            lengthIntervals["1.0 < x < 1.5 km"] +
+            lengthIntervals["1.5 < x"]
+
+        //Currently 12 Zoningplans with short distances
+        if (zoningPlanwithShortDistanceLength > 0) {
+            zoningPlanwithShortDistance.push(lengthIntervals)
+
+            console.log(lengthIntervals)
+        }
+        //TODO Array
+        //lengthIntervalShortDistance = lengthIntervals;
+    })
+}
+
 
 /**
  * Shows all short distances of the given station. Adds end point and connecting lines to 'currentShortDistancesLayer'.
@@ -628,6 +688,8 @@ function flyToCoordinate(lat, lng) {
 
 /**
  * Display Number of Stations per zoningplan
+ * Creates Zoningplan Visualization
+ * Prepares data for Bar Chart for each zoningplan
  */
 
 
@@ -639,22 +701,24 @@ function createZoningplanVisualization() {
         zoningplanArray = []
 
         data.forEach(station => {
-
-            d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
-
-                if (d.length > 0) {
-                    //zoningplanArray.push({"name":station.namen, "length": d.length});
-                    zoningplanArray.push(station.namen, d.length);
-                }
-
-                if (data[data.length - 1] === station) {
-                    //Array with all Zoningplans and their number of Stations
-                    barchart(zoningplanArray)
+            createZoningplanDistanceOfShortDistancesVisualization(station),
 
 
+                d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
-                }
-            });
+                    if (d.length > 0) {
+                        //zoningplanArray.push({"name":station.namen, "length": d.length});
+                        zoningplanArray.push(station.namen, d.length);
+                    }
+
+                    if (data[data.length - 1] === station) {
+                        //Array with all Zoningplans and their number of Stations
+                        // TODO, piechart, barchart(zoningplanArray)
+
+
+
+                    }
+                });
         },
         );
     })
@@ -835,8 +899,13 @@ function updateAnalyseLayer(event) {
             currentAnalyseLayer = heatmapLayer;
             break;
         case ("diagramZoningplan"):
-            createZoningplanVisualization()
+            //createZoningplanVisualization()
             // Create Bar Chart for createDistanceOfShortDistancesVisualization
+            console.log(lengthIntervalShortDistance["0.0 < x < 0.5 km"]);
+            console.log(lengthIntervalShortDistance["0.5 < x < 1.0 km"]);
+            console.log(lengthIntervalShortDistance["1.0 < x < 1.5 km"]);
+            console.log(lengthIntervalShortDistance["1.5 < x"]);
+
             barchart(lengthIntervalShortDistance)
             break;
     }
@@ -852,12 +921,11 @@ function resetSideBar() {
 
 function barchart(shortDistanceInterval) {
 
-    console.log( +
-    shortDistanceInterval["2.0 < x < 2.5 km"] +
-    shortDistanceInterval["2.5 < x < 3.0 km"] +
-    shortDistanceInterval["3.0 < x < 3.5 km"] +
-    shortDistanceInterval["3.5 < x"])
-   
+    console.log(zoningPlanwithShortDistance[0]["0.0 < x < 0.5 km"])
+
+    console.log(shortDistanceInterval["0.0 < x < 0.5 km"])
+
+
     document.getElementById("barcharttext").innerHTML = "Insgesamt sind <b>" + tooLongShortDistance +
         "% </b> aller Kurzstrecken per Definition keine Kurzstrecken, da diese länger als 1.5 km sind.";
 
@@ -867,25 +935,104 @@ function barchart(shortDistanceInterval) {
 
     var data = shortDistanceInterval
 
+    //Define 4 Intervallbounds
+    var i1 = '0.0 < x < 0.5 km'
+    var i2 = '0.5 < x < 1.0 km'
+    var i3 = '1.0 < x < 1.5 km'
+    var i4 = '1.5 < x'
+
     var data = {
         labels: [
-            'Total', 'maintainability', 'accessibility',
-            'uptime', 'functionality', 'impact'
+            'Total',
+            zoningPlanwithShortDistance[0].Zoningplan,
+            zoningPlanwithShortDistance[1].Zoningplan,
+            zoningPlanwithShortDistance[2].Zoningplan,
+            zoningPlanwithShortDistance[3].Zoningplan,
+            zoningPlanwithShortDistance[4].Zoningplan,
+            zoningPlanwithShortDistance[5].Zoningplan,
+            zoningPlanwithShortDistance[6].Zoningplan,
+            zoningPlanwithShortDistance[7].Zoningplan,
+            zoningPlanwithShortDistance[8].Zoningplan,
+            zoningPlanwithShortDistance[9].Zoningplan,
+            zoningPlanwithShortDistance[10].Zoningplan
         ],
         series: [
             {
-                label: '2012',
-                values: [4, 8, 15, 16, 23, 42]
+
+                label: i1,
+                values:
+                    [
+                        shortDistanceInterval[i1],
+                        zoningPlanwithShortDistance[0][i1],
+                        zoningPlanwithShortDistance[1][i1],
+                        zoningPlanwithShortDistance[2][i1],
+                        zoningPlanwithShortDistance[3][i1],
+                        zoningPlanwithShortDistance[4][i1],
+                        zoningPlanwithShortDistance[5][i1],
+                        zoningPlanwithShortDistance[6][i1],
+                        zoningPlanwithShortDistance[7][i1],
+                        zoningPlanwithShortDistance[8][i1],
+                        zoningPlanwithShortDistance[9][i1],
+                        zoningPlanwithShortDistance[10][i1]
+                    ]
             },
             {
-                label: '2013',
-                values: [12, 43, 22, 11, 73, 25]
+                label: i2,
+                values:
+                    [
+                        shortDistanceInterval[i2],
+                        zoningPlanwithShortDistance[0][i2],
+                        zoningPlanwithShortDistance[1][i2],
+                        zoningPlanwithShortDistance[2][i2],
+                        zoningPlanwithShortDistance[3][i2],
+                        zoningPlanwithShortDistance[4][i2],
+                        zoningPlanwithShortDistance[5][i2],
+                        zoningPlanwithShortDistance[6][i2],
+                        zoningPlanwithShortDistance[7][i2],
+                        zoningPlanwithShortDistance[8][i2],
+                        zoningPlanwithShortDistance[9][i2],
+                        zoningPlanwithShortDistance[10][i2]
+                    ]
             },
             {
-                label: '2014',
-                values: [31, 28, 14, 8, 15, 21]
+                label: i3,
+                values:
+                    [
+                        shortDistanceInterval[i3],
+                        zoningPlanwithShortDistance[0][i3],
+                        zoningPlanwithShortDistance[1][i3],
+                        zoningPlanwithShortDistance[2][i3],
+                        zoningPlanwithShortDistance[3][i3],
+                        zoningPlanwithShortDistance[4][i3],
+                        zoningPlanwithShortDistance[5][i3],
+                        zoningPlanwithShortDistance[6][i3],
+                        zoningPlanwithShortDistance[7][i3],
+                        zoningPlanwithShortDistance[8][i3],
+                        zoningPlanwithShortDistance[9][i3],
+                        zoningPlanwithShortDistance[10][i3]]
+            },
+            {
+                label: i4,
+                values:
+                    [
+                        shortDistanceInterval[i4],
+                        zoningPlanwithShortDistance[0][i4],
+                        zoningPlanwithShortDistance[1][i4],
+                        zoningPlanwithShortDistance[2][i4],
+                        zoningPlanwithShortDistance[3][i],
+                        zoningPlanwithShortDistance[4][i4],
+                        zoningPlanwithShortDistance[5][i4],
+                        zoningPlanwithShortDistance[6][i4],
+                        zoningPlanwithShortDistance[7][i4],
+                        zoningPlanwithShortDistance[8][i4],
+                        zoningPlanwithShortDistance[9][i4],
+                        zoningPlanwithShortDistance[10][i4]
+                    ]
             },]
     };
+
+
+
 
     var chartWidth = 100,
         barHeight = 20,
