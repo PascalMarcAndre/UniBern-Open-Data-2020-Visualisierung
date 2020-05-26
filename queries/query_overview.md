@@ -229,7 +229,7 @@ SELECT * WHERE {
   } 
 ````
 
-### List with Distance of all Short Distances
+### Distance of all Short Distances
 Returns a list that only includes the distance of all short distances.
 
 ````
@@ -259,5 +259,20 @@ WHERE {
        dcterms:identifier ?endID .
   
   BIND(xsd:integer(geof:distance(?geom1, ?geom2, unit:Meter)) as ?distance)
+}
+````
+
+### ID of all Stations with Short Distances
+Returns a list that only includes the `ID` of all stations with short distances.
+
+````
+PREFIX schema: <http://schema.org/>
+PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+SELECT distinct ?ID
+WHERE {
+    ?Kante a otd:Relation;
+             schema:departureStation ?departurePoint.
+    ?departurePoint dcterms:identifier ?ID .
 }
 ````

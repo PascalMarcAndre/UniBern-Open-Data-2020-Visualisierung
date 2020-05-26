@@ -321,3 +321,17 @@ function query_distanceOfZoningplanShortDistances(zoningPlan) {
     }
     `
 }
+
+function query_IdOfAllStationsWithShortDistances() {
+    return `
+    PREFIX schema: <http://schema.org/>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT distinct ?ID
+    WHERE {
+        ?Kante a otd:Relation;
+                 schema:departureStation ?departurePoint.
+        ?departurePoint dcterms:identifier ?ID .
+    }
+    `
+}

@@ -9,6 +9,9 @@ const SWISSTOPO_ENDPOINT = "https://ld.geo.admin.ch/query";
 // Name of currently selected sidebar element
 let currentSidebarElement = "Welcome";
 
+// List of station ID's that include at least one short distance
+let stationsWithShortDistances = [];
+
 
 
 /*******************************************************************************************************
@@ -81,6 +84,15 @@ const defaultIcon = L.icon({
 // Leaflet icon of default black/red marker icon
 const alternativeIcon = L.icon({
     iconUrl: 'assets/icons/marker-icon-alt.png',
+    shadowUrl: 'assets/icons/marker-shadow.png',
+    iconAnchor: [12, 41],
+    shadowAnchor: [12, 41],
+    tooltipAnchor: [12, -30]
+});
+
+// Leaflet icon of default black/red marker icon but with a lighter color tone
+const lightDefaultIcon = L.icon({
+    iconUrl: 'assets/icons/marker-icon-light.png',
     shadowUrl: 'assets/icons/marker-shadow.png',
     iconAnchor: [12, 41],
     shadowAnchor: [12, 41],
@@ -162,6 +174,8 @@ function createLeafletTiles() {
  * Creates and sets up the cluster layer which includes all stations. Requests and processes all the data.
  * Custom cluster layer options are set during creation incl. cluster radius and disabling clustering for highest levels.
  * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
+ * Requests list of ID's of all stations with at least one short distance and stores them for later.
+ * Overwrites icons for stations that include short distances with different icon to separate them visually on the map.
  */
 function createClusterLayer() {
     // Add default cluster layer containing all stations
@@ -174,16 +188,28 @@ function createClusterLayer() {
     d3.sparql(SWISSTOPO_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and add it to cluster layer
-            markers[station.ID] = L.marker([station.lat, station.lng], { icon: defaultIcon })
+            markers[station.ID] = L.marker([station.lat, station.lng], { icon: lightDefaultIcon })
                 .addTo(clusterLayer)
                 .bindTooltip(station.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
         });
 
-        // Add cluster layer to map only if its sidebar section is still selected
-        if (currentSidebarElement === "Welcome") {
-            clusterLayer.addTo(map);
-        }
+        // Requests a list of ID's of all stations with at least one short distance
+        d3.sparql(LINDAS_ENDPOINT, query_IdOfAllStationsWithShortDistances()).then(data => {
+            // Stores received data for later usage when new markers are created
+            stationsWithShortDistances = data;
+
+            // Overwrites lighter default icon for all markers that represent stations with at least one short distance
+            data.forEach(station => {
+                // Tries to update marker with darker default icon
+                try { markers[station.ID].setIcon(defaultIcon) } catch {}
+            });
+
+            // Add cluster layer to map only if its sidebar section is still selected
+            if(currentSidebarElement === "Welcome") {
+                clusterLayer.addTo(map);
+            }
+        });
     });
 }
 
@@ -821,9 +847,9 @@ function showMatchingStations() {
             searchResultDiv.id = "searchResult-" + station.ID;
             searchResultDiv.classList.add("searchItem");
             searchResultDiv.innerHTML = station.name;
-            // Add click event to play fly animation
+            // Add click event to show short distances of search result
             searchResultDiv.addEventListener("click", () => {
-                flyToCoordinate(station.lat, station.lng)
+                showCurrentShortDistances(station);
             });
             // Add mouseover event to display circle around search result marker on map
             searchResultDiv.addEventListener("mouseover", () => {
@@ -1230,10 +1256,23 @@ let sidebarOpen = true;
  * Toggles the sidebar on and off.
  */
 function toggleSidebar() {
-    let elCList = document.getElementById("sidebar").classList;
-    sidebarOpen ? elCList.add("closed") : elCList.remove("closed");
+    let sidebarCList = document.getElementById("sidebar").classList;
+    sidebarOpen ? sidebarCList.add("closed") : sidebarCList.remove("closed");
+
+    let mapCList = document.getElementById("map").classList;
+    sidebarOpen ? mapCList.add("closed") : mapCList.remove("closed");
 
     sidebarOpen = !sidebarOpen;
+
+    // Add interval to repeatedly adjust map view while sidebar is toggled
+    const readjustMap = setInterval(()=>{
+        map.invalidateSize()
+    },5);
+
+    // Remove interval of readjusting map once transition is over
+    setTimeout(()=>{
+        clearInterval(readjustMap)
+    },500);
 }
 
 /**

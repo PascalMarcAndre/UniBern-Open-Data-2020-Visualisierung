@@ -90,7 +90,7 @@ h2 {
 }
 
 h3 {
-    margin: 35px 0 5px 0;
+    margin: 25px 0 5px 0;
     padding: 5px 10px;
     background-color: var(--sbb-dark);
     color: var(--sbb-light);
@@ -212,15 +212,19 @@ a:hover {
 /*
  *  Leaflet Map
  */
-
- 
 #map {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: 350px;
+    width: calc(100% - 350px);
     height: 100%;
     background-color: #000;
+    transition: 0.3s;
+}
+
+#map.closed {
+    left: 0;
+    width: 100%;
 }
 
 /* Saturation */
@@ -440,7 +444,6 @@ a:hover {
 }
 
 .welcome td {
-    padding: 10px 0;
     vertical-align: top;
 }
 
@@ -504,16 +507,16 @@ a:hover {
 
 .about table {
     width: 100%;
-    margin-top: 30px;
 }
 
 .about img {
-    margin-top: -5px;
-    max-width: 95%;
+    display: block;
+    width: 80%;
+    margin: 7px auto;
+    border-radius: 10px;
 }
 
 .about td {
-    padding: 10px 0;
     vertical-align: top;
 }
 
@@ -523,6 +526,17 @@ a:hover {
 
 .about td:nth-child(2) {
     width: 65%;
+}
+
+.about .description {
+    margin: 15px 0;
+    padding: 1px;
+    font-size: 15px;
+    text-align: justify;
+}
+
+.about .description strong {
+    font-size: 16px;
 }
 
 /*
@@ -592,3 +606,29 @@ a:hover {
     MEDIA QUERIES
 #########################################################*/
 
+@media screen and (max-width: 470px) {
+    #map {
+        left: 290px;
+        width: calc(100% - 290px);
+    }
+
+    #sidebar {
+        width: 290px;
+    }
+
+    #sidebar.closed {
+        left: -290px;
+    }
+
+    #sidebar .buttons {
+        left: 285px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}
