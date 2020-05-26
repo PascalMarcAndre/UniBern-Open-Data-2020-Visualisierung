@@ -592,3 +592,29 @@ a:hover {
     MEDIA QUERIES
 #########################################################*/
 
+@media screen and (max-width: 470px) {
+    #map {
+        left: 290px;
+        width: calc(100% - 290px);
+    }
+
+    #sidebar {
+        width: 290px;
+    }
+
+    #sidebar.closed {
+        left: -290px;
+    }
+
+    #sidebar .buttons {
+        left: 285px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}
