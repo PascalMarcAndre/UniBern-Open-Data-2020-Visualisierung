@@ -782,6 +782,9 @@ function createZoningplanVisualization() {
  * Functions and variables related to the 'Search' section in the sidebar.
  ******************************************************************************************************/
 
+// List of Leaflet markers that contains all stations matching the current search terms
+let searchResultMarkers;
+
 /**
  * Displays all markers that match the user's search terms on the map. Updates search results in sidebar section.
  * Plays fly animation that sets the view to the bounds containing all search result markers.
@@ -789,6 +792,9 @@ function createZoningplanVisualization() {
 function showMatchingStations() {
     // Get user's search terms from input field
     let searchTerms = document.getElementById("searchTerms").value;
+
+    // Reset list of search result markers
+    searchResultMarkers = [];
 
     // Remove any previous search results from map and sidebar section
     try { map.removeLayer(searchResultsLayer); } catch { }
@@ -863,11 +869,17 @@ function showMatchingStations() {
             // Append created div-element to DOM to make it visible
             document.getElementById("searchResults").appendChild(searchResultDiv);
 
-            // Add station as marker to search results layer and bind popup with station name
-            L.marker([station.lat, station.lng], { icon: defaultIcon })
+            // Add station as marker to both search results layer/array and bind popup with station name
+            searchResultMarkers[station.ID] = L.marker([station.lat, station.lng], { icon: lightDefaultIcon })
                 .addTo(searchResultsLayer)
                 .bindTooltip(station.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
+        });
+
+        // Overwrites lighter default icon for all markers that represent stations with at least one short distance
+        stationsWithShortDistances.forEach(station => {
+            // Tries to update marker with darker default icon if it exists in search results array
+            try { searchResultMarkers[station.ID].setIcon(defaultIcon) } catch { }
         });
 
         // Add layer containing all search result markers to map
