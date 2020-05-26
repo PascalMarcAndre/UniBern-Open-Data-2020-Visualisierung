@@ -340,6 +340,11 @@ function createDistanceOfShortDistancesVisualization() {
         // Lower bound percentage of how many short distances are technically too long
         percentageTooLong = (tooLongShortDistancesCount * 100 / data.length).toFixed(1);
 
+        lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"]* 100 / data.length).toFixed(1);
+        lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"]* 100 / data.length).toFixed(1);
+        lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"]* 100 / data.length).toFixed(1);
+        lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"]* 100 / data.length).toFixed(1);
+
 
         // TODO: Create visualization based on above data
         //save data into global variable
@@ -360,6 +365,18 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
 
     // Request list with length of each available short distance
     d3.sparql(LINDAS_ENDPOINT, query_distanceOfZoningplanShortDistances(station.Zonenplan)).then(data => {
+
+        if (station.namen === "Léman Pass Abo &amp; Billett"){
+            station.namen = "Léman Pass Abo"
+            console.log(station.namen)
+
+        }
+
+        if (station.namen === "A-Welle Abo &amp; Billett"){
+            station.namen = "A-Welle Abo  Billett"
+            console.log(station.namen)
+
+        }
 
         // Set up array with specific length intervals to count its number of short distance
         let lengthIntervals = {
@@ -395,6 +412,14 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
             lengthIntervals["0.5 < x < 1.0 km"] +
             lengthIntervals["1.0 < x < 1.5 km"] +
             lengthIntervals["1.5 < x"]
+        
+            //Define data as percentage
+            lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"]* 100 / data.length).toFixed(1);
+            lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"]* 100 / data.length).toFixed(1);
+            lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"]* 100 / data.length).toFixed(1);
+            lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"]* 100 / data.length).toFixed(1);
+    
+    
 
         //Currently 12 Zoningplans with short distances
         if (zoningPlanwithShortDistanceLength > 0) {
@@ -913,6 +938,8 @@ function updateAnalyseLayer(event) {
 
 function resetSideBar() {
     console.log("remove")
+    document.getElementById("barchartLegend").innerHTML = " ";
+
     document.getElementById("barcharttext").innerHTML = " ";
     //document.getElementById("chartset").innerHTML = " ";
 
@@ -921,9 +948,12 @@ function resetSideBar() {
 
 function barchart(shortDistanceInterval) {
 
-    console.log(zoningPlanwithShortDistance[0]["0.0 < x < 0.5 km"])
+    console.log(zoningPlanwithShortDistance)
 
     console.log(shortDistanceInterval["0.0 < x < 0.5 km"])
+
+
+    document.getElementById("barchartLegend").innerHTML = "<h5>Prozentanteil der Intervalle pro Zonenplan</h5>";
 
 
     document.getElementById("barcharttext").innerHTML = "Insgesamt sind <b>" + tooLongShortDistance +
@@ -1034,12 +1064,12 @@ function barchart(shortDistanceInterval) {
 
 
 
-    var chartWidth = 100,
+    var chartWidth = 15,
         barHeight = 20,
         groupHeight = barHeight * data.series.length,
         gapBetweenGroups = 10,
         spaceForLabels = 150,
-        spaceForLegend = 150;
+        spaceForLegend = 200;
 
     // Zip the series data together (first values, second values, etc.)
     var zippedData = [];

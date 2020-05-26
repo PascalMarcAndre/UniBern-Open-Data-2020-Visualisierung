@@ -530,7 +530,7 @@ a:hover {
  */
  .chart {
      height: auto ;
-     width: 90%;
+     width: auto;
      margin: 10px 0;
     padding: 5px;
 
