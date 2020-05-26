@@ -9,6 +9,9 @@ const SWISSTOPO_ENDPOINT = "https://ld.geo.admin.ch/query";
 // Name of currently selected sidebar element
 let currentSidebarElement = "Welcome";
 
+// List of station ID's that include at least one short distance
+let stationsWithShortDistances = [];
+
 
 
 /*******************************************************************************************************
@@ -171,6 +174,8 @@ function createLeafletTiles() {
  * Creates and sets up the cluster layer which includes all stations. Requests and processes all the data.
  * Custom cluster layer options are set during creation incl. cluster radius and disabling clustering for highest levels.
  * Each station gets added as marker to cluster layer. Adds cluster layer to the map since it is the default layer.
+ * Requests list of ID's of all stations with at least one short distance and stores them for later.
+ * Overwrites icons for stations that include short distances with different icon to separate them visually on the map.
  */
 function createClusterLayer() {
     // Add default cluster layer containing all stations
@@ -183,16 +188,28 @@ function createClusterLayer() {
     d3.sparql(SWISSTOPO_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and add it to cluster layer
-            markers[station.ID] = L.marker([station.lat, station.lng], { icon: defaultIcon })
+            markers[station.ID] = L.marker([station.lat, station.lng], { icon: lightDefaultIcon })
                 .addTo(clusterLayer)
                 .bindTooltip(station.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { showCurrentShortDistances(station) });
         });
 
-        // Add cluster layer to map only if its sidebar section is still selected
-        if (currentSidebarElement === "Welcome") {
-            clusterLayer.addTo(map);
-        }
+        // Requests a list of ID's of all stations with at least one short distance
+        d3.sparql(LINDAS_ENDPOINT, query_IdOfAllStationsWithShortDistances()).then(data => {
+            // Stores received data for later usage when new markers are created
+            stationsWithShortDistances = data;
+
+            // Overwrites lighter default icon for all markers that represent stations with at least one short distance
+            data.forEach(station => {
+                // Tries to update marker with darker default icon
+                try { markers[station.ID].setIcon(defaultIcon) } catch {}
+            });
+
+            // Add cluster layer to map only if its sidebar section is still selected
+            if(currentSidebarElement === "Welcome") {
+                clusterLayer.addTo(map);
+            }
+        });
     });
 }
 
