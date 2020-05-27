@@ -4,7 +4,7 @@
  ******************************************************************************************************/
 // Endpoint URLs for SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
-const SWISSTOPO_ENDPOINT = "https://ld.geo.admin.ch/query";
+const GEOADMIN_ENDPOINT = "https://ld.geo.admin.ch/query";
 
 // Name of currently selected sidebar element
 let currentSidebarElement = "Welcome";
@@ -185,7 +185,7 @@ function createClusterLayer() {
         spiderfyOnMaxZoom: false
     });
 
-    d3.sparql(SWISSTOPO_ENDPOINT, query_allStations()).then(data => {
+    d3.sparql(GEOADMIN_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and add it to cluster layer
             markers[station.ID] = L.marker([station.lat, station.lng], { icon: lightDefaultIcon })
@@ -529,6 +529,9 @@ function showCurrentShortDistances(station) {
         // Display station name in station overview box
         document.getElementById("stationOverview-name").innerHTML = station.name;
 
+        // Set href link of station overview name to redirect to Search page of current station
+        document.getElementById("searchLink").href = "https://fahrplan.search.ch/" + station.ID;
+
         // Display station overview box
         document.getElementById("stationOverview").classList.remove("hidden");
 
@@ -811,7 +814,7 @@ function showMatchingStations() {
     }
 
     // Request all stations matching user's search terms
-    d3.sparql(LINDAS_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((rawData) => {
+    d3.sparql(GEOADMIN_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((rawData) => {
 
         // Display number of search results
         document.getElementById("searchResults").innerHTML += "<div class='count'>" + rawData.length + " Resultate:</div>";
@@ -945,6 +948,14 @@ function startSearchIfEnterWasPressed(event) {
  * @param event                   Object responsible for calling this function
  */
 function updateAnalyseLayer(event) {
+    // List of sidebar section names
+    let sectionNames = ["LongestShortDistance", "ShortDistanceDistribution", "LengthShortDistanceByZoningPlan", "StationsWithShortDistancesPerZoningPlan", "ShortDistancesPerZoningPlan"];
+
+    // Hide content of all sidebar elements and deselect all menu buttons
+    sectionNames.forEach(sectionName => {
+        document.getElementById("analyze" + sectionName).classList.add("hidden");
+    });
+
     // List of layers to be removed
     const layers = [heatmapLayer, longestShortDistanceLayer];
 
@@ -953,44 +964,39 @@ function updateAnalyseLayer(event) {
         layer.removeFrom(map);
     });
 
-
     // Add selected layer back to map
     switch (event.target.value) {
         case ("longestShortDistance"):
-            resetSideBar()
+            document.getElementById("analyzeLongestShortDistance").classList.remove("hidden");
             longestShortDistanceLayer.addTo(map);
             currentAnalyseLayer = longestShortDistanceLayer;
             break;
         case ("shortDistanceDistribution"):
-            resetSideBar()
+            document.getElementById("analyzeShortDistanceDistribution").classList.remove("hidden");
             heatmapLayer.addTo(map);
             currentAnalyseLayer = heatmapLayer;
             break;
-        case ("piechart"):
-            piechart()
-            break;
-        case ("barchart"):
+        case ("lengthShortDistanceByZoningPlan"):
+            document.getElementById("analyzeLengthShortDistanceByZoningPlan").classList.remove("hidden");
             //createZoningplanVisualization()
             // Create Bar Chart for createDistanceOfShortDistancesVisualization
             console.log(lengthIntervalShortDistance["0.0 < x < 0.5 km"]);
             console.log(lengthIntervalShortDistance["0.5 < x < 1.0 km"]);
             console.log(lengthIntervalShortDistance["1.0 < x < 1.5 km"]);
             console.log(lengthIntervalShortDistance["1.5 < x"]);
-
-            barchart(lengthIntervalShortDistance)
+            barchart(lengthIntervalShortDistance);
+            break;
+        case ("stationsWithShortDistancesPerZoningPlan"):
+            document.getElementById("analyzeStationsWithShortDistancesPerZoningPlan").classList.remove("hidden");
+            piechart()
+            break;
+        case ("shortDistancesPerZoningPlan"):
+            document.getElementById("analyzeShortDistancesPerZoningPlan").classList.remove("hidden");
             break;
     }
 }
 
-function resetSideBar() {
-    console.log("remove")
-    document.getElementById("barchartLegend").innerHTML = " ";
 
-    document.getElementById("barcharttext").innerHTML = " ";
-    document.getElementById("chartset").innerHTML = " ";
-
-
-}
 
 function piechart() {
 

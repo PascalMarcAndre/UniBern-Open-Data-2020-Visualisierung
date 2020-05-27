@@ -302,6 +302,7 @@ a:hover {
     margin: 0 0 20px;
     font-size: 17px;
     color: var(--sbb-red);
+    cursor: pointer;
 }
 
 .stationOverview #stationOverview-shortDistances {

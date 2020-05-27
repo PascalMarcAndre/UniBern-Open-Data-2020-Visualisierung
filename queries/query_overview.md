@@ -26,20 +26,22 @@ SELECT ?ID ?name ?lat ?lng {
 
 
 ### All Stations Matching List of Search Terms
-Returns a list of all stations that match a list of search terms.
+Returns a list of all stations that match the user's search terms.
 Example includes all stations containing "Thun" and "Bahnhof". Not case sensitive.
+**Required endpoint:** [https://ld.geo.admin.ch/query](https://ld.geo.admin.ch/query)
 
 ````
-PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
-PREFIX gtfs: <http://vocab.gtfs.org/terms#>
-PREFIX schema: <http://schema.org/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-SELECT distinct ?Station ?name ?Coord
-WHERE {
-    ?Station rdfs:label ?name ;
-    <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
+PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX swiss:  <https://ld.geo.admin.ch/>
+ 
+SELECT ?ID ?name ?lat ?lng {
+    ?a a <http://vocab.gtfs.org/terms#Stop>.
+    ?a <http://schema.org/name> ?name .
+    ?a geo:lat ?lat .
+    ?a geo:long ?lng .
+    ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
+    
+    BIND(STRAFTER(STR(?a), "stop/") AS ?ID)
 
     FILTER(contains(lcase(?name), lcase("Thun")))
     FILTER(contains(lcase(?name), lcase("Bahnhof")))
