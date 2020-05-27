@@ -202,11 +202,11 @@ function createClusterLayer() {
             // Overwrites lighter default icon for all markers that represent stations with at least one short distance
             data.forEach(station => {
                 // Tries to update marker with darker default icon
-                try { markers[station.ID].setIcon(defaultIcon) } catch {}
+                try { markers[station.ID].setIcon(defaultIcon) } catch { }
             });
 
             // Add cluster layer to map only if its sidebar section is still selected
-            if(currentSidebarElement === "Welcome") {
+            if (currentSidebarElement === "Welcome") {
                 clusterLayer.addTo(map);
             }
         });
@@ -366,10 +366,10 @@ function createDistanceOfShortDistancesVisualization() {
         // Lower bound percentage of how many short distances are technically too long
         percentageTooLong = (tooLongShortDistancesCount * 100 / data.length).toFixed(1);
 
-        lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"]* 100 / data.length).toFixed(1);
-        lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"]* 100 / data.length).toFixed(1);
-        lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"]* 100 / data.length).toFixed(1);
-        lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"]* 100 / data.length).toFixed(1);
+        lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"] * 100 / data.length).toFixed(1);
 
 
         // TODO: Create visualization based on above data
@@ -392,13 +392,13 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
     // Request list with length of each available short distance
     d3.sparql(LINDAS_ENDPOINT, query_distanceOfZoningplanShortDistances(station.Zonenplan)).then(data => {
 
-        if (station.namen === "Léman Pass Abo &amp; Billett"){
+        if (station.namen === "Léman Pass Abo &amp; Billett") {
             station.namen = "Léman Pass Abo"
             console.log(station.namen)
 
         }
 
-        if (station.namen === "A-Welle Abo &amp; Billett"){
+        if (station.namen === "A-Welle Abo &amp; Billett") {
             station.namen = "A-Welle Abo  Billett"
             console.log(station.namen)
 
@@ -438,14 +438,14 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
             lengthIntervals["0.5 < x < 1.0 km"] +
             lengthIntervals["1.0 < x < 1.5 km"] +
             lengthIntervals["1.5 < x"]
-        
-            //Define data as percentage
-            lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"]* 100 / data.length).toFixed(1);
-            lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"]* 100 / data.length).toFixed(1);
-            lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"]* 100 / data.length).toFixed(1);
-            lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"]* 100 / data.length).toFixed(1);
-    
-    
+
+        //Define data as percentage
+        lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"] * 100 / data.length).toFixed(1);
+        lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"] * 100 / data.length).toFixed(1);
+
+
 
         //Currently 12 Zoningplans with short distances
         if (zoningPlanwithShortDistanceLength > 0) {
@@ -949,15 +949,16 @@ function updateAnalyseLayer(event) {
         layer.removeFrom(map);
     });
 
-    resetSideBar()
 
     // Add selected layer back to map
     switch (event.target.value) {
         case ("longestShortDistance"):
+            resetSideBar()
             longestShortDistanceLayer.addTo(map);
             currentAnalyseLayer = longestShortDistanceLayer;
             break;
         case ("shortDistanceDistribution"):
+            resetSideBar()
             heatmapLayer.addTo(map);
             currentAnalyseLayer = heatmapLayer;
             break;
@@ -979,7 +980,7 @@ function resetSideBar() {
     document.getElementById("barchartLegend").innerHTML = " ";
 
     document.getElementById("barcharttext").innerHTML = " ";
-    //document.getElementById("chartset").innerHTML = " ";
+    document.getElementById("chartset").innerHTML = " ";
 
 
 }
@@ -1098,8 +1099,6 @@ function barchart(shortDistanceInterval) {
                     ]
             },]
     };
-
-
 
 
     var chartWidth = 20,
@@ -1277,14 +1276,14 @@ function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
 
     // Add interval to repeatedly adjust map view while sidebar is toggled
-    const readjustMap = setInterval(()=>{
+    const readjustMap = setInterval(() => {
         map.invalidateSize()
-    },5);
+    }, 5);
 
     // Remove interval of readjusting map once transition is over
-    setTimeout(()=>{
+    setTimeout(() => {
         clearInterval(readjustMap)
-    },500);
+    }, 500);
 }
 
 /**
