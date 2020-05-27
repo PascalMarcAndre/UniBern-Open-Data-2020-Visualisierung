@@ -164,17 +164,42 @@
                 <option disabled selected>--Auswählen--</option>
                 <option value="longestShortDistance">Längste Kurzstrecken</option>
                 <option value="shortDistanceDistribution">Kurzstreckenverteilung</option>
-                <option value="diagramZoningplan">Kurzstreckenverteilung nach Intervall</option>
+                <option value="lengthShortDistanceByZoningPlan">Länge der Kurzstrecken nach Zonenplan</option>
+                <option value="stationsWithShortDistancesPerZoningPlan">Haltestellen mit Kurzstrecken nach Zonenplan</option>
+                <option value="shortDistancesPerZoningPlan">Kurzstrecken nach Zonenplan</option>
             </select>
 
-                <div id="barchartLegend"></div>
-            <div id="chartset">
-                <svg class="chart"></svg>
+            <!-- Longest Short Distances -->
+            <div id="analyzeLongestShortDistance" class="hidden">
+                <!-- TODO: Description and list of longest short distances. -->
+                Längste Kurzstrecken
             </div>
 
+            <!-- Short Distance Distribution -->
+            <div id="analyzeShortDistanceDistribution" class="hidden">
+                <!-- TODO: Description of heatmap -->
+                Kurzstreckenverteilung
+            </div>
+
+            <!-- Bar Chart of Length of Short Distances by Zoning Plan -->
+            <div id="analyzeLengthShortDistanceByZoningPlan" class="hidden">
+                Länge der Kurzstrecken nach Zonenplan
+                <div id="barchartLegend"></div>
+                <div id="chartset">
+                    <svg class="chart"></svg>
+                </div>
                 <div id="barcharttext"></div>
+            </div>
 
+            <!-- Pie Chart of Stations with Short Distances per Zoning Plan -->
+            <div id="analyzeStationsWithShortDistancesPerZoningPlan" class="hidden">
+                Haltestellen mit Kurzstrecken nach Zonenplan
+            </div>
 
+            <!-- Pie Chart of Short Distances per Zoning Plan -->
+            <div id="analyzeShortDistancesPerZoningPlan" class="hidden">
+                Kurzstrecken nach Zonenplan
+            </div>
         </div>
 
         <!-- Options Section -->

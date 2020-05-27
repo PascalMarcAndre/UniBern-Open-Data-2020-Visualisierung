@@ -941,6 +941,14 @@ function startSearchIfEnterWasPressed(event) {
  * @param event                   Object responsible for calling this function
  */
 function updateAnalyseLayer(event) {
+    // List of sidebar section names
+    let sectionNames = ["LongestShortDistance", "ShortDistanceDistribution", "LengthShortDistanceByZoningPlan", "StationsWithShortDistancesPerZoningPlan", "ShortDistancesPerZoningPlan"];
+
+    // Hide content of all sidebar elements and deselect all menu buttons
+    sectionNames.forEach(sectionName => {
+        document.getElementById("analyze" + sectionName).classList.add("hidden");
+    });
+
     // List of layers to be removed
     const layers = [heatmapLayer, longestShortDistanceLayer];
 
@@ -949,40 +957,35 @@ function updateAnalyseLayer(event) {
         layer.removeFrom(map);
     });
 
-
     // Add selected layer back to map
     switch (event.target.value) {
         case ("longestShortDistance"):
-            resetSideBar()
+            document.getElementById("analyzeLongestShortDistance").classList.remove("hidden");
             longestShortDistanceLayer.addTo(map);
             currentAnalyseLayer = longestShortDistanceLayer;
             break;
         case ("shortDistanceDistribution"):
-            resetSideBar()
+            document.getElementById("analyzeShortDistanceDistribution").classList.remove("hidden");
             heatmapLayer.addTo(map);
             currentAnalyseLayer = heatmapLayer;
             break;
-        case ("diagramZoningplan"):
+        case ("lengthShortDistanceByZoningPlan"):
+            document.getElementById("analyzeLengthShortDistanceByZoningPlan").classList.remove("hidden");
             //createZoningplanVisualization()
             // Create Bar Chart for createDistanceOfShortDistancesVisualization
             console.log(lengthIntervalShortDistance["0.0 < x < 0.5 km"]);
             console.log(lengthIntervalShortDistance["0.5 < x < 1.0 km"]);
             console.log(lengthIntervalShortDistance["1.0 < x < 1.5 km"]);
             console.log(lengthIntervalShortDistance["1.5 < x"]);
-
-            barchart(lengthIntervalShortDistance)
+            barchart(lengthIntervalShortDistance);
+            break;
+        case ("stationsWithShortDistancesPerZoningPlan"):
+            document.getElementById("analyzeStationsWithShortDistancesPerZoningPlan").classList.remove("hidden");
+            break;
+        case ("shortDistancesPerZoningPlan"):
+            document.getElementById("analyzeShortDistancesPerZoningPlan").classList.remove("hidden");
             break;
     }
-}
-
-function resetSideBar() {
-    console.log("remove")
-    document.getElementById("barchartLegend").innerHTML = " ";
-
-    document.getElementById("barcharttext").innerHTML = " ";
-    document.getElementById("chartset").innerHTML = " ";
-
-
 }
 
 function barchart(shortDistanceInterval) {
