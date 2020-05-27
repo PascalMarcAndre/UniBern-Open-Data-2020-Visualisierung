@@ -810,7 +810,7 @@ function showMatchingStations() {
     }
 
     // Request all stations matching user's search terms
-    d3.sparql(LINDAS_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((rawData) => {
+    d3.sparql(GEOADMIN_ENDPOINT, query_allStationsMatchingSearchTerms(searchTerms)).then((rawData) => {
 
         // Display number of search results
         document.getElementById("searchResults").innerHTML += "<div class='count'>" + rawData.length + " Resultate:</div>";

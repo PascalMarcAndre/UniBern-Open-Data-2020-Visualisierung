@@ -42,24 +42,19 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     });
 
     return `
-    PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
-    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
-    PREFIX schema: <http://schema.org/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-    PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT distinct ?ID ?name ?lat ?lng
-    WHERE {
-        ?Identifier rdfs:label ?name ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;
+    PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
+    PREFIX swiss:  <https://ld.geo.admin.ch/>
+     
+    SELECT ?ID ?name ?lat ?lng {
+        ?a a <http://vocab.gtfs.org/terms#Stop>.
+        ?a <http://schema.org/name> ?name .
+        ?a geo:lat ?lat .
+        ?a geo:long ?lng .
+        ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
         
-        BIND(STRAFTER(STR(?Identifier), "didok/") AS ?ID)
-        
-        BIND(REPLACE(STR(?Coord), "POINT\\\\(", "") AS ?tmpCoord)
-        BIND(REPLACE(?tmpCoord, "\\\\)", "") AS ?tmpCoord2)
-        BIND(STRAFTER(?tmpCoord2, " ") AS ?lat)
-        BIND(STRBEFORE(?tmpCoord2, " ") AS ?lng)
-    ` + filters + "} ORDER BY ?name"
+        BIND(STRAFTER(STR(?a), "stop/") AS ?ID)
+    
+        ` + filters + `} ORDER BY ?name`
 }
 
 function query_allShortDistancesForStation(stationID) {
