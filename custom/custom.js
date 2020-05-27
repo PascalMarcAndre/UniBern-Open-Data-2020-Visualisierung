@@ -4,7 +4,7 @@
  ******************************************************************************************************/
 // Endpoint URLs for SPARQL queries
 const LINDAS_ENDPOINT = "https://lindas.admin.ch/query";
-const SWISSTOPO_ENDPOINT = "https://ld.geo.admin.ch/query";
+const GEOADMIN_ENDPOINT = "https://ld.geo.admin.ch/query";
 
 // Name of currently selected sidebar element
 let currentSidebarElement = "Welcome";
@@ -185,7 +185,7 @@ function createClusterLayer() {
         spiderfyOnMaxZoom: false
     });
 
-    d3.sparql(SWISSTOPO_ENDPOINT, query_allStations()).then(data => {
+    d3.sparql(GEOADMIN_ENDPOINT, query_allStations()).then(data => {
         data.forEach(station => {
             // Create marker (incl. tooltip) and add it to cluster layer
             markers[station.ID] = L.marker([station.lat, station.lng], { icon: lightDefaultIcon })
