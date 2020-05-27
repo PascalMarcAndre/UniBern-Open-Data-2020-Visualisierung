@@ -1107,7 +1107,7 @@ function barchart(shortDistanceInterval) {
         groupHeight = barHeight * data.series.length,
         gapBetweenGroups = 10,
         spaceForLabels = 150,
-        spaceForLegend = 200;
+        spaceForLegend = 150;
 
     // Zip the series data together (first values, second values, etc.)
     var zippedData = [];
@@ -1135,7 +1135,7 @@ function barchart(shortDistanceInterval) {
 
     // Specify the chart area and dimensions
     var chart = d3
-        .select(".chart").append("svg")
+        .select(".chart")
         .attr("width", spaceForLabels + chartWidth + spaceForLegend)
         .attr("height", chartHeight);
 
@@ -1191,7 +1191,7 @@ function barchart(shortDistanceInterval) {
         .attr('transform', function (d, i) {
             var height = legendRectSize + legendSpacing;
             var offset = -gapBetweenGroups / 2;
-            var horz = spaceForLabels + chartWidth + 40 - legendRectSize;
+            var horz = spaceForLabels + chartWidth + 85 - legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';
         });

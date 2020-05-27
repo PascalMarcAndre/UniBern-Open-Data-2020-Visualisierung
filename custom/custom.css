@@ -544,21 +544,21 @@ a:hover {
  */
  .chart {
      height: auto ;
-     width: auto;
+     width: 100%;
      margin: 10px 0;
     padding: 5px;
 
     }
 .chart .legend {
     fill: black;
-    font: 14px sans-serif;
+    font: 8px sans-serif;
     text-anchor: start;
-    font-size: 12px;
+    font-size: 8px;
   }
 
   .chart text {
     fill: white;
-    font: 10px sans-serif;
+    font: 9px sans-serif;
     text-anchor: end;
   }
 
