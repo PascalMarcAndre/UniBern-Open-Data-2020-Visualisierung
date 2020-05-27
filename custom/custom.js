@@ -753,6 +753,7 @@ function createZoningplanVisualization() {
     d3.sparql(LINDAS_ENDPOINT, query_allZoningplans()).then((data) => {
 
         zoningplanArray = []
+        zoningplanAllArray = []
 
         data.forEach(station => {
             createZoningplanDistanceOfShortDistancesVisualization(station),
@@ -763,20 +764,18 @@ function createZoningplanVisualization() {
                     if (d.length > 0) {
                         zoningplanArray.push({ "label": station.namen, "count": d.length });
                     }
-
-                    console.log(zoningplanArray);
-
-                    if (data[data.length - 1] === station) {
-
-                        console.log(zoningplanArray);
-
-                        //Array with all Zoningplans and their number of Stations
-                        // TODO, piechart, barchart(zoningplanArray)
+                },
 
 
+                ),
+                d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanAllStations(station.Zonenplan)).then((d) => {
 
+                    if (d.length > 0) {
+                        zoningplanAllArray.push({ "label": station.namen, "count": d.length });
                     }
-                });
+                    console.log(zoningplanAllArray);
+                },
+                );
         },
         );
     })
@@ -988,17 +987,18 @@ function updateAnalyseLayer(event) {
             break;
         case ("stationsWithShortDistancesPerZoningPlan"):
             document.getElementById("analyzeStationsWithShortDistancesPerZoningPlan").classList.remove("hidden");
-            piechart()
+            piechart(zoningplanArray)
             break;
         case ("shortDistancesPerZoningPlan"):
             document.getElementById("analyzeShortDistancesPerZoningPlan").classList.remove("hidden");
+            piechart(zoningplanAllArray)
             break;
     }
 }
 
 
 
-function piechart() {
+function piechart(data) {
 
     console.log(zoningplanArray);
 
@@ -1015,7 +1015,7 @@ function piechart() {
         .attr("height", height);
 
     var g = svg.append("g")
-        .attr("transform", "translate(" + (width / 2) + "," + ( height/4) + ")")
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 4) + ")")
         .attr("class", "chartGroup");
 
     var g2 = svg.append("g")
@@ -1045,7 +1045,7 @@ function piechart() {
 
 
     //set data to Array with Number of short distances per zoning plan
-    dataset = zoningplanArray
+    dataset = data
 
     dataset.forEach(function (d) {
         d.count = +d.count;
@@ -1065,7 +1065,7 @@ function piechart() {
     path.on('mousemove', function (d) {
         var xposSub = document.getElementById("piechart").getBoundingClientRect().left;
         var xpos = d3.event.x - xposSub + 20
-        var ypos = d3.event.y  - 150
+        var ypos = d3.event.y - 150
         tooltip.style("left", xpos + "px")
         tooltip.style("top", ypos + "px")
         var total = d3.sum(dataset.map(function (d) {
@@ -1073,8 +1073,8 @@ function piechart() {
         }));
         var percent = Math.round(10000 * d.data.count / total) / 100;
         tooltip.
-        select('.label').html(d.data.label);
-        tooltip.select('.count').html("Anzahl: "+d.data.count);
+            select('.label').html(d.data.label);
+        tooltip.select('.count').html("Anzahl: " + d.data.count);
         tooltip.select('.percent').html(percent + '%');
         tooltip.style('display', 'block');
     });
@@ -1150,6 +1150,8 @@ function piechart() {
         .text(function (d) { return d; });
 
 }
+
+
 
 function barchart(shortDistanceInterval) {
 

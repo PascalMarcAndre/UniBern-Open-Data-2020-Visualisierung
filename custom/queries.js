@@ -215,6 +215,23 @@ function query_ZoningPlanStations(zoningPlan) {
     `
 }
 
+function query_ZoningPlanAllStations(zoningPlan) {
+    return `
+    PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+    PREFIX schema: <http://schema.org/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/> PREFIX dcterms: <http://purl.org/dc/terms/>
+    SELECT ?Station ?Name ?Coord ?departureID
+    WHERE {
+    ?Kante a otd:Relation; otd:zoningPlan
+    <` + zoningPlan + `>; schema:departureStation ?Station .
+    ?Station rdfs:label ?Name ;
+    <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;              dcterms:identifier ?departureID .
+    } 
+    `
+}
+
 //TODO, manipulate query
 function query_allMonoDirectionalShortDistancesForStation() {
     return `
