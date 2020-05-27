@@ -758,11 +758,15 @@ function createZoningplanVisualization() {
                 d3.sparql(LINDAS_ENDPOINT, query_ZoningPlanStations(station.Zonenplan)).then((d) => {
 
                     if (d.length > 0) {
-                        //zoningplanArray.push({"name":station.namen, "length": d.length});
-                        zoningplanArray.push(station.namen, d.length);
+                        zoningplanArray.push({ "label": station.namen, "count": d.length });
                     }
 
+                    console.log(zoningplanArray);
+
                     if (data[data.length - 1] === station) {
+
+                        console.log(zoningplanArray);
+
                         //Array with all Zoningplans and their number of Stations
                         // TODO, piechart, barchart(zoningplanArray)
 
@@ -962,7 +966,10 @@ function updateAnalyseLayer(event) {
             heatmapLayer.addTo(map);
             currentAnalyseLayer = heatmapLayer;
             break;
-        case ("diagramZoningplan"):
+        case ("piechart"):
+            piechart()
+            break;
+        case ("barchart"):
             //createZoningplanVisualization()
             // Create Bar Chart for createDistanceOfShortDistancesVisualization
             console.log(lengthIntervalShortDistance["0.0 < x < 0.5 km"]);
@@ -982,6 +989,154 @@ function resetSideBar() {
     document.getElementById("barcharttext").innerHTML = " ";
     document.getElementById("chartset").innerHTML = " ";
 
+
+}
+
+function piechart() {
+
+    console.log(zoningplanArray);
+
+
+    var width = 300;
+    var height = 300;
+   
+    var radius = Math.min(width, height) / 2;
+
+    var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    var svg = d3.select("#piechart").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var g = svg.append("g")
+        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .attr("class", "chartGroup");
+
+    var donutWidth = (width / 4);
+
+    var arc = d3.arc()
+        .innerRadius(donutWidth)
+        .outerRadius(radius);
+
+    var pie = d3.pie()
+        .value(function (d) { return d.count })
+        .sort(null);
+
+    var tooltip = d3.select('#piechart')
+        .append('div')
+        .attr('class', 'pietooltip')
+
+    tooltip.append('div')
+        .attr('class', 'label');
+    tooltip.append('div')
+        .attr('class', 'count');
+    tooltip.append('div')
+        .attr('class', 'percent');
+
+
+    //set data to Array with Number of short distances per zoning plan
+    dataset = zoningplanArray
+
+    dataset.forEach(function (d) {
+        d.count = +d.count;
+        d.enabled = true;
+    });
+
+    var path = g.selectAll('path')
+        .data(pie(dataset))
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function (d, i) {
+            return color(d.data.label);
+        })
+        .each(function (d) { this._current = d; });
+
+    path.on('mousemove', function (d) {
+        var xposSub = document.getElementById("piechart").getBoundingClientRect().left;
+        var xpos = d3.event.x - xposSub + 20
+        var ypos = d3.event.y
+        tooltip.style("left", xpos + "px")
+        tooltip.style("top", ypos + "px")
+        var total = d3.sum(dataset.map(function (d) {
+            return (d.enabled) ? d.count : 0;
+        }));
+        var percent = Math.round(10000 * d.data.count / total) / 100;
+        tooltip.select('.label').html(d.data.label);
+        tooltip.select('.count').html(d.data.count);
+        tooltip.select('.percent').html(percent + '%');
+        tooltip.style('display', 'block');
+    });
+
+
+
+    path.on('mouseout', function (d) {
+        tooltip.style('display', 'none');
+
+    });
+
+    var legendRectSize = 8;
+    var legendSpacing = 8;
+
+    var legend = g.selectAll('.legend')
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', function (d, i) {
+            var height = legendRectSize + legendSpacing;
+            var offset = height * color.domain().length / 2;
+            var horz = -2 * legendRectSize;
+            var vert = i * height - offset;
+            return 'translate(' + horz + ',' + vert + ')';
+        });
+
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', color)
+        .style('stroke', color)
+
+        .on('click', function (label) {
+            var rect = d3.select(this);
+            var enabled = true;
+            var totalEnabled = d3.sum(dataset.map(function (d) {
+                return (d.enabled) ? 1 : 0;
+            }));
+
+            if (rect.attr('class') === 'disabled') {
+                rect.attr('class', '');
+            } else {
+                if (totalEnabled < 2) return;
+                rect.attr('class', 'disabled');
+                enabled = false;
+            }
+
+            pie.value(function (d) {
+                if (d.label === label) d.enabled = enabled;
+                return (d.enabled) ? d.count : 0;
+            });
+
+            path = path.data(pie(dataset));
+
+            path.transition()
+                .duration(750)
+                .attrTween('d', function (d) {
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
+                    return function (t) {
+                        return arc(interpolate(t));
+                    };
+                });
+        });
+
+
+    legend.append('text')
+        .attr('x', legendRectSize + legendSpacing)
+        .attr('y', legendRectSize - legendSpacing)
+        .attr('style', 'font-size: 12')
+        .attr('alignment-baseline', 'middle')
+        .text(function (d) { return d; });
 
 }
 
