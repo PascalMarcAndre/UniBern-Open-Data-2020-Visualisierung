@@ -529,6 +529,9 @@ function showCurrentShortDistances(station) {
         // Display station name in station overview box
         document.getElementById("stationOverview-name").innerHTML = station.name;
 
+        // Set href link of station overview name to redirect to Search page of current station
+        document.getElementById("searchLink").href = "https://fahrplan.search.ch/" + station.ID;
+
         // Display station overview box
         document.getElementById("stationOverview").classList.remove("hidden");
 
