@@ -1004,8 +1004,8 @@ function piechart() {
 
 
     var width = 300;
-    var height = 300;
-   
+    var height = 600;
+
     var radius = Math.min(width, height) / 2;
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
@@ -1015,7 +1015,11 @@ function piechart() {
         .attr("height", height);
 
     var g = svg.append("g")
-        .attr("transform", "translate(" + (width / 2) + "," + (height / 2) + ")")
+        .attr("transform", "translate(" + (width / 2) + "," + ( height/4) + ")")
+        .attr("class", "chartGroup");
+
+    var g2 = svg.append("g")
+        .attr("transform", "translate(" + (30) + "," + ((400)) + ")")
         .attr("class", "chartGroup");
 
     var donutWidth = (width / 4);
@@ -1061,15 +1065,16 @@ function piechart() {
     path.on('mousemove', function (d) {
         var xposSub = document.getElementById("piechart").getBoundingClientRect().left;
         var xpos = d3.event.x - xposSub + 20
-        var ypos = d3.event.y
+        var ypos = d3.event.y  - 150
         tooltip.style("left", xpos + "px")
         tooltip.style("top", ypos + "px")
         var total = d3.sum(dataset.map(function (d) {
             return (d.enabled) ? d.count : 0;
         }));
         var percent = Math.round(10000 * d.data.count / total) / 100;
-        tooltip.select('.label').html(d.data.label);
-        tooltip.select('.count').html(d.data.count);
+        tooltip.
+        select('.label').html(d.data.label);
+        tooltip.select('.count').html("Anzahl: "+d.data.count);
         tooltip.select('.percent').html(percent + '%');
         tooltip.style('display', 'block');
     });
@@ -1084,7 +1089,7 @@ function piechart() {
     var legendRectSize = 8;
     var legendSpacing = 8;
 
-    var legend = g.selectAll('.legend')
+    var legend = g2.selectAll('.legend')
         .data(color.domain())
         .enter()
         .append('g')

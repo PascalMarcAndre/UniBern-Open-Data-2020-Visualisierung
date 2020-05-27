@@ -601,7 +601,7 @@ a:hover {
 
   .pietooltip {
     position: absolute;
-    width: 80px;
+    width: 100px;
     padding: 10px;
     background: #eee;
     color: #333;
