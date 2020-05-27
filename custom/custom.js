@@ -1027,7 +1027,7 @@ function barchart(shortDistanceInterval) {
         series: [
             {
 
-                label: i1,
+                label: "0.0-0.5km",
                 values:
                     [
                         shortDistanceInterval[i1],
@@ -1045,7 +1045,7 @@ function barchart(shortDistanceInterval) {
                     ]
             },
             {
-                label: i2,
+                label: "0.5-1.0km",
                 values:
                     [
                         shortDistanceInterval[i2],
@@ -1063,7 +1063,7 @@ function barchart(shortDistanceInterval) {
                     ]
             },
             {
-                label: i3,
+                label: "1.0-1.5km",
                 values:
                     [
                         shortDistanceInterval[i3],
@@ -1080,7 +1080,7 @@ function barchart(shortDistanceInterval) {
                         zoningPlanwithShortDistance[10][i3]]
             },
             {
-                label: i4,
+                label: ">1.5km",
                 values:
                     [
                         shortDistanceInterval[i4],
@@ -1102,7 +1102,7 @@ function barchart(shortDistanceInterval) {
 
 
 
-    var chartWidth = 15,
+    var chartWidth = 20,
         barHeight = 20,
         groupHeight = barHeight * data.series.length,
         gapBetweenGroups = 10,
@@ -1191,7 +1191,7 @@ function barchart(shortDistanceInterval) {
         .attr('transform', function (d, i) {
             var height = legendRectSize + legendSpacing;
             var offset = -gapBetweenGroups / 2;
-            var horz = spaceForLabels + chartWidth + 85 - legendRectSize;
+            var horz = spaceForLabels + chartWidth + 110 - legendRectSize;
             var vert = i * height - offset;
             return 'translate(' + horz + ',' + vert + ')';
         });

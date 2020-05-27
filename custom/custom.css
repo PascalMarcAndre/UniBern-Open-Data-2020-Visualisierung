@@ -543,15 +543,14 @@ a:hover {
  *  bar chart Zoningplan
  */
  .chart {
-     height: auto ;
+     height: 100% ;
      width: 100%;
-     margin: 10px 0;
-    padding: 5px;
+   
 
     }
 .chart .legend {
     fill: black;
-    font: 8px sans-serif;
+    font: 10px sans-serif;
     text-anchor: start;
     font-size: 8px;
   }
