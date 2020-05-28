@@ -657,7 +657,7 @@ function highlightSpot(spotData) {
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
         .attr("cy", (d) => { return latLngToY(d.lat, d.lng) })
         .attr("r", 14)
-        .attr("fill", "#398CF7")
+        .attr("fill", "#0744f7")
         .attr("fill-opacity", 0.95)
         .attr("stroke", "#FFFFFF")
         .attr("stroke-width", 5);
