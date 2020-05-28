@@ -534,6 +534,12 @@ a:hover {
     text-align: justify;
 }
 
+.help .description img {
+    display: block;
+    margin: 20px auto;
+    max-width: 80%;
+}
+
 .help table {
     margin-bottom: 25px;
 }
