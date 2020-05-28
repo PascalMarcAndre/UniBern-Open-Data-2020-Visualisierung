@@ -12,6 +12,9 @@ let currentSidebarElement = "Welcome";
 // List of station ID's that include at least one short distance
 let stationsWithShortDistances = [];
 
+// List of station ID's of all end stations of the currently displayed short distances
+let stationIDsOfCurrentShortDistances = [];
+
 
 
 /*******************************************************************************************************
@@ -481,6 +484,12 @@ function showCurrentShortDistances(station) {
         let latMin = station.lat, latMax = station.lat, lngMin = station.lng, lngMax = station.lng;
 
         data.forEach(shortDistance => {
+            // Remove existing markers of about to be displayed end stations from the map (incl. markerCluster and searchResult layers)
+            try { markers[shortDistance.ID].removeFrom(clusterLayer) } catch { }
+            try { searchResultMarkers[shortDistance.ID].removeFrom(searchResultsLayer) } catch { }
+            // Store which markers were removed in array to recover them afterwards
+            stationIDsOfCurrentShortDistances.push(shortDistance.ID);
+
             // Set lat/lng of arrival station coordinate of current short distance as new min/max if it is
             if (parseFloat(shortDistance.lat) < latMin) latMin = parseFloat(shortDistance.lat);
             if (parseFloat(shortDistance.lat) > latMax) latMax = parseFloat(shortDistance.lat);
@@ -547,6 +556,14 @@ function showCurrentShortDistances(station) {
  * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
  */
 function resetCurrentShortDistancesLayer() {
+    // Re-add previously removed markers to markerCluster and searchResult layers
+    stationIDsOfCurrentShortDistances.forEach(ID => {
+        try { markers[ID].addTo(clusterLayer) } catch { }
+        try { searchResultMarkers[ID].addTo(searchResultsLayer) } catch { }
+    });
+    // Reset array since all markers have been re-added to corresponding layer
+    stationIDsOfCurrentShortDistances = [];
+
     // Hide station overview box
     document.getElementById("stationOverview").classList.add("hidden");
 
