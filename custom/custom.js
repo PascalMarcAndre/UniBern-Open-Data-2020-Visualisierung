@@ -1380,7 +1380,7 @@ function barchart(shortDistanceInterval) {
         .attr("dy", ".35em")
         .text(function (d, i) {
             if (i % data.series.length === 0)
-                return data.labels[Math.floor(i / data.series.length)];
+                return data.labels[Math.floor(i / data.series.length)].replace("&amp;", "&");
             else
                 return ""
         });
@@ -1391,7 +1391,7 @@ function barchart(shortDistanceInterval) {
         .call(yAxis);
 
     // Draw legend
-    var legendRectSize = 13,
+    var legendRectSize = 12,
         legendSpacing = 2;
 
     var legend = chart.selectAll('.legend')
