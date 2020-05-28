@@ -135,6 +135,9 @@ function createLeafletMap() {
             tile.style.height = tileSize.y + 1 + 'px';
         }
     });
+
+    // Add SVG Layer to map
+    svgLines.addTo(map);
 }
 
 /**
@@ -684,12 +687,6 @@ function highlightSpot(spotData) {
  * @param lineData                Data including start and end coordinates of line to be drawn
  */
 function addLine(lineData, stationID) {
-    // Set up the SVG layer
-    if (map.hasLayer(svgLines)) {
-        svgLines.removeFrom(map);
-    }
-    svgLines.addTo(map);
-
     // Line ID used as class to reference line later on
     const lineID = "line" + stationID;
 
