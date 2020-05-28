@@ -545,7 +545,7 @@ function showCurrentShortDistances(station) {
                 }
             };
             // Add line of short distance to map
-            addLine(lineData);
+            addLine(lineData, shortDistance.ID);
 
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
@@ -568,13 +568,15 @@ function showCurrentShortDistances(station) {
             shortDistanceSpan.innerHTML = (shortDistance.distance / 1000).toFixed(1) + " km"; // Rounded to .1
             // Append created span-element to its related shortDistanceDiv
             shortDistanceDiv.appendChild(shortDistanceSpan);
-            // Add mouseover event to display circle around search result marker on map
+            // Add mouseover event to display circle around search result marker and highlight line on map
             shortDistanceDiv.addEventListener("mouseover", () => {
                 highlightSpot(shortDistance);
+                highlightLine(shortDistance.ID);
             });
-            // Add mouseout event to remove circle from map
+            // Add mouseout event to remove circle from map and de-highlight the line
             shortDistanceDiv.addEventListener("mouseout", () => {
                 resetSVG("circle");
+                deHighlightLine(shortDistance.ID);
             });
 
             // Append created div-element to DOM to make it visible
@@ -681,12 +683,15 @@ function highlightSpot(spotData) {
  *
  * @param lineData                Data including start and end coordinates of line to be drawn
  */
-function addLine(lineData) {
+function addLine(lineData, stationID) {
     // Set up the SVG layer
     if (map.hasLayer(svgLines)) {
         svgLines.removeFrom(map);
     }
     svgLines.addTo(map);
+
+    // Line ID used as class to reference line later on
+    const lineID = "line" + stationID;
 
     // Draw circle at given coordinate
     d3.select("#map")
@@ -695,7 +700,7 @@ function addLine(lineData) {
         .data([lineData])
         .enter()
         .append("line")
-        .attr("class", "map-line")
+        .attr("class", "map-line " + lineID)
         .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
         .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
         .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
