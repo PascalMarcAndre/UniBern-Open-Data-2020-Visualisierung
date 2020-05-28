@@ -1330,7 +1330,7 @@ function barchart(shortDistanceInterval) {
 
     // Color scale
     var color = d3.scaleOrdinal(d3.schemeCategory10);
-    var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
+    var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length + 50;
 
     var x = d3.scaleLinear()
         .domain([0, d3.max(zippedData)])
