@@ -1041,18 +1041,20 @@ function updateAnalyseLayer(event) {
             break;
         case ("stationsWithShortDistancesPerZoningPlan"):
             document.getElementById("analyzeStationsWithShortDistancesPerZoningPlan").classList.remove("hidden");
-            piechart(zoningplanArray)
+            piechart(zoningplanArray, "piechart1")
             break;
         case ("shortDistancesPerZoningPlan"):
             document.getElementById("analyzeShortDistancesPerZoningPlan").classList.remove("hidden");
-            piechart(zoningplanAllArray)
+            piechart(zoningplanAllArray, "piechart2")
             break;
     }
 }
 
 
 
-function piechart(data) {
+function piechart(data, divId) {
+
+    console.log(divId);
 
     console.log(zoningplanArray);
 
@@ -1064,7 +1066,7 @@ function piechart(data) {
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var svg = d3.select("#piechart").append("svg")
+    var svg = d3.select("#"+divId).append("svg")
         .attr("width", width)
         .attr("height", height);
 
@@ -1086,7 +1088,7 @@ function piechart(data) {
         .value(function (d) { return d.count })
         .sort(null);
 
-    var tooltip = d3.select('#piechart')
+    var tooltip = d3.select("#"+divId)
         .append('div')
         .attr('class', 'pietooltip')
 
@@ -1117,7 +1119,7 @@ function piechart(data) {
         .each(function (d) { this._current = d; });
 
     path.on('mousemove', function (d) {
-        var xposSub = document.getElementById("piechart").getBoundingClientRect().left;
+        var xposSub = document.getElementById(divId).getBoundingClientRect().left;
         var xpos = d3.event.x - xposSub + 20
         var ypos = d3.event.y - 150
         tooltip.style("left", xpos + "px")

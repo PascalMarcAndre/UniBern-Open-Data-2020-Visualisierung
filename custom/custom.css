@@ -661,7 +661,15 @@ a:hover {
 #########################################################*/
 
 
-#piechart {
+#piechart1 {
+    position: relative;
+    /* To allow the tooltip to be positioned relative to the div */
+    display: block;
+    width: auto;
+    margin: 0 auto;
+  }
+
+#piechart2 {
     position: relative;
     /* To allow the tooltip to be positioned relative to the div */
     display: block;
