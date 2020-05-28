@@ -654,6 +654,7 @@ function highlightSpot(spotData) {
         .data([spotData])
         .enter()
         .append("circle")
+        .attr("class", "map-circle")
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
         .attr("cy", (d) => { return latLngToY(d.lat, d.lng) })
         .attr("r", 14)
@@ -675,15 +676,15 @@ function highlightSpot(spotData) {
 function resetSVG(resetCase) {
     switch (resetCase) {
         case "all":
-            d3.selectAll("line").remove();
+            d3.selectAll(".map-line").remove();
             d3.selectAll("line-highlight").remove();
-            d3.selectAll("circle").remove();
+            d3.selectAll(".map-circle").remove();
             break;
         case "circle":
-            d3.selectAll("circle").remove();
+            d3.selectAll(".map-circle").remove();
             break;
         case "line":
-            d3.selectAll("line").remove();
+            d3.selectAll(".map-line").remove();
             break;
         case "line-highlight":
             d3.selectAll("line-highlight").remove();
@@ -719,19 +720,12 @@ function latLngToY(lat, lng) {
  */
 function updateSVGElements() {
     // Update all SVG circles
-    d3.selectAll("circle")
+    d3.selectAll(".map-circle")
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
         .attr("cy", (d) => { return latLngToY(d.lat, d.lng) });
 
     // Update all SVG lines
-    d3.selectAll("line")
-        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
-        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
-        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
-        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) });
-
-    // Update all highlighted SVG lines
-    d3.selectAll("line-highlight")
+    d3.selectAll(".map-line")
         .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
         .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
         .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
