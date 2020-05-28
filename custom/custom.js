@@ -1270,7 +1270,7 @@ function barchart(shortDistanceInterval) {
 
 
     var chartWidth = 20,
-        barHeight = 20,
+        barHeight = 13,
         groupHeight = barHeight * data.series.length,
         gapBetweenGroups = 10,
         spaceForLabels = 150,
@@ -1327,7 +1327,7 @@ function barchart(shortDistanceInterval) {
         .attr("y", barHeight / 2)
         .attr("fill", "red")
         .attr("dy", ".35em")
-        .text(function (d) { return d; });
+        .text(function (d) { return d + "%"; });
 
     // Draw labels
     bar.append("text")
@@ -1348,8 +1348,8 @@ function barchart(shortDistanceInterval) {
         .call(yAxis);
 
     // Draw legend
-    var legendRectSize = 18,
-        legendSpacing = 4;
+    var legendRectSize = 13,
+        legendSpacing = 2;
 
     var legend = chart.selectAll('.legend')
         .data(data.series)
@@ -1360,7 +1360,7 @@ function barchart(shortDistanceInterval) {
             var offset = -gapBetweenGroups / 2;
             var horz = spaceForLabels + chartWidth + 110 - legendRectSize;
             var vert = i * height - offset;
-            return 'translate(' + horz + ',' + vert + ')';
+            return 'translate(' + 0 + ',' + vert + ')';
         });
 
     legend.append('rect')
