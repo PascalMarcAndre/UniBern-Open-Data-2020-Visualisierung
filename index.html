@@ -253,8 +253,39 @@
         </div>
 
         <!-- Help Section -->
-        <div id="sbSecHelp" class="hidden">
+        <div id="sbSecHelp" class="hidden help">
             <h3>Bedienungsanleitung</h3>
+
+            <div class="description">
+                In der <span class="link" onclick="setSidebarElement('Welcome')">Freien Erkundung</span> und
+                <span class="link" onclick="setSidebarElement('Search')">Suche</span> werden Haltestellen durch
+                <strong>zwei verschiedene Icons</strong> dargestellt.
+                <table>
+                    <tr>
+                        <td><img src="assets/icons/marker-icon-light.png" alt=""></td>
+                        <td><strong>ohne Kurzstrecke</strong></td>
+                    </tr>
+                    <tr>
+                        <td><img src="assets/icons/marker-icon.png" alt=""></td>
+                        <td><strong>mit Kurzstrecken</strong></td>
+                    </tr>
+                </table>
+                Beim Klicken auf eine Haltestelle werden alle <strong>verfügbaren Kurzstrecken</strong> ab diesem
+                Standort angezeigt. Diejenigen Haltestellen, die mit einer Kurzstrecken erreicht werden können, sind
+                neu mit einem <strong>weissen Icon</strong> auf der Karte dargestellt.
+                <table>
+                    <tr>
+                        <td><img src="assets/icons/marker-icon-alt.png" alt=""></td>
+                        <td><strong>mit Kurzstrecke erreichbare Haltestelle</strong></td>
+                    </tr>
+                </table>
+                In der Haltestellen-Übersichtsbox unten rechts werden <strong>alle verfügbaren Kurzstrecken</strong>
+                ab der ausgewählten Haltestelle inkl. ihrer Länge angezeigt.
+                <ol>
+                    <li>Mit einem Klick auf eine Station in der Liste werden die <strong>Kurzstrecken ab dieser Haltestelle</strong> visualisiert</li>
+                    <li>Der Haltestellenname ist mit der jeweiligen Stations-Seite auf <strong>Search</strong> verlinkt.</li>
+                </ol>
+            </div>
         </div>
 
         <!-- About Section -->

@@ -510,6 +510,29 @@ a:hover {
 }
 
 /*
+ *  Sidebar / Help
+ */
+.help .description {
+    margin: 15px 0;
+    padding: 1px;
+    font-size: 15px;
+    text-align: justify;
+}
+
+.help table {
+    margin-bottom: 25px;
+}
+
+.help td {
+    padding: 15px 0 0 15px;
+}
+
+.help ol {
+    margin-top: 15px;
+    padding-left: 30px;
+}
+
+/*
  *  Sidebar / About
  */
 .about p {
