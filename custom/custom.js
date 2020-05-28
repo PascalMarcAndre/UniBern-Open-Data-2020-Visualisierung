@@ -665,6 +665,35 @@ function highlightSpot(spotData) {
 }
 
 /**
+ * Draws a straight line onto the map. The provided data must include lat/lng of both start/end point.
+ *
+ * @param lineData                Data including start and end coordinates of line to be drawn
+ */
+function addLine(lineData) {
+    // Set up the SVG layer
+    if (map.hasLayer(svgLines)) {
+        svgLines.removeFrom(map);
+    }
+    svgLines = L.svg();
+    svgLines.addTo(map);
+
+    // Draw circle at given coordinate
+    d3.select("#map")
+        .select("svg")
+        .selectAll("lines")
+        .data([lineData])
+        .enter()
+        .append("line")
+        .attr("class", "map-line")
+        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
+        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
+        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
+        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) })
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2);
+}
+
+/**
  * Resets the SVG layers to a predefined case according to the specified string 'resetCase'.
  *
  * @param resetCase               String describing which reset case that should be used. Possible values are:
