@@ -474,7 +474,7 @@ a:hover {
 
 .searchResults .searchItem:hover {
     background-color: var(--sbb-light-hov);
-    font-family: "SBB Web Bold", sans-serif;
+    font-weight: bold;
     color: var(--sbb-red);
 }
 
