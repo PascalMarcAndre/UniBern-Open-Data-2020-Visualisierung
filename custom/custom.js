@@ -533,15 +533,24 @@ function showCurrentShortDistances(station) {
             if (parseFloat(shortDistance.lng) < lngMin) lngMin = parseFloat(shortDistance.lng);
             if (parseFloat(shortDistance.lng) > lngMax) lngMax = parseFloat(shortDistance.lng);
 
+            // Create variable containing line data in required format
+            const lineData = {
+                start: {
+                    lat: station.lat,
+                    lng: station.lng
+                },
+                end: {
+                    lat: shortDistance.lat,
+                    lng: shortDistance.lng
+                }
+            };
+            // Add line of short distance to map
+            addLine(lineData);
+
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
                 .bindTooltip(shortDistance.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { console.log(station); showCurrentShortDistances(shortDistance) });
-
-            let polyline = L.polyline([[station.lat, station.lng], [shortDistance.lat, shortDistance.lng]], { color: 'black', weight: 2 })
-                .addTo(currentShortDistancesLayer)
-                .on('mouseover', () => { polyline.setStyle({ color: 'red', weight: 5 }) })
-                .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
 
             // Create div-element for each short distance and add ID, CSS class and HTML content
             const shortDistanceDiv = document.createElement("div");
@@ -593,6 +602,9 @@ function showCurrentShortDistances(station) {
  * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
  */
 function resetCurrentShortDistancesLayer() {
+    // Remove existing SVG lines
+    resetSVG("line");
+
     // Re-add previously removed markers to markerCluster and searchResult layers
     stationIDsOfCurrentShortDistances.forEach(ID => {
         try { markers[ID].addTo(clusterLayer) } catch { }
@@ -674,7 +686,6 @@ function addLine(lineData) {
     if (map.hasLayer(svgLines)) {
         svgLines.removeFrom(map);
     }
-    svgLines = L.svg();
     svgLines.addTo(map);
 
     // Draw circle at given coordinate
