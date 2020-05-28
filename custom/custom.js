@@ -533,15 +533,24 @@ function showCurrentShortDistances(station) {
             if (parseFloat(shortDistance.lng) < lngMin) lngMin = parseFloat(shortDistance.lng);
             if (parseFloat(shortDistance.lng) > lngMax) lngMax = parseFloat(shortDistance.lng);
 
+            // Create variable containing line data in required format
+            const lineData = {
+                start: {
+                    lat: station.lat,
+                    lng: station.lng
+                },
+                end: {
+                    lat: shortDistance.lat,
+                    lng: shortDistance.lng
+                }
+            };
+            // Add line of short distance to map
+            addLine(lineData);
+
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
                 .bindTooltip(shortDistance.name, { opacity: 1, direction: 'top', className: 'tooltip' })
                 .on("click", () => { console.log(station); showCurrentShortDistances(shortDistance) });
-
-            let polyline = L.polyline([[station.lat, station.lng], [shortDistance.lat, shortDistance.lng]], { color: 'black', weight: 2 })
-                .addTo(currentShortDistancesLayer)
-                .on('mouseover', () => { polyline.setStyle({ color: 'red', weight: 5 }) })
-                .on('mouseout', () => { polyline.setStyle({ color: 'black', weight: 2 }) });
 
             // Create div-element for each short distance and add ID, CSS class and HTML content
             const shortDistanceDiv = document.createElement("div");
@@ -593,6 +602,9 @@ function showCurrentShortDistances(station) {
  * Resets the layer that displays the short distances of the currently selected station by removing all markers and lines.
  */
 function resetCurrentShortDistancesLayer() {
+    // Remove existing SVG lines
+    resetSVG("line");
+
     // Re-add previously removed markers to markerCluster and searchResult layers
     stationIDsOfCurrentShortDistances.forEach(ID => {
         try { markers[ID].addTo(clusterLayer) } catch { }
@@ -654,13 +666,42 @@ function highlightSpot(spotData) {
         .data([spotData])
         .enter()
         .append("circle")
+        .attr("class", "map-circle")
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
         .attr("cy", (d) => { return latLngToY(d.lat, d.lng) })
         .attr("r", 14)
-        .attr("fill", "#398CF7")
+        .attr("fill", "#0744f7")
         .attr("fill-opacity", 0.95)
         .attr("stroke", "#FFFFFF")
         .attr("stroke-width", 5);
+}
+
+/**
+ * Draws a straight line onto the map. The provided data must include lat/lng of both start/end point.
+ *
+ * @param lineData                Data including start and end coordinates of line to be drawn
+ */
+function addLine(lineData) {
+    // Set up the SVG layer
+    if (map.hasLayer(svgLines)) {
+        svgLines.removeFrom(map);
+    }
+    svgLines.addTo(map);
+
+    // Draw circle at given coordinate
+    d3.select("#map")
+        .select("svg")
+        .selectAll("lines")
+        .data([lineData])
+        .enter()
+        .append("line")
+        .attr("class", "map-line")
+        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
+        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
+        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
+        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) })
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2);
 }
 
 /**
@@ -675,15 +716,15 @@ function highlightSpot(spotData) {
 function resetSVG(resetCase) {
     switch (resetCase) {
         case "all":
-            d3.selectAll("line").remove();
+            d3.selectAll(".map-line").remove();
             d3.selectAll("line-highlight").remove();
-            d3.selectAll("circle").remove();
+            d3.selectAll(".map-circle").remove();
             break;
         case "circle":
-            d3.selectAll("circle").remove();
+            d3.selectAll(".map-circle").remove();
             break;
         case "line":
-            d3.selectAll("line").remove();
+            d3.selectAll(".map-line").remove();
             break;
         case "line-highlight":
             d3.selectAll("line-highlight").remove();
@@ -719,19 +760,12 @@ function latLngToY(lat, lng) {
  */
 function updateSVGElements() {
     // Update all SVG circles
-    d3.selectAll("circle")
+    d3.selectAll(".map-circle")
         .attr("cx", (d) => { return latLngToX(d.lat, d.lng) })
         .attr("cy", (d) => { return latLngToY(d.lat, d.lng) });
 
     // Update all SVG lines
-    d3.selectAll("line")
-        .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
-        .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
-        .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
-        .attr("y2", (d) => { return latLngToY(d.end.lat, d.end.lng) });
-
-    // Update all highlighted SVG lines
-    d3.selectAll("line-highlight")
+    d3.selectAll(".map-line")
         .attr("x1", (d) => { return latLngToX(d.start.lat, d.start.lng) })
         .attr("y1", (d) => { return latLngToY(d.start.lat, d.start.lng) })
         .attr("x2", (d) => { return latLngToX(d.end.lat, d.end.lng) })
@@ -1058,6 +1092,7 @@ function piechart(data, divId) {
 
     console.log(zoningplanArray);
 
+    document.getElementById(divId).innerHTML = "";
 
     var width = 300;
     var height = 600;
@@ -1120,8 +1155,8 @@ function piechart(data, divId) {
 
     path.on('mousemove', function (d) {
         var xposSub = document.getElementById(divId).getBoundingClientRect().left;
-        var xpos = d3.event.x - xposSub + 20
-        var ypos = d3.event.y - 150
+        var xpos = d3.event.x - xposSub + 10
+        var ypos = d3.event.y - 320;
         tooltip.style("left", xpos + "px")
         tooltip.style("top", ypos + "px")
         var total = d3.sum(dataset.map(function (d) {
