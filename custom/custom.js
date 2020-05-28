@@ -674,7 +674,7 @@ function highlightSpot(spotData) {
         .attr("r", 14)
         .attr("fill", "#222222")
         .attr("fill-opacity", 0.95)
-        .attr("stroke", "#FFFFFF")
+        .attr("stroke", "#EB0000")
         .attr("stroke-width", 5);
 }
 
