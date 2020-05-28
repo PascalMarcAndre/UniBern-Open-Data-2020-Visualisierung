@@ -1238,7 +1238,7 @@ function piechart(data, divId) {
         .attr('y', legendRectSize - legendSpacing+ 5)
         .attr('style', 'font-size: 12')
         .attr('alignment-baseline', 'middle')
-        .text(function (d) { return d; });
+        .text(function (d) { return d.replace("&amp;", "&"); });
 
 }
 
