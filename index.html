@@ -173,18 +173,30 @@
 
             <!-- Longest Short Distances -->
             <div id="analyzeLongestShortDistance" class="hidden">
-                Längste Kurzstrecken
+                <div class="description">
+                    Diese Liste hebt die <strong>50 längsten Kurzstrecken</strong> in der Schweiz hervor.
+                </div>
             </div>
 
             <!-- Short Distance Distribution -->
             <div id="analyzeShortDistanceDistribution" class="hidden">
-                <!-- TODO: Description of heatmap -->
-                Kurzstreckenverteilung
+                <div class="description">
+                    Die <strong>geografische Verteilung</strong> der Kurzstrecken in der Schweiz wird anbei durch eine
+                    <strong>Heatmap</strong> visualisiert. Dabei wird jede Haltestelle mit <strong>mindestens einer
+                    Kurzstrecke</strong> auf der Karte durch einen Punkt repräsentiert, dessen Wärme anhand der
+                    <strong>Anzahl verfügbaren Kurzstrecken</strong> bestimmt wird.
+                </div>
             </div>
 
             <!-- Bar Chart of Length of Short Distances by Zoning Plan -->
             <div id="analyzeLengthShortDistanceByZoningPlan" class="hidden">
-                Länge der Kurzstrecken nach Zonenplan
+                <div class="description">
+                    In diesem Bar Chart wird die <strong>Länge der Kurzstrecken</strong> zwischen den verschiedenen
+                    Zonenplänen verglichen. Dabei werden alle Kurzstrecken im jeweiligen Zonenplan in <strong>Intervalle</strong>
+                    von 0.0-0.5 km, 0.5-1.0 km etc. aufgeteilt und einander gegenübergestellt. Man stellt fest, dass
+                    insgesamt <strong><span id="tooLongPlaceholder"></span>%</strong> der Kurzstrecken per Definition
+                    eigentlich keine wären, da sie länger als 1.5 km sind.
+                </div>
                 <div id="barchartLegend"></div>
                 <div id="chartset">
                     <svg class="chart"></svg>

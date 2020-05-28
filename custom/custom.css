@@ -479,6 +479,16 @@ a:hover {
 }
 
 /*
+ *  Sidebar / Analyse
+ */
+.analyse .description {
+    margin: 15px 0;
+    padding: 1px;
+    font-size: 15px;
+    text-align: justify;
+}
+
+/*
  *  Sidebar / Options
  */
 .options .tilePreview {
