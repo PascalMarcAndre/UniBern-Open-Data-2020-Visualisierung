@@ -1092,6 +1092,7 @@ function piechart(data, divId) {
 
     console.log(zoningplanArray);
 
+    document.getElementById(divId).innerHTML = "";
 
     var width = 300;
     var height = 600;
