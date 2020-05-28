@@ -1200,7 +1200,7 @@ function piechart(data, divId) {
 
     legend.append('text')
         .attr('x', legendRectSize + legendSpacing)
-        .attr('y', legendRectSize - legendSpacing)
+        .attr('y', legendRectSize - legendSpacing+ 5)
         .attr('style', 'font-size: 12')
         .attr('alignment-baseline', 'middle')
         .text(function (d) { return d; });
@@ -1394,7 +1394,7 @@ function barchart(shortDistanceInterval) {
 
     // Draw legend
     var legendRectSize = 12,
-        legendSpacing = 2;
+        legendSpacing = 4;
 
     var legend = chart.selectAll('.legend')
         .data(data.series)
