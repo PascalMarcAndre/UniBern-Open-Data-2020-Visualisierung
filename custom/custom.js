@@ -1171,18 +1171,7 @@ function piechart(data) {
 
 
 function barchart(shortDistanceInterval) {
-
-    console.log(zoningPlanwithShortDistance)
-
-    console.log(shortDistanceInterval["0.0 < x < 0.5 km"])
-
-
-    document.getElementById("barchartLegend").innerHTML = "<h5>Prozentanteil der Intervalle pro Zonenplan</h5>";
-
-
-    document.getElementById("barcharttext").innerHTML = "Insgesamt sind <b>" + tooLongShortDistance +
-        "% </b> aller Kurzstrecken per Definition keine Kurzstrecken, da diese länger als 1.5 km sind.";
-
+    document.getElementById("tooLongPlaceholder").innerText = tooLongShortDistance;
 
     document.getElementsByClassName("chart").innerHTML = shortDistanceInterval;
 
