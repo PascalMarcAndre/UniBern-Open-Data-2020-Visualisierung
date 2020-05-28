@@ -238,6 +238,43 @@ function createLongestShortDistancesLayer() {
             // TODO: Use D3
             L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], { color: 'black', weight: 2 })
                 .addTo(longestShortDistanceLayer);
+
+            // Add short distance as item to sidebar
+
+            // Complete short distance item
+            const shortDistanceItem = document.createElement("div");
+            shortDistanceItem.classList.add("shortDistanceItem");
+
+            // Small "VON" label
+            const startButton = document.createElement("span");
+            startButton.classList.add("label");
+            startButton.innerHTML = "von";
+
+            // Start station name
+            const startStation = document.createElement("div");
+            startStation.appendChild(startButton);
+            startStation.innerHTML += shortDistance.startName;
+
+            // Small "NACH" label
+            const endButton = document.createElement("span");
+            endButton.classList.add("label");
+            endButton.innerHTML = "nach";
+
+            // End station name
+            const endStation = document.createElement("div");
+            endStation.appendChild(endButton);
+            endStation.innerHTML += shortDistance.endName;
+
+            // Distance span
+            const distance = document.createElement("span");
+            distance.classList.add("distance");
+            distance.innerHTML = (shortDistance.distance / 1000).toFixed(1) + " km";
+            startStation.appendChild(distance);
+
+            // Construct short distance item for sidebar by appending it
+            document.getElementById("listOfLongestShortDistances").appendChild(shortDistanceItem);
+            shortDistanceItem.appendChild(startStation);
+            shortDistanceItem.appendChild(endStation);
         });
     });
 }

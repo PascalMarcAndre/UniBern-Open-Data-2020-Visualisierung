@@ -136,18 +136,6 @@ select {
     border: 2px solid var(--sbb-dark);
 }
 
-.analyze span {
-    display: inline-block;
-    text-transform: uppercase;
-    margin-top: -2px;
-    padding: 2px;
-    font-family: "SBB Web Bold", sans-serif;
-    font-size: 8px;
-    color: var(--sbb-light);
-    width: 28px !important;
-    background-color: var(--sbb-red);
-}
-
 /* Buttons */
 button {
     margin: 5px 10px 10px 0;
@@ -501,6 +489,39 @@ a:hover {
     padding: 1px;
     font-size: 15px;
     text-align: justify;
+}
+
+.analyse #listOfLongestShortDistances {
+    margin-top: 15px;
+}
+
+.analyse .shortDistanceItem {
+    border-top: 1px solid var(--sbb-dark);
+    padding: 2px;
+}
+
+.analyse .shortDistanceItem:hover {
+    background-color: var(--sbb-light-hov);
+    font-weight: bold;
+}
+
+.analyse span.label {
+    display: inline-block;
+    text-transform: uppercase;
+    margin-top: -5px;
+    margin-right: 5px;
+    padding: 2px 2px 0;
+    font-family: "SBB Web Roman", sans-serif;
+    font-size: 11px;
+    color: var(--sbb-light);
+    width: 35px !important;
+    background-color: var(--sbb-red);
+}
+
+.analyse span.distance {
+    display: inline-block;
+    float:right;
+    font-family: "SBB Web Bold", sans-serif;
 }
 
 /*
