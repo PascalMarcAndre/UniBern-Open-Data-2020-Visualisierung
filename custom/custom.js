@@ -705,6 +705,30 @@ function addLine(lineData) {
 }
 
 /**
+ * Highlights the SVG line related to the given station ID. Repaints the line in thick red color.
+ *
+ * @param stationID               ID of line to be highlighted
+ */
+function highlightLine(stationID) {
+    const selector = ".line" + stationID;
+    d3.selectAll(selector)
+        .attr("stroke", "#EB0000")
+        .attr("stroke-width", 6);
+}
+
+/**
+ * De-highlights the SVG line related to the given station ID. Repaints the line in thin black color.
+ *
+ * @param stationID               ID of line to be de-highlighted
+ */
+function deHighlightLine(stationID) {
+    const selector = ".line" + stationID;
+    d3.selectAll(selector)
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2);
+}
+
+/**
  * Resets the SVG layers to a predefined case according to the specified string 'resetCase'.
  *
  * @param resetCase               String describing which reset case that should be used. Possible values are:
