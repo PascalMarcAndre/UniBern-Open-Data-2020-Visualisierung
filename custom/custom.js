@@ -1154,8 +1154,8 @@ function piechart(data, divId) {
 
     path.on('mousemove', function (d) {
         var xposSub = document.getElementById(divId).getBoundingClientRect().left;
-        var xpos = d3.event.x - xposSub + 20
-        var ypos = d3.event.y - 150
+        var xpos = d3.event.x - xposSub + 10
+        var ypos = d3.event.y - 320;
         tooltip.style("left", xpos + "px")
         tooltip.style("top", ypos + "px")
         var total = d3.sum(dataset.map(function (d) {
