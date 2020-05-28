@@ -14,25 +14,6 @@ function query_allStations() {
     }`
 }
 
-function query_allStationsLibero() {
-    return `
-    PREFIX sc: <http://purl.org/science/owl/sciencecommons/>
-    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
-    PREFIX schema: <http://schema.org/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/> PREFIX dcterms: <http://purl.org/dc/terms/>
-    SELECT distinct ?Station ?name ?Coord ?departureID
-    WHERE {
-        ?Kante a otd:Relation; 
-        otd:zoningPlan<http://lod.opentransportdata.swiss/zoningplan/libero/libero-billett-libero>;
-        schema:departureStation ?Station .
-        ?Station rdfs:label ?name ;
-        <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;              dcterms:identifier ?departureID .
-    }
-    limit 10000
-    `
-}
-
 function query_allStationsMatchingSearchTerms(searchTerms) {
     let filters = "";
     let searchTermList = searchTerms.split(" ");
@@ -228,44 +209,6 @@ function query_ZoningPlanAllStations(zoningPlan) {
     <` + zoningPlan + `>; schema:departureStation ?Station .
     ?Station rdfs:label ?Name ;
     <http://www.opengis.net/ont/geosparql#hasGeometry>/<http://www.opengis.net/ont/geosparql#asWKT> ?Coord;              dcterms:identifier ?departureID .
-    } 
-    `
-}
-
-//TODO, manipulate query
-function query_allMonoDirectionalShortDistancesForStation() {
-    return `
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
-    PREFIX schema: <http://schema.org/>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX otd: <http://lod.opentransportdata.swiss/vocab/>
-    PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
-    PREFIX dcterms: <http://purl.org/dc/terms/>
-
-    SELECT * WHERE {
-
-    { SELECT ?startingPoint (COUNT(?Kante) AS ?kurzstreckeDeparture) WHERE {
-        ?Kante a otd:Relation;
-            otd:zoningPlan <http://lod.opentransportdata.swiss/zoningPlan/Libero/Libero%20Billett%20Libero>;
-            schema:departureStation ?startingPoint ;
-            schema:arrivalStation ?arrivalStation .
-    } GROUP BY ?startingPoint
-    }
-    #  ?arrivalStation rdfs:label ?arrivalStationLabel .
-
-    { SELECT (COUNT(?kante2) AS ?kurzstrecke2Departure) WHERE {
-        ?kante2 a otd:Relation;
-            otd:zoningPlan <http://lod.opentransportdata.swiss/zoningPlan/Libero/Libero%20Billett%20Libero>;
-            schema:departureStation ?arrivalStation;
-            schema:arrivalStation ?startingPoint .
-    } GROUP BY ?startingPoint
-    }
-    #?kante2Kantenende rdfs:label ?kante2KantenendeLabel .
-
-    FILTER( ?kurzstreckeDeparture != ?kurzstrecke2Departure)
-
     } 
     `
 }
