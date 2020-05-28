@@ -1521,16 +1521,9 @@ function removeAllLayers() {
     });
 }
 
-
-
-
-
-
-
-
-
-
-/*******************************************************************************************************
- * PLAYGROUND
- * Non-final code to test new features
- ******************************************************************************************************/
+/**
+ * Removes the station overview from the map by hiding it. Gets called when the user clicks the cross to close it.
+ */
+function closeStationOverview() {
+    document.getElementById("stationOverview").classList.add("hidden");
+}

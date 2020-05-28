@@ -294,6 +294,21 @@ a:hover {
     border-bottom: 1px solid black;
 }
 
+.stationOverview h5 span {
+    display: block;
+    float: right;
+    cursor: pointer;
+}
+
+.stationOverview h5 span:hover {
+    background-color: #DDDDDD;
+}
+
+.stationOverview h5 span img {
+    margin: -20px -5px;
+    height: 30px;
+}
+
 .stationOverview h6 {
     font-size: 15px;
 }

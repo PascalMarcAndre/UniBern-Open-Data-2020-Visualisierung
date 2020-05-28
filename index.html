@@ -52,7 +52,13 @@
 
     <!-- Leaflet Map - Station Overview -->
     <div id="stationOverview" class="stationOverview hidden">
-        <h5>Übersicht zu Haltestelle:</h5>
+        <h5>
+            Haltestellenübersicht:
+            <span onclick="closeStationOverview()">
+            <img src="assets/glyphicons/remove.png" alt="">
+        </span>
+        </h5>
+        
         <a id="searchLink" href="" target="_blank">
             <div id="stationOverview-name"></div>
         </a>
