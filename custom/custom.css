@@ -667,6 +667,8 @@ a:hover {
     display: block;
     width: auto;
     margin: 0 auto;
+    text-align: center;
+
   }
 
 #piechart2 {
@@ -674,6 +676,8 @@ a:hover {
     /* To allow the tooltip to be positioned relative to the div */
     display: block;
     width: auto;
+    text-align: center;
+
   }
 
   .pietooltip {
