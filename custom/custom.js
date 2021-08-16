@@ -29,11 +29,12 @@ function launch() {
     createLeafletMap();
     createLeafletTiles();
     createClusterLayer();
-    createZoningplanVisualization()
-    createDistanceOfShortDistancesVisualization()
+
     // Setup analyse layers
     createHeatmapLayer();
     createLongestShortDistancesLayer();
+    createZoningplanVisualization();
+    createDistanceOfShortDistancesVisualization();
 }
 
 
@@ -238,7 +239,6 @@ function createLongestShortDistancesLayer() {
                 .bindTooltip(shortDistance.endName, { opacity: 1, direction: 'top', className: 'tooltip' });
 
             // Adds line from start to end point of short distance to layer
-            // TODO: Use D3
             L.polyline([[shortDistance.startLat, shortDistance.startLng], [shortDistance.endLat, shortDistance.endLng]], { color: 'black', weight: 2 })
                 .addTo(longestShortDistanceLayer);
 
@@ -325,9 +325,6 @@ function createHeatmapLayer() {
  * Calculates lower bound of number of short distances which are technically too long (above 1.5 km) incl. ratio
  * compared to overall number of short distances. Creates visualization based on given data and adds it to sidebar.
  */
-//save Array locally, so data can be loaded in advance
-let tooLongShortDistance;
-let lengthIntervalShortDistance;
 function createDistanceOfShortDistancesVisualization() {
     // Request list with length of each available short distance
     d3.sparql(LINDAS_ENDPOINT, query_distanceOfAllShortDistances()).then(data => {
@@ -338,17 +335,6 @@ function createDistanceOfShortDistancesVisualization() {
             "0.5 < x < 1.0 km": 0,
             "1.0 < x < 1.5 km": 0,
             "1.5 < x": 0
-
-            /**,
-            "1.5 < x < 2.0 km": 0,
-            "2.0 < x < 2.5 km": 0,
-            "2.5 < x < 3.0 km": 0,
-            "3.0 < x < 3.5 km": 0,
-            
-            "3.5 < x < 4.0 km": 0,
-            "4.0 < x < 4.5 km": 0,
-            "4.5 < x": 0
-            */
         };
 
         // Assign each short distance to a group according to its length
@@ -368,59 +354,25 @@ function createDistanceOfShortDistancesVisualization() {
                 return null;
             } else if (1500 <= distance) {
                 lengthIntervals["1.5 < x"]++;
-                return null;
-            } /**     else if (2000 <= distance && distance < 2500) {
-                lengthIntervals["2.0 < x < 2.5 km"]++;
-                return null;
-            } else if (2500 <= distance && distance < 3000) {
-                lengthIntervals["2.5 < x < 3.0 km"]++;
-                return null;
-            } else if (3000 <= distance && distance < 3500) {
-                lengthIntervals["3.0 < x < 3.5 km"]++;
-                return null;
-            } else if (3500 <= distance
-
-                           && distance < 4000) {
-                                lengthIntervals["3.5 < x < 4.0 km"]++;
-                                return null;
-                            } else if (4000 <= distance && distance < 4500) {
-                                lengthIntervals["4.0 < x < 4.5 km"]++;
-                                return null;
-                            } else if (4500 <= distance
-            ) {
-                //Changed Interval set
-                lengthIntervals["3.5 < x"]++;
-                return null;
-            }*/
+            }
         });
 
         // Lower bound number of short distances which technically are too long (over 1.5 km)
-        const tooLongShortDistancesCount = lengthIntervals["1.5 < x"]
+        const tooLongShortDistancesCount = lengthIntervals["1.5 < x"];
 
-        /*
-            lengthIntervals["1.5 < x < 2.0 km"] +
-            lengthIntervals["2.0 < x < 2.5 km"] +
-            lengthIntervals["2.5 < x < 3.0 km"] +
-            lengthIntervals["3.0 < x < 3.5 km"] +
-            lengthIntervals["3.5 < x< 4.0 km"] +
-        lengthIntervals["4.0 < x < 4.5 km"] +
-        lengthIntervals["4.5 < x"];
-        */
         // Lower bound percentage of how many short distances are technically too long
-        percentageTooLong = (tooLongShortDistancesCount * 100 / data.length).toFixed(1);
+        const percentageTooLong = (tooLongShortDistancesCount * 100 / data.length).toFixed(1);
 
         lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"] * 100 / data.length).toFixed(1);
         lengthIntervals["0.5 < x < 1.0 km"] = (lengthIntervals["0.5 < x < 1.0 km"] * 100 / data.length).toFixed(1);
         lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"] * 100 / data.length).toFixed(1);
         lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"] * 100 / data.length).toFixed(1);
 
+        // Write percentage of short distances which are too long into placeholder
+        document.getElementById("tooLongPlaceholder").innerText = percentageTooLong;
 
-        // TODO: Create visualization based on above data
-        //save data into global variable
-
-        tooLongShortDistance = percentageTooLong;
-        console.log(percentageTooLong)
-        lengthIntervalShortDistance = lengthIntervals;
+        // Create bar chart about length distribution of short distances grouped by zoning plan
+        barchart(lengthIntervals);
     })
 }
 
@@ -435,17 +387,8 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
     // Request list with length of each available short distance
     d3.sparql(LINDAS_ENDPOINT, query_distanceOfZoningplanShortDistances(station.Zonenplan)).then(data => {
 
-        if (station.namen === "Léman Pass Abo &amp; Billett") {
-            station.namen = "Léman Pass Abo"
-            console.log(station.namen)
-
-        }
-
-        if (station.namen === "A-Welle Abo &amp; Billett") {
-            station.namen = "A-Welle Abo  Billett"
-            console.log(station.namen)
-
-        }
+        // Ensure '&' symbol is displayed correctly
+        station.namen = station.namen.replace("&amp;", "&");
 
         // Set up array with specific length intervals to count its number of short distance
         let lengthIntervals = {
@@ -480,7 +423,7 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
         const zoningPlanwithShortDistanceLength = lengthIntervals["0.0 < x < 0.5 km"] +
             lengthIntervals["0.5 < x < 1.0 km"] +
             lengthIntervals["1.0 < x < 1.5 km"] +
-            lengthIntervals["1.5 < x"]
+            lengthIntervals["1.5 < x"];
 
         //Define data as percentage
         lengthIntervals["0.0 < x < 0.5 km"] = (lengthIntervals["0.0 < x < 0.5 km"] * 100 / data.length).toFixed(1);
@@ -488,16 +431,10 @@ function createZoningplanDistanceOfShortDistancesVisualization(station) {
         lengthIntervals["1.0 < x < 1.5 km"] = (lengthIntervals["1.0 < x < 1.5 km"] * 100 / data.length).toFixed(1);
         lengthIntervals["1.5 < x"] = (lengthIntervals["1.5 < x"] * 100 / data.length).toFixed(1);
 
-
-
         //Currently 12 Zoningplans with short distances
         if (zoningPlanwithShortDistanceLength > 0) {
-            zoningPlanwithShortDistance.push(lengthIntervals)
-
-            console.log(lengthIntervals)
+            zoningPlanwithShortDistance.push(lengthIntervals);
         }
-        //TODO Array
-        //lengthIntervalShortDistance = lengthIntervals;
     })
 }
 
@@ -553,7 +490,7 @@ function showCurrentShortDistances(station) {
             L.marker([shortDistance.lat, shortDistance.lng], { icon: alternativeIcon, forceZIndex: 1000 })
                 .addTo(currentShortDistancesLayer)
                 .bindTooltip(shortDistance.name, { opacity: 1, direction: 'top', className: 'tooltip' })
-                .on("click", () => { console.log(station); showCurrentShortDistances(shortDistance) });
+                .on("click", () => { showCurrentShortDistances(shortDistance) });
 
             // Create div-element for each short distance and add ID, CSS class and HTML content
             const shortDistanceDiv = document.createElement("div");
@@ -737,13 +674,11 @@ function deHighlightLine(stationID) {
  *                                'all'             - Remove all circles and lines
  *                                'circle'          - Remove only circles
  *                                'line'            - Remove only lines
- *                                'line-highlight'  - Remove only highlighted lines
  */
 function resetSVG(resetCase) {
     switch (resetCase) {
         case "all":
             d3.selectAll(".map-line").remove();
-            d3.selectAll("line-highlight").remove();
             d3.selectAll(".map-circle").remove();
             break;
         case "circle":
@@ -751,9 +686,6 @@ function resetSVG(resetCase) {
             break;
         case "line":
             d3.selectAll(".map-line").remove();
-            break;
-        case "line-highlight":
-            d3.selectAll("line-highlight").remove();
             break;
     }
 }
@@ -859,10 +791,7 @@ function flyToCoordinate(lat, lng) {
  * Creates Zoningplan Visualization
  * Prepares data for Bar Chart for each zoningplan
  */
-
-
 function createZoningplanVisualization() {
-
 
     d3.sparql(LINDAS_ENDPOINT, query_allZoningplans()).then((data) => {
 
@@ -887,7 +816,6 @@ function createZoningplanVisualization() {
                     if (d.length > 0) {
                         zoningplanAllArray.push({ "label": station.namen, "count": d.length });
                     }
-                    console.log(zoningplanAllArray);
                 },
                 );
         },
@@ -1091,33 +1019,19 @@ function updateAnalyseLayer(event) {
             break;
         case ("lengthShortDistanceByZoningPlan"):
             document.getElementById("analyzeLengthShortDistanceByZoningPlan").classList.remove("hidden");
-            //createZoningplanVisualization()
-            // Create Bar Chart for createDistanceOfShortDistancesVisualization
-            console.log(lengthIntervalShortDistance["0.0 < x < 0.5 km"]);
-            console.log(lengthIntervalShortDistance["0.5 < x < 1.0 km"]);
-            console.log(lengthIntervalShortDistance["1.0 < x < 1.5 km"]);
-            console.log(lengthIntervalShortDistance["1.5 < x"]);
-            barchart(lengthIntervalShortDistance);
             break;
         case ("stationsWithShortDistancesPerZoningPlan"):
             document.getElementById("analyzeStationsWithShortDistancesPerZoningPlan").classList.remove("hidden");
-            piechart(zoningplanArray, "piechart1")
+            piechart(zoningplanArray, "piechart1");
             break;
         case ("shortDistancesPerZoningPlan"):
             document.getElementById("analyzeShortDistancesPerZoningPlan").classList.remove("hidden");
-            piechart(zoningplanAllArray, "piechart2")
+            piechart(zoningplanAllArray, "piechart2");
             break;
     }
 }
 
-
-
 function piechart(data, divId) {
-
-    console.log(divId);
-
-    console.log(zoningplanArray);
-
     document.getElementById(divId).innerHTML = "";
 
     var width = 300;
@@ -1196,8 +1110,6 @@ function piechart(data, divId) {
         tooltip.style('display', 'block');
     });
 
-
-
     path.on('mouseout', function (d) {
         tooltip.style('display', 'none');
 
@@ -1258,25 +1170,18 @@ function piechart(data, divId) {
                 });
         });
 
-
     legend.append('text')
         .attr('x', legendRectSize + legendSpacing)
         .attr('y', legendRectSize - legendSpacing+ 5)
         .attr('style', 'font-size: 12')
         .attr('alignment-baseline', 'middle')
         .text(function (d) { return d.replace("&amp;", "&"); });
-
 }
 
 
 
 function barchart(shortDistanceInterval) {
-    document.getElementById("tooLongPlaceholder").innerText = tooLongShortDistance;
-
     document.getElementsByClassName("chart").innerHTML = shortDistanceInterval;
-
-
-    var data = shortDistanceInterval
 
     //Define 4 Intervallbounds
     var i1 = '0.0 < x < 0.5 km'
@@ -1374,7 +1279,6 @@ function barchart(shortDistanceInterval) {
             },]
     };
 
-
     var chartWidth = 20,
         barHeight = 13,
         groupHeight = barHeight * data.series.length,
@@ -1389,7 +1293,6 @@ function barchart(shortDistanceInterval) {
             zippedData.push(data.series[j].values[i]);
         }
     }
-    console.log(zippedData)
 
     // Color scale
     var color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -1481,7 +1384,6 @@ function barchart(shortDistanceInterval) {
         .attr('y', legendRectSize - legendSpacing)
         .text(function (d) { return d.label; });
 }
-
 
 
 
