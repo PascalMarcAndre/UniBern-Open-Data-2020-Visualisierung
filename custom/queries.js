@@ -1,16 +1,19 @@
 function query_allStations() {
     return `
+    PREFIX schema: <http://schema.org/>
+    PREFIX geosparql: <http://www.opengis.net/ont/geosparql#>
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
     PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
-    PREFIX swiss:  <https://ld.geo.admin.ch/>
-     
+    
     SELECT ?ID ?name ?lat ?lng {
-        ?a a <http://vocab.gtfs.org/terms#Stop>.
-        ?a <http://schema.org/name> ?name .
-        ?a geo:lat ?lat .
-        ?a geo:long ?lng .
-        ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
-        
-        BIND(STRAFTER(STR(?a), "stop/") AS ?ID)
+      ?Stop a gtfs:Stop .
+      ?Stop schema:name ?name .
+      ?Stop geosparql:hasGeometry ?Geom .
+      ?Geom geosparql:asWKT ?Coords .
+      
+      bind( strafter(str(?Stop), "stop/") AS ?ID)
+      bind( replace( str(?Coords), "^[^0-9\\\\.]*([0-9\\\\.]+) .*$", "$1" ) as ?lng )
+      bind( replace( str(?Coords), "^.* ([0-9\\\\.]+)[^0-9\\\\.]*$", "$1" ) as ?lat )
     }`
 }
 
@@ -23,17 +26,20 @@ function query_allStationsMatchingSearchTerms(searchTerms) {
     });
 
     return `
+    PREFIX schema: <http://schema.org/>
+    PREFIX geosparql: <http://www.opengis.net/ont/geosparql#>
+    PREFIX gtfs: <http://vocab.gtfs.org/terms#>
     PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
-    PREFIX swiss:  <https://ld.geo.admin.ch/>
-     
+    
     SELECT ?ID ?name ?lat ?lng {
-        ?a a <http://vocab.gtfs.org/terms#Stop>.
-        ?a <http://schema.org/name> ?name .
-        ?a geo:lat ?lat .
-        ?a geo:long ?lng .
-        ?a <https://ld.geo.admin.ch/def/transportation/operatingPointType> ?Art
-        
-        BIND(STRAFTER(STR(?a), "stop/") AS ?ID)
+      ?Stop a gtfs:Stop .
+      ?Stop schema:name ?name .
+      ?Stop geosparql:hasGeometry ?Geom .
+      ?Geom geosparql:asWKT ?Coords .
+      
+      bind( strafter(str(?Stop), "stop/") AS ?ID)
+      bind( replace( str(?Coords), "^[^0-9\\\\.]*([0-9\\\\.]+) .*$", "$1" ) as ?lng )
+      bind( replace( str(?Coords), "^.* ([0-9\\\\.]+)[^0-9\\\\.]*$", "$1" ) as ?lat )
     
         ` + filters + `} ORDER BY ?name`
 }
